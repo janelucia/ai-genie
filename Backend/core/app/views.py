@@ -28,6 +28,14 @@ class EventsEndpoint(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class MultiEditEvents(APIView):
+    def post(self, request):
+        serializer = EventSerializer(data = request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class EventByID(APIView):
     def get_object(self, id):
         try:
@@ -125,6 +133,14 @@ class ResearchersEndpoint(APIView):
     def post(self, request):
         '''Create a new researcher'''
         serializer = ResearcherSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class MultiEditResearchers(APIView):
+    def post(self, request):
+        serializer = ResearcherSerializer(data = request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

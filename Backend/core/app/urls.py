@@ -9,7 +9,9 @@ urlpatterns = [
     # researchers endpoints
     path('researchers/', view = ResearchersEndpoint.as_view()),
     path('researchers/<int:id>/', view = ResearcherByID.as_view()),
+    path('multi-edit-researchers/', view = MultiEditResearchers.as_view()),
     # events endpoints
     path('events/', view = EventsEndpoint.as_view()),
     path('events/<int:id>/', view = EventByID.as_view()),
+    path('multi-edit-events/', view = MultiEditEvents.as_view()),
 ]
