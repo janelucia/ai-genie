@@ -5,6 +5,35 @@ from .models import *
 from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 
+from langchain.agents import initialize_agent
+from langchain.memory import ConversationBufferMemory
+from langchain_ollama import OllamaLLM
+from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool
+
+#______________Initialize things on start______________ < ---- shall be moved somewhere else
+
+SYSTEM_PROMPT = """You are an AI assistant specialized in research retrieval and event analysis. 
+Be casual as you perform this roles for guests of AI Lab
+Use available tools to answer questions accurately. Maintain professionalism in responses. 
+Never put research titles in quotation.
+Always put action input in "" """
+
+
+llm = OllamaLLM(model="mistral", temperature=0.7)  # Or use "deepseek"
+
+# Setup memory
+memory = ConversationBufferMemory(memory_key="chat_history",
+                                  return_messages=True)
+
+tools = [FindResearcherTool(), FindEventTool(), FindResearchTool()]
+agent = initialize_agent(tools=tools, 
+                         llm=llm,
+                         memory=memory, 
+                         verbose=True,
+                         agent="chat-conversational-react-description",
+                         agent_kwargs={"system_message": SYSTEM_PROMPT})
+
+
 # Create your views here.
 class Home(APIView):
     def get(self, request):
@@ -232,8 +261,10 @@ class AddMessageWithAIResponse(APIView):
 
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.save()
+            ai_response_content = agent.run(user_message.content)
+
             ai_message_data = {
-                "content": f"Echo: {user_message.content}",
+                "content": ai_response_content,
                 "chat": chat_id,
                 "ai_response": True
             }

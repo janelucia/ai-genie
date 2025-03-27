@@ -8,3 +8,5 @@ class ResearchModelAdmin(admin.ModelAdmin):
 admin.site.register(Event)
 admin.site.register(Research, ResearchModelAdmin)
 admin.site.register(Researcher)
+admin.site.register(Chat)
+admin.site.register(Message)
