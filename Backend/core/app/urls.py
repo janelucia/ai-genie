@@ -14,4 +14,9 @@ urlpatterns = [
     path('events/', view = EventsEndpoint.as_view()),
     path('events/<int:id>/', view = EventByID.as_view()),
     path('multi-edit-events/', view = MultiEditEvents.as_view()),
+    # chats endpoints
+    path('chats/', view = ChatsEndpoint.as_view()),
+    path('chats/<int:id>/', view = ChatByID.as_view()),
+    # messages endpoints
+    path('message-ai/', view = AddMessageWithAIResponse.as_view()),
 ]

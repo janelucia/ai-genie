@@ -177,3 +177,77 @@ class ResearcherByID(APIView):
             researcher.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+#______________CHATS ENDPOINTS______________
+
+class ChatsEndpoint(APIView):
+    def get(self, request):
+        '''Lists all the chats'''
+        chats = Chat.objects.all()
+        if chats.exists():
+            chats_serializer = ChatSerializer(chats, many=True)
+            return Response(chats_serializer.data, status=status.HTTP_200_OK)
+        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    def post(self, request):
+        '''Create a new chat'''
+        serializer = ChatSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ChatByID(APIView):
+    def get_object(self, id):
+        try:
+            return Chat.objects.get(id=id)
+        except Chat.DoesNotExist:
+            return None
+        
+    def get(self, request, id):
+        '''Gets all the messages from the chat'''
+        chat = self.get_object(id)
+        if chat:
+            chat_serializer = ChatSerializer(chat)
+            messages = Message.objects.filter(chat=chat)
+            message_serializer = MessageSerializer(messages, many=True)
+            return Response({
+                "chat": chat_serializer.data,
+                "messages": message_serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+#______________MESSAGES ENDPOINTS______________
+
+class AddMessageWithAIResponse(APIView):
+    def post(self, request):
+        chat_id = request.data.get("chat")  # Extract chat ID from request data
+
+        # Check if the chat exists
+        if not Chat.objects.filter(id=chat_id).exists():
+            return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        user_message_serializer = MessageSerializer(data=request.data)
+
+        if user_message_serializer.is_valid():
+            user_message = user_message_serializer.save()
+            ai_message_data = {
+                "content": f"Echo: {user_message.content}",
+                "chat": chat_id,
+                "ai_response": True
+            }
+            ai_message_serializer = MessageSerializer(data=ai_message_data)
+
+            if ai_message_serializer.is_valid():
+                ai_message_serializer.save()  # Save AI response
+
+                return Response(
+                    {
+                        "user_message": user_message_serializer.data,
+                        "ai_response": ai_message_serializer.data
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+
+        return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
