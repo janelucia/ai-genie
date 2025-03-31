@@ -264,9 +264,7 @@ class ClearMessagesByChatID(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddMessageWithAIResponse(APIView):
-    def post(self, request):
-        chat_id = request.data.get("chat")  # Extract chat ID from request data
-
+    def post(self, request, chat_id):
         # Check if the chat exists
         if not Chat.objects.filter(id=chat_id).exists():
             return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -292,7 +290,7 @@ class AddMessageWithAIResponse(APIView):
             if ai_message_serializer.is_valid():
                 ai_message_serializer.save() 
 
-                return Response({"ai_response": ai_message_serializer.data}, status=status.HTTP_201_CREATED)
+                return Response(ai_message_serializer.data, status=status.HTTP_201_CREATED)
             return Response(ai_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

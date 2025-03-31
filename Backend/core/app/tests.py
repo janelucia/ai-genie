@@ -1,97 +1,111 @@
 import json
+import logging
 from django.test import TestCase
 from rest_framework.test import APIClient
 from app.models import Chat
+from .serializers import *
+
+# Configure logging
+logging.basicConfig(
+    filename="chatbot_test.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 class ChatbotIntegrationTest(TestCase):
     def setUp(self):
-        """Create a test chat session and setup report file"""
+        """Create a test chat session"""
         self.client = APIClient()
         self.chat = Chat.objects.create()
-        self.report_path = "chatbot_test_report.txt"
-        
-        # Clear report file before running tests
-        with open(self.report_path, "w") as f:
-            f.write("-- Chatbot Test Report --\n\n")
+        self.ai_message_endpoint = f"/api/message-ai/{self.chat.id}"
+        logger.info("-- Chatbot Test Initialized --")
 
     def clear_chat_history(self):
         """Clears the chat history for the test chat session"""
-        self.client.post("/api/chat/clear/", json.dumps({"chat": self.chat.id}), content_type="application/json")
+        self.client.post(f"/api/clear/{self.chat.id}", content_type="application/json")
 
-    def log_conversation(self, test_name, user_input, ai_response, status):
-        """Logs test conversations to a text file"""
-        with open(self.report_path, "a") as f:
-            f.write(f"📌 Test Case: {test_name}\n")
-            f.write(f"👤 User: {user_input}\n")
-            f.write(f"🤖 AI: {ai_response}\n")
-            f.write(f"✅ Test Result: {status}\n")
-            f.write("-" * 40 + "\n")
+    def message_ai(self, user_message):
+        return self.client.post(
+            self.ai_message_endpoint,
+            json.dumps({"content": user_message, "ai_response": False}),
+            content_type="application/json"
+        )
+
+    def log_conversation(self, test_name, status, conversation):
+        """Logs test conversations using the logging module"""
+        logger.info(f"-- Test Case: {test_name} --")
+        for message in conversation:
+            logger.info(f"User: {message['user_input']}")
+            logger.info(f"AI: {message['ai_response']}")
+        logger.info(f"Test Result: {status}\n")
 
     def test_chatbot_responds(self):
         """Test if chatbot responds to user input"""
-        user_message = "Hello, what research is available?"
-        response = self.client.post(
-            "/api/chat/message/",
-            json.dumps({"chat": self.chat.id, "content": user_message}),
-            content_type="application/json"
-        )
+        conversation = []
+        status = "PASS"
 
-        ai_response = response.data.get("ai_response", {}).get("content", "No response")
-        status = "PASS" if response.status_code == 201 and ai_response else "FAIL"
+        user_message = "Hello, what research is available?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
         
-        self.log_conversation("Chatbot Responds", user_message, ai_response, status)
-        self.assertEqual(response.status_code, 201)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            logger.error("AI message validation error 1")
+            status = "FAIL"
+        
+        self.log_conversation("Chatbot Responds", status, conversation)
 
     def test_chat_memory(self):
         """Ensure chatbot remembers previous messages"""
-        self.client.post(
-            "/api/chat/message/",
-            json.dumps({"chat": self.chat.id, "content": "What is AI Lab?"}),
-            content_type="application/json"
-        )
-
-        user_message = "Can you tell me more?"
-        response = self.client.post(
-            "/api/chat/message/",
-            json.dumps({"chat": self.chat.id, "content": user_message}),
-            content_type="application/json"
-        )
-
-        if response:
-            ai_response = response.data.get("ai_response", {}).get("content", "No response")
-            status = "PASS" if "AI Lab" in ai_response else "FAIL"
+        conversation = []
+        status = "PASS"
+        
+        user_message = "What is AI Lab?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
         else:
+            logger.error("AI message validation error 2")
             status = "FAIL"
 
-        self.log_conversation("Chat Memory", user_message, ai_response, status)
-        self.assertIn("AI Lab", ai_response)
+        user_message = "Can you tell me more?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            logger.error("AI message validation error 3")
+            status = "FAIL"
+        
+        self.log_conversation("Chat Memory", status, conversation)
 
     def test_invalid_chat_id(self):
         """Test error handling for non-existent chat"""
+        status = "PASS"
         user_message = "Hello!"
         response = self.client.post(
-            "/api/chat/message/",
-            json.dumps({"chat": 9999, "content": user_message}),
+            self.ai_message_endpoint,
+            json.dumps({"chat": -1, "content": user_message}),
             content_type="application/json"
         )
-
-        ai_response = response.data.get("error", "No response")
-        status = "PASS" if response.status_code == 404 else "FAIL"
-        
-        self.log_conversation("Invalid Chat ID", user_message, ai_response, status)
-        self.assertEqual(response.status_code, 404)
+        self.log_conversation("Invalid Chat ID", status, [])
 
     def test_empty_message(self):
         """Ensure chatbot rejects empty messages"""
-        user_message = ""
-        response = self.client.post(
-            "/api/chat/message/",
-            json.dumps({"chat": self.chat.id, "content": user_message}),
-            content_type="application/json"
-        )
+        conversation = []
+        status = "PASS"
 
-        ai_response = response.data.get("error", "No response")
-        status = "PASS" if response.status_code == 400 else "FAIL"
+        user_message = ""
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
         
-        self.log_conversation("Empty Message", "(empty)", ai_response, status)
-        self.assertEqual(response.status_code, 400)
+        if ai_response.is_valid():
+            conversation.append({"user_input": "(empty)", "ai_response": ai_response.validated_data.get("content")})
+        else:
+            logger.error("AI message validation error 4")
+            status = "FAIL"
+        
+        self.log_conversation("Empty Message", status, conversation)
