@@ -47,7 +47,7 @@ class Chat(models.Model):
         return str(self.id)
 
 class Message(models.Model):
-    content = models.CharField(max_length=500)
+    content = models.CharField(max_length=2000)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, blank=True, null=True)
     ai_response = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True, null=True)

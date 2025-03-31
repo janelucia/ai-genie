@@ -5,33 +5,37 @@ from .models import *
 from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 
-from langchain.agents import initialize_agent
-from langchain.memory import ConversationBufferMemory
-from langchain_ollama import OllamaLLM
-from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool
+from .ai_engine.memory import create_memory
+from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
+from .ai_engine.ai_genie import AIGenie
 
 #______________Initialize things on start______________ < ---- shall be moved somewhere else
 
-SYSTEM_PROMPT = """You are an AI assistant specialized in research retrieval and event analysis. 
-Be casual as you perform this roles for guests of AI Lab
-Use available tools to answer questions accurately. Maintain professionalism in responses. 
-Never put research titles in quotation.
-Always put action input in "" """
+# SYSTEM_PROMPT = """
+# You are an AI assistant specialized in research retrieval and event analysis. 
+# Be casual as you perform this roles for guests of AI Lab
+# AI Lab is part of Oslo Metropolitan University - OsloMet in short.
+# It performs research, holds events and gathers various researchers.
+# Be friendly and welcoming.
+# Use available tools to answer questions accurately. Maintain professionalism in responses. 
+# Enccourage user to ask more questions, ex. do you want to know details about that research?
+# """
 
 
-llm = OllamaLLM(model="mistral", temperature=0.7)  # Or use "deepseek"
+# llm = OllamaLLM(model="llama3.1", temperature=0)
 
-# Setup memory
-memory = ConversationBufferMemory(memory_key="chat_history",
-                                  return_messages=True)
+# # Setup memory
+# memory = ConversationBufferMemory(memory_key="chat_history",
+#                                   return_messages=True)
 
-tools = [FindResearcherTool(), FindEventTool(), FindResearchTool()]
-agent = initialize_agent(tools=tools, 
-                         llm=llm,
-                         memory=memory, 
-                         verbose=True,
-                         agent="chat-conversational-react-description",
-                         agent_kwargs={"system_message": SYSTEM_PROMPT})
+# tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), ListEventsTool(), ListResearchersTool(), ListResearchTool()]
+# agent = initialize_agent(tools=tools, 
+#                          llm=llm,
+#                          memory=memory, 
+#                          verbose=True,
+#                          agent="chat-conversational-react-description",
+#                          agent_kwargs={"system_message": SYSTEM_PROMPT}
+#                          )
 
 
 # Create your views here.
@@ -225,7 +229,7 @@ class ChatsEndpoint(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 class ChatByID(APIView):
     def get_object(self, id):
         try:
@@ -238,7 +242,7 @@ class ChatByID(APIView):
         chat = self.get_object(id)
         if chat:
             chat_serializer = ChatSerializer(chat)
-            messages = Message.objects.filter(chat=chat)
+            messages = Message.objects.filter(chat=chat).order_by("created")
             message_serializer = MessageSerializer(messages, many=True)
             return Response({
                 "chat": chat_serializer.data,
@@ -248,6 +252,16 @@ class ChatByID(APIView):
         return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
     
 #______________MESSAGES ENDPOINTS______________
+
+class ClearMessagesByChatID(APIView):
+    def delete(self, request, chat_id):
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        Message.objects.filter(chat=chat).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddMessageWithAIResponse(APIView):
     def post(self, request):
@@ -260,25 +274,25 @@ class AddMessageWithAIResponse(APIView):
         user_message_serializer = MessageSerializer(data=request.data)
 
         if user_message_serializer.is_valid():
-            user_message = user_message_serializer.save()
-            ai_response_content = agent.run(user_message.content)
-
+            user_message = user_message_serializer.validated_data
+            # AI stuff
+            memory = create_memory(chat_id)
+            ai_genie_agent = AIGenie(memory)
+            ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
             ai_message_data = {
                 "content": ai_response_content,
                 "chat": chat_id,
                 "ai_response": True
             }
+
             ai_message_serializer = MessageSerializer(data=ai_message_data)
 
+            # Saving both messages
+            user_message_serializer.save()
             if ai_message_serializer.is_valid():
-                ai_message_serializer.save()  # Save AI response
+                ai_message_serializer.save() 
 
-                return Response(
-                    {
-                        "user_message": user_message_serializer.data,
-                        "ai_response": ai_message_serializer.data
-                    },
-                    status=status.HTTP_201_CREATED
-                )
+                return Response({"ai_response": ai_message_serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(ai_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

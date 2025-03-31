@@ -1,7 +1,14 @@
 from langchain.tools import BaseTool
-from typing import Type
+from typing import Dict, Tuple, Type, Optional, Union
 from pydantic import BaseModel, Field
 from ..models import Researcher, Event, Research
+from rapidfuzz import process
+from app.ai_engine import consts
+
+
+class EmptyInput(BaseModel):
+    arg : str = Field(description="Should be empty")
+    pass
 
 #_________________RESEARCHERS TOOLS_________________
 
@@ -10,10 +17,10 @@ class FindResearcherInput(BaseModel):
 
 class FindResearcherTool(BaseTool):
     name : str = "FindResearcher"
-    description : str  = "Finds a researcher by name in the database."
+    description : str  = "Finds a researcher by firstname, surname or both in the database. Also used when user asks about research that the person performs"
     args_schema : Type[BaseModel] = FindResearcherInput
 
-    def _run(self, name: str):
+    def _run(self, name: str): # could be changed to include rapidfuzz
         name_parts = name.strip().split()
 
         if len(name_parts) == 2:
@@ -24,7 +31,27 @@ class FindResearcherTool(BaseTool):
 
         if not researchers.exists():
             return "No researcher found."
-        return [{"id": r.id, "name": f"{r.firstname} {r.surname}"} for r in researchers]
+        
+        result = []
+        for r in researchers:
+            research_names = [research.name for research in r.related_research.all()]
+            result.append({"name": f"{r.firstname} {r.surname}", "research": research_names})
+        
+        
+        return result
+    
+class ListResearchersTool(BaseTool):
+    name : str = "ListResearchers"
+    description : str = "Lists all researchers"
+    args_schema: Type[BaseModel] = EmptyInput
+
+    def _run(self, arg):
+        researchers = Researcher.objects.all()
+        if not researchers.exists():
+            return "No events are happening in the future."
+        
+        researchers_to_return = [f"{res.firstname} {res.surname}" for res in researchers]
+        return researchers_to_return
     
 #_________________EVENTS TOOLS_________________
 
@@ -37,25 +64,65 @@ class FindEventTool(BaseTool):
     args_schema : Type[BaseModel] = FindEventInput
 
     def _run(self, name: str):
-        events = Event.objects.filter(name__icontains=name)
-        if not events.exists():
-            return "No event found."
-        return [{"id": e.id, "name": e.name, "date": e.date} for e in events]
-    
+        name = name.strip("'")
+        events_list = Event.objects.all()
+        events_name_list =[event.name for event in events_list]
 
+        result = process.extractOne(name, events_name_list, score_cutoff=10)
+
+        if result is None:
+            return "No research found."
+
+        _, _, index = result
+        best_event = events_list[index]
+
+        return [{"name": best_event.name, "date": best_event.date}]
+    
+class ListEventsTool(BaseTool):
+    name : str = "ListEvents"
+    description : str = "Lists all events"
+    args_schema: Type[BaseModel] = EmptyInput
+
+    def _run(self, arg):
+        events = Event.objects.all().values("name", "date")
+        if not events.exists():
+            return "No events found."
+        
+        return events
+    
 #_________________RESEARCH TOOLS_________________
 
 class FindResearchInput(BaseModel):
-    name: str = Field(description="The name of the research paper")
+    title: str = Field(description="The title of the research paper without quotations")
 
 class FindResearchTool(BaseTool):
-    name : str  = "FindResearch"
-    description : str = "Finds research by name in the database."
-    args_schema : Type[BaseModel] = FindResearchInput
+    name: str = "FindResearch"
+    description: str = "Finds research by its title in the database, also used to find authors of the research."
+    args_schema: Type[BaseModel] = FindResearchInput
 
-    def _run(self, name: str):
-        research = Research.objects.filter(name__icontains=name)
-        if not research.exists():
+    def _run(self, title: str):
+        research_list = Research.objects.all()
+        research_titles = [research.name for research in research_list]
+
+        result = process.extractOne(title, research_titles, score_cutoff=10)
+    
+        if result is None:
             return "No research found."
-        return [{"id": r.id, "name": r.name, "summary": r.summary} for r in research]
 
+        _, _, index = result
+        best_research = research_list[index]
+        researchers = [f"{res.firstname} {res.surname}" for res in best_research.researchers.all()]
+
+        return [{"name": best_research.name, "summary": best_research.summary, "researchers": researchers}]
+
+class ListResearchTool(BaseTool):
+    name : str = "ListResearch"
+    description : str = "Lists all research"
+    args_schema: Type[BaseModel] = EmptyInput
+
+    def _run(self, arg):
+        research = Research.objects.all().values("name")
+        if not research.exists():
+            return "No research is being performed at the moment."
+        
+        return research

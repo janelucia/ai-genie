@@ -19,4 +19,5 @@ urlpatterns = [
     path('chats/<int:id>/', view = ChatByID.as_view()),
     # messages endpoints
     path('message-ai/', view = AddMessageWithAIResponse.as_view()),
+    path('clear/<int:chat_id>', view = ClearMessagesByChatID.as_view()),
 ]

@@ -1,6 +1,6 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-class VectorDatabaseController():
+class VectorDatabaseService():
     embeddings = None
     vectorstore = None
 
