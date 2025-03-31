@@ -1,19 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
-import Search from '../views/Search.vue'
+import Research from '../views/Research.vue'
 import Events from "../views/Events.vue";
 import Chat from "../views/Chat.vue";
-import Bookmarks from "../views/Bookmarks.vue";
+import Researchers from "../views/Researchers.vue";
 import NotFound from "../views/NotFound.vue";
 
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
-    { path: '/search', name: 'Search', component: Search },
+    { path: '/research', name: 'Research', component: Research },
     { path: '/chat', name: 'Chat', component: Chat },
     { path: '/events', name: 'Events', component: Events },
-    { path: '/bookmarks', name: 'Bookmarks', component: Bookmarks },
+    { path: '/researchers', name: 'Researchers', component: Researchers },
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
 ]
 

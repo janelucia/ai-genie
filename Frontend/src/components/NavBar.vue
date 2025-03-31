@@ -5,17 +5,16 @@
         <router-link to="/">Home</router-link>
       </li>
       <li>
-        <router-link to="/search">Search</router-link>
-      </li>
-      <li>
-        <router-link to="/chat">Chat</router-link>
-      </li>
-      <li>
         <router-link to="/events">Events</router-link>
       </li>
       <li>
-        <router-link to="/bookmarks">Bookmarks</router-link>
+        <router-link to="/research">Research</router-link>
+      </li>
+      <li>
+        <router-link to="/researchers">Researchers</router-link>
       </li>
     </ul>
   </nav>
 </template>
+<script setup lang="ts">
+</script>
