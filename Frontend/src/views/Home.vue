@@ -1,4 +1,6 @@
-<template><h1>Home Page</h1></template>
+<template>
+  <h1 class="">Home Page</h1>
+</template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
