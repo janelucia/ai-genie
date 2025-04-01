@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-7">
-    <h1 class="">Research</h1>
+    <Heading heading="h1" class="">Research</Heading>
     <Card
         card-image="https://http.cat/status/200.jpg"
         card-image-alt="Cats"
@@ -12,4 +12,5 @@
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
+import Heading from "../components/Heading.vue";
 </script>
