@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-7">
     <Heading heading="h1" class="">Events</Heading>
-    <Card
+    <Card v-for="event in result" :key="event.id"
         card-image="https://http.cat/status/200.jpg"
         card-image-alt="Cats"
-        card-title="Event A!"
-        card-text="This is a very nice event! It is very nice! Just like the other events! It is very nice! Just like the other events! It is very nice! Just like the other events! It is very nice! Just like the other events!"
+        :card-title="event.name"
+        :card-date="event.date"
         button-title="Sign up"
         vertical
     />
@@ -14,4 +14,23 @@
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import Heading from "../components/Heading.vue";
+import {ref, watch} from "vue";
+import {useApiFetch} from "../api/useApiFetch.ts";
+
+
+type Events = {
+  id: number;
+  name: string;
+  date: string;
+}
+
+const result = ref<Events[]>([]);
+
+const { data } = useApiFetch<Events[]>('events')
+
+watch(data, () => {
+  if (data.value) {
+    result.value = data.value
+  }
+})
 </script>

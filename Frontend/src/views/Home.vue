@@ -5,12 +5,5 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import {useApiFetch} from "../api/useApiFetch.ts";
 import Heading from "../components/Heading.vue";
-
-onMounted(async () => {
-  const { fetchData } = useApiFetch('research')
-  await fetchData()
-})
 </script>

@@ -1,5 +1,4 @@
-import type { Ref } from 'vue'
-import { ref } from 'vue'
+import {ref, type Ref} from "vue";
 
 export function useApiFetch<T = unknown>(endpoint: string) {
   const data: Ref<T | null> = ref(null)
@@ -9,7 +8,7 @@ export function useApiFetch<T = unknown>(endpoint: string) {
   const fetchData = async () => {
     loading.value = true
     try {
-      const response = await fetch(`http://localhost:8000${endpoint}`)
+      const response = await fetch(`http://localhost:8000/api/${endpoint}/`)
       if (!response.ok) throw new Error('Network response was not ok')
       data.value = await response.json()
     } catch (err: any) {
@@ -19,5 +18,8 @@ export function useApiFetch<T = unknown>(endpoint: string) {
     }
   }
 
-  return { data, error, loading, fetchData }
+  // Auto-fetch immediately
+  fetchData()
+
+  return { data, error, loading }
 }
