@@ -4,9 +4,9 @@
     <Card
         card-image="https://http.cat/status/200.jpg"
         card-image-alt="Cats"
-        card-title="Cats!"
-        card-text="Cats are great!"
-        button-title="Cuddle now"
+        card-title="Event A!"
+        card-text="This is a very nice event! It is very nice! Just like the other events! It is very nice! Just like the other events! It is very nice! Just like the other events! It is very nice! Just like the other events!"
+        button-title="Sign up"
         vertical
     />
   </div>
