@@ -294,3 +294,18 @@ class AddMessageWithAIResponse(APIView):
             return Response(ai_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+#______________FILES RETRIVAL______________
+class TestFileRetrivalOfDocuments(APIView):
+    def get_object(self, id):
+        try:
+            return Research.objects.get(id=id)
+        except Research.DoesNotExist:
+            return None
+    
+    def get(self, request, id):
+        research = self.get_object(id)
+        if research:
+            serializer = ResearchSerializer(research)
+            return Response(serializer.data)
+        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)

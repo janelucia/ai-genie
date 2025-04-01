@@ -12,7 +12,7 @@ class Event(models.Model):
 class Research(models.Model):
     name = models.CharField(max_length=100)
     summary = models.CharField(max_length=255)
-    source_file = models.FileField(upload_to='app/research_files/')
+    source_file = models.FileField(upload_to='research_files/')
 
     def __str__(self):
         return self.name
