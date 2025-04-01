@@ -40,6 +40,8 @@
 
 @theme {
     --font-roboto: "Roboto", sans-serif;
+    --spacing-in-sections: 16px;
+    --spacing-between-sections: 28px;
 }
 
 body {
