@@ -52,7 +52,6 @@ class ChatbotIntegrationTest(TestCase):
         if ai_response.is_valid():
             conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
         else:
-            logger.error("AI message validation error 1")
             status = "FAIL"
         
         self.log_conversation("Chatbot Responds", status, conversation)
@@ -68,7 +67,6 @@ class ChatbotIntegrationTest(TestCase):
         if ai_response.is_valid():
             conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
         else:
-            logger.error("AI message validation error 2")
             status = "FAIL"
 
         user_message = "Can you tell me more?"
@@ -77,7 +75,6 @@ class ChatbotIntegrationTest(TestCase):
         if ai_response.is_valid():
             conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
         else:
-            logger.error("AI message validation error 3")
             status = "FAIL"
         
         self.log_conversation("Chat Memory", status, conversation)
@@ -105,7 +102,6 @@ class ChatbotIntegrationTest(TestCase):
         if ai_response.is_valid():
             conversation.append({"user_input": "(empty)", "ai_response": ai_response.validated_data.get("content")})
         else:
-            logger.error("AI message validation error 4")
             status = "FAIL"
         
         self.log_conversation("Empty Message", status, conversation)
