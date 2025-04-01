@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-primary w-full flex justify-center rounded-tl-lg rounded-tr-lg fixed bottom-0 h-12 z-10">
+  <nav class="bg-primary w-full flex justify-center rounded-tl-lg rounded-tr-lg fixed bottom-0 z-10">
     <ul class="menu menu-horizontal flex-nowrap">
       <li>
         <router-link to="/">
