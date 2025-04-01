@@ -9,7 +9,15 @@ urlpatterns = [
     # researchers endpoints
     path('researchers/', view = ResearchersEndpoint.as_view()),
     path('researchers/<int:id>/', view = ResearcherByID.as_view()),
+    path('multi-edit-researchers/', view = MultiEditResearchers.as_view()),
     # events endpoints
     path('events/', view = EventsEndpoint.as_view()),
     path('events/<int:id>/', view = EventByID.as_view()),
+    path('multi-edit-events/', view = MultiEditEvents.as_view()),
+    # chats endpoints
+    path('chats/', view = ChatsEndpoint.as_view()),
+    path('chats/<int:id>/', view = ChatByID.as_view()),
+    # messages endpoints
+    path('message-ai/<int:chat_id>', view = AddMessageWithAIResponse.as_view()),
+    path('clear/<int:chat_id>', view = ClearMessagesByChatID.as_view()),
 ]

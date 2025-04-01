@@ -39,3 +39,18 @@ class Researcher(models.Model):
 
     def __str__(self) -> str:
         return (self.firstname + " " + self.surname)
+    
+class Chat(models.Model):
+    created = models.DateTimeField(auto_now_add = True, null = True)
+    
+    def __str__(self) -> str:
+        return str(self.id)
+
+class Message(models.Model):
+    content = models.CharField(max_length=2000)
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, blank=True, null=True)
+    ai_response = models.BooleanField()
+    created = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self) -> str:
+        return "chat: " + str(self.chat) + " | content: " + str(self.content)

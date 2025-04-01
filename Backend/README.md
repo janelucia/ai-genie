@@ -11,6 +11,21 @@ install dependencies:
     install requirements through 'pip install -r requirements.txt' command
 ```
 
+creating a database:
+```
+    go to core directory ('Backend/core')
+    type 'python manage.py makemigrations'
+    type 'python manage.py migrate'
+```
+
+to create an admin profile:
+```
+    go to core directory ('Backend/core')
+    type 'python manage.py createsuperuser'
+    follow instructions
+    admin panel is accessed at 'http://localhost:8000/admin'
+```
+
 start dev env:
 ```
     go to core directory ('Backend/core')

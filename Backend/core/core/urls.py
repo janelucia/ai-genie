@@ -30,7 +30,7 @@ sechema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('', include('app.urls')),
+    path('api/', include('app.urls')),
     path('admin/', admin.site.urls),
     path('documentation', sechema_view.with_ui('swagger', cache_timeout=0), name="swagger-schema")
 ]
