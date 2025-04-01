@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,3 +129,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Database files
+# https://docs.djangoproject.com/en/5.1/ref/models/fields/#django.db.models.FileField
+print("BASE_DIR LOOKS LIKE: " + str(BASE_DIR))
+
+MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'core/media')  # Root directory for media files
+
+RESEARCH_FILES_DIR = os.path.join(MEDIA_ROOT, 'research_files')
