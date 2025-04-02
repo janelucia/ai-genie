@@ -16,6 +16,7 @@
               <img
                   src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                   class="w-full object-cover"
+                  alt="Some avatar"
               />
             </div>
           </div>
