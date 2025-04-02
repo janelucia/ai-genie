@@ -41,7 +41,7 @@ class Researcher(models.Model):
     surname = models.CharField(max_length=60)
     related_research = models.ManyToManyField(
         Research,
-        related_name="researchers",
+        related_name="researchers_related",
         blank=True,
     )
     img = models.ImageField(upload_to='researchers_images/',blank=True)

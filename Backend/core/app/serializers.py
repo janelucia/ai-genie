@@ -6,15 +6,25 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = "__all__"
 
-class ResearchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Research
-        fields = "__all__"
-
 class ResearcherSerializer(serializers.ModelSerializer):
+    related_research = serializers.SerializerMethodField()
+
     class Meta:
         model = Researcher
-        fields = "__all__"
+        fields = ["id", "firstname", "surname", "img", "related_research"]
+    
+    def get_related_research(self, obj):
+        return list(obj.related_research.values("id", "name", "summary", "source_file"))
+
+class ResearchSerializer(serializers.ModelSerializer):
+    researchers_related = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Research
+        fields = ["id", "name", "summary", "source_file", "researchers_related"]
+    
+    def get_researchers_related(self, obj):
+        return list(obj.researchers_related.values("id", "firstname", "surname", "img"))
 
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +35,4 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = "__all__"
+
