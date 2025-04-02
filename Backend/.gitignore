@@ -176,3 +176,6 @@ cython_debug/
 .pypirc
 
 vector_db
+core/media/research_files
+core/media/researchers_images
+core/media/events_images
