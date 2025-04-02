@@ -16,13 +16,7 @@ import Card from "../components/Card.vue";
 import Heading from "../components/Heading.vue";
 import {ref, watch} from "vue";
 import {useApiFetch} from "../api/useApiFetch.ts";
-
-type Research = {
-  id: number;
-  name: string;
-  summary: string;
-  "source_file": string;
-}
+import type {Research} from "../types/types.ts";
 
 const result = ref<Research[]>([]);
 
