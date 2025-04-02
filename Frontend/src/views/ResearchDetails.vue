@@ -25,6 +25,11 @@
           </Text>
       </div>
     </div>
+    <div class="flex gap-[var(--spacing-in-sections)]">
+      <div class="badge badge-outline text-base-content badge-primary">Keyword 1</div>
+      <div class="badge badge-outline text-base-content badge-primary">Keyword 2</div>
+      <div class="badge badge-outline text-base-content badge-primary">Keyword 3</div>
+    </div>
   </div>
 </template>
 
