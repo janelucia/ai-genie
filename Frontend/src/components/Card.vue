@@ -8,10 +8,12 @@
     <div class="card-body p-0 gap-[var(--spacing-in-sections)]" :class="{'pr-[var(--spacing-in-sections)]': vertical}">
       <Heading heading="h2" class="card-title" :class="{'pl-4': !vertical}">{{cardTitle}}</Heading>
       <Text v-if="cardText" class=" line-clamp-3" :class="{'pl-4': !vertical}">{{cardText}}</Text>
-      <Text v-if="cardDate" class=" line-clamp-3" :class="{'pl-4': !vertical}">{{formattedDate}}</Text>
-      <Text v-if="cardDate" class=" line-clamp-3" :class="{'pl-4': !vertical}">{{formattedTime}}</Text>
+      <div v-if="cardDate" class="flex gap-[var(--spacing-in-sections)] items-center justify-center whitespace-nowrap">
+        <Text :class="{'pl-4': !vertical}">{{formattedDate}}</Text>
+        <Text :class="{'pl-4': !vertical}">{{formattedTime}}</Text>
+      </div>
       <div class="card-actions">
-        <button class="btn btn-primary w-full">
+        <button class="btn btn-primary w-full whitespace-nowrap" @click="router.push(link)">
           <Text button>{{buttonTitle}}</Text>
         </button>
       </div>
@@ -22,6 +24,7 @@
 import Text from "./Text.vue";
 import Heading from "./Heading.vue";
 import {computed} from "vue";
+import router from "../router";
 
 const props = defineProps<{
   cardImage: string
@@ -30,6 +33,7 @@ const props = defineProps<{
   cardText?: string
   cardDate?: string
   buttonTitle: string
+  link?: string
   vertical?: boolean
 }>()
 
