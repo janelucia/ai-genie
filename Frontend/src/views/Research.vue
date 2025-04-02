@@ -7,6 +7,7 @@
         :card-title="research.name"
         :card-text="research.summary"
         button-title="Learn more"
+        :link="'/research/' + research.id.toString()"
     />
   </div>
 </template>

@@ -6,6 +6,7 @@
         card-image-alt="Cats"
         :card-title="`${researcher.firstname} ${researcher.surname}`"
         button-title="Learn more"
+        :link="'/researchers/' + researcher.id.toString()"
         vertical
     />
   </div>

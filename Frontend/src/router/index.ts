@@ -6,14 +6,18 @@ import Events from "../views/Events.vue";
 import Chat from "../views/Chat.vue";
 import Researchers from "../views/Researchers.vue";
 import NotFound from "../views/NotFound.vue";
+import ResearchDetails from "../views/ResearchDetails.vue";
+import ResearcherDetails from "../views/ResearcherDetails.vue";
 
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
     { path: '/research', name: 'Research', component: Research },
+    { path: '/research/:id', name: 'ResearchDetails', component: ResearchDetails },
     { path: '/chat', name: 'Chat', component: Chat },
     { path: '/events', name: 'Events', component: Events },
     { path: '/researchers', name: 'Researchers', component: Researchers },
+    { path: '/researchers/:id', name: 'ResearcherDetails', component: ResearcherDetails },
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
 ]
 
