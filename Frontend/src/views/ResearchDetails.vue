@@ -48,7 +48,6 @@ import CollapseSection from "../components/CollapseSection.vue";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
-import Heading from "../components/Heading.vue";
 
 const route = useRoute();
 const id = route.params.id;
