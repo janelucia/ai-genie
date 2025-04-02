@@ -22,16 +22,16 @@
       </div>
     </div>
     <Text class="w-full">{{ result.summary }}</Text>
-    <div class="flex gap-[var(--spacing-in-sections)]">
-      <div class="badge badge-outline text-base-content badge-primary">Keyword 1</div>
-      <div class="badge badge-outline text-base-content badge-primary">Keyword 2</div>
-      <div class="badge badge-outline text-base-content badge-primary">Keyword 3</div>
-    </div>
+    <Keywords :keywords="keywords" />
     <CollapseSection collapse-title="Abstract">
-      This section is under construction!
+      <Text class="break-words break-all whitespace-pre-wrap">
+        This section is currently under construction!
+      </Text>
     </CollapseSection>
     <CollapseSection collapse-title="Paper">
-      {{result.source_file}}
+      <Text class="break-words break-all whitespace-pre-wrap">
+        {{result.source_file}}
+      </Text>
     </CollapseSection>
   </div>
 </template>
@@ -47,6 +47,8 @@ import type { Research, Researchers } from '../types/types.ts';
 import CollapseSection from "../components/CollapseSection.vue";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
+import Keywords from "../components/Keywords.vue";
+import Heading from "../components/Heading.vue";
 
 const route = useRoute();
 const id = route.params.id;
@@ -78,4 +80,10 @@ watch(researchersData, () => {
     );
   }
 });
+
+const keywords = [
+  "Keyword 1",
+  "Keyword 2",
+  "Keyword 3",
+]
 </script>
