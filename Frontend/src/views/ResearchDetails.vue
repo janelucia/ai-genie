@@ -1,35 +1,42 @@
 <template>
-  <div class="flex flex-col items-center justify-center gap-7 w-full overflow-hidden">
+  <div class="flex flex-col items-center justify-center gap-7 w-full">
     <Header :header-title="'Research ' + id" />
 
     <div
         v-if="relatedResearchers.length"
-        class="carousel overflow-x-auto space-x-4 max-w-screen-sm gap-[var(--spacing-in-sections)]"
+        class="carousel overflow-x-auto max-w-full px-4 space-x-4"
     >
       <div
           v-for="researcher in relatedResearchers"
           :key="researcher.id"
-          class="carousel-item m-0 shrink-0 flex flex-col items-center justify-center"
+          class="carousel-item w-24 shrink-0 flex flex-col items-center"
       >
-          <div class="avatar">
-            <div class="w-24 rounded-full">
+          <button class="avatar w-24"
+               @click="router.push(`/researchers/${researcher.id}`)"
+          >
               <img
                   src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  class="w-full object-cover"
+                  class="w-full object-cover rounded-full"
                   alt="Some avatar"
               />
-            </div>
-          </div>
+          </button>
           <Text small class="text-center">
             {{ researcher.firstname }} {{ researcher.surname }}
           </Text>
       </div>
     </div>
+    <Text class="w-full">{{ result.summary }}</Text>
     <div class="flex gap-[var(--spacing-in-sections)]">
       <div class="badge badge-outline text-base-content badge-primary">Keyword 1</div>
       <div class="badge badge-outline text-base-content badge-primary">Keyword 2</div>
       <div class="badge badge-outline text-base-content badge-primary">Keyword 3</div>
     </div>
+    <CollapseSection collapse-title="Abstract">
+      This section is under construction!
+    </CollapseSection>
+    <CollapseSection collapse-title="Paper">
+      {{result.source_file}}
+    </CollapseSection>
   </div>
 </template>
 
@@ -41,14 +48,22 @@ import { useApiFetch } from '../api/useApiFetch.ts';
 import Header from '../components/Header.vue';
 import Text from '../components/Text.vue';
 import type { Research, Researchers } from '../types/types.ts';
+import CollapseSection from "../components/CollapseSection.vue";
+import router from "../router";
 
 const route = useRoute();
 const id = route.params.id;
 
-const result = ref<Research[]>([]);
+const result = ref<Research>({
+  id: 0,
+  name: '',
+  summary: '',
+  "source_file": '',
+});
+
 const relatedResearchers = ref<Researchers[]>([]);
 
-const { data: researchData } = useApiFetch<Research[]>('research/' + id);
+const { data: researchData } = useApiFetch<Research>('research/' + id);
 const { data: researchersData } = useApiFetch<Researchers[]>('researchers');
 
 watch(researchData, () => {
