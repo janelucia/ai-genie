@@ -11,14 +11,10 @@
           :key="researcher.id"
           class="carousel-item w-24 shrink-0 flex flex-col items-center"
       >
-          <button class="avatar w-24"
-               @click="router.push(`/researchers/${researcher.id}`)"
+          <button
+                  @click="router.push(`/researchers/${researcher.id}`)"
           >
-              <img
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  class="w-full object-cover rounded-full"
-                  alt="Some avatar"
-              />
+              <Avatar class="w-24" />
           </button>
           <Text small class="text-center">
             {{ researcher.firstname }} {{ researcher.surname }}
@@ -50,6 +46,7 @@ import Text from '../components/Text.vue';
 import type { Research, Researchers } from '../types/types.ts';
 import CollapseSection from "../components/CollapseSection.vue";
 import router from "../router";
+import Avatar from "../components/Avatar.vue";
 
 const route = useRoute();
 const id = route.params.id;
