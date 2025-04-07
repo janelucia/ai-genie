@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col gap-7">
-    <Header :header-title="'Researcher ' + id"/>
+  <Header :header-title="'Researcher ' + id" back/>
+  <div class="pt-20 flex flex-col gap-7">
     <div class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]">
       <Avatar class="w-32"/>
-      <Heading heading="h2">
+      <Heading heading="h1">
         {{result.firstname}} {{result.surname}}
       </Heading>
     </div>

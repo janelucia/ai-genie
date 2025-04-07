@@ -1,7 +1,9 @@
 <template>
-  <div class="flex flex-col items-center justify-center gap-7 w-full">
-    <Header :header-title="'Research ' + id" />
-
+  <Header :header-title="'Research ' + id" back/>
+  <div class="pt-20 flex flex-col items-center justify-center gap-7 w-full">
+    <Heading heading="h1">
+      {{ result.name }}
+    </Heading>
     <div
         v-if="relatedResearchers.length"
         class="carousel overflow-x-auto max-w-full px-4 space-x-4"
@@ -48,6 +50,7 @@ import CollapseSection from "../components/CollapseSection.vue";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
+import Heading from "../components/Heading.vue";
 
 const route = useRoute();
 const id = route.params.id;
