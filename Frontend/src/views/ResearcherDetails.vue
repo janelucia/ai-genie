@@ -1,5 +1,5 @@
 <template>
-  <Header :header-title="'Researcher ' + id" back />
+  <Header :header-title="'Researcher ' + id" />
   <div class="pt-20 flex flex-col gap-7">
     <div
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"

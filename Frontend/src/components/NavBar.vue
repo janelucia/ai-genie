@@ -25,9 +25,7 @@
       </li>
     </ul>
   </nav>
-  <FloatChatButton />
 </template>
 <script setup lang="ts">
 import Text from "./Text.vue";
-import FloatChatButton from "./FloatChatButton.vue";
 </script>
