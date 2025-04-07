@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar/>
+    <NavBar />
     <main class="p-4 mb-14">
       <router-view />
     </main>
