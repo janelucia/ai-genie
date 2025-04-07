@@ -3,33 +3,30 @@
   <div
     class="pt-24 flex flex-col items-center justify-center gap-[var(--spacing-between-sections)]"
   >
-    <div class="flex justify-between gap-[var(--spacing-in-sections)] w-full">
-      <label class="input">
-        <svg
-          class="h-[1em] opacity-50"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
+    <label class="input w-full">
+      <svg
+        class="h-[1em] opacity-50"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <g
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          stroke-width="2.5"
+          fill="none"
+          stroke="currentColor"
         >
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2.5"
-            fill="none"
-            stroke="currentColor"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </g>
-        </svg>
-        <input
-          v-model="searchQuery"
-          type="search"
-          class="grow"
-          placeholder="Search"
-        />
-      </label>
-      <button class="btn btn-secondary">Filter</button>
-    </div>
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </g>
+      </svg>
+      <input
+        v-model="searchQuery"
+        type="search"
+        class="grow"
+        placeholder="Search"
+      />
+    </label>
     <Card
       v-for="research in filteredResults"
       :key="research.id"
@@ -51,6 +48,7 @@ import type { Research } from "../types/types.ts";
 import Header from "../components/Header.vue";
 import researchBanner from "../assets/img/research-paper-banner-ai.png";
 
+const searchQuery = ref("");
 const result = ref<Research[]>([]);
 
 const { data } = useApiFetch<Research[]>("research");
@@ -60,8 +58,6 @@ watch(data, () => {
     result.value = data.value;
   }
 });
-
-const searchQuery = ref("");
 
 const filteredResults = computed(() => {
   return result.value.filter(
