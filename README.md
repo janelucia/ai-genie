@@ -1,5 +1,5 @@
 <p style="display: flex; justify-content: center;">
-  <img src="Frontend/src/assets/img/Logo.png" alt="AIGenie Logo" width="400" style="border-radius: 12px;"/>
+  <img src="Frontend/src/assets/img/logo.png" alt="AIGenie Logo" width="400" style="border-radius: 12px;"/>
 </p>
 
 # AIGenie
