@@ -51,7 +51,17 @@
       <label class="fieldset-label">
         <Text small> Name </Text>
       </label>
-      <input v-model="name" type="text" class="input" placeholder="Name" />
+      <input
+        v-model="name"
+        type="text"
+        class="input"
+        placeholder="Name"
+        @blur="nameTouched = true"
+        :class="{
+          'input-error': nameTouched && !name,
+          'input-success': nameTouched && name,
+        }"
+      />
 
       <label class="fieldset-label">
         <Text small> Email </Text>
@@ -60,6 +70,10 @@
         v-model="email"
         type="email"
         class="input"
+        :class="{
+          'input-error': emailTouched && email && !isValidEmail,
+          'input-success': emailTouched && email && isValidEmail,
+        }"
         placeholder="Email"
         @blur="emailTouched = true"
       />
@@ -132,6 +146,7 @@ const email = ref("");
 const message = ref("Hi, I'd like to sign up for this event.");
 const submitted = ref(false);
 const emailTouched = ref(false);
+const nameTouched = ref(false);
 const showConfirmation = ref(false);
 
 if (localStorage.getItem(`signed-up-${id}`)) {
