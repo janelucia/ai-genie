@@ -1,10 +1,14 @@
 <template>
   <div class="card bg-base-100 w-full gap-[var(--spacing-in-sections)]" :class="{'card-side': vertical}">
-    <figure :class="{'h-28': !vertical}">
+    <figure :class="vertical ? 'w-28 overflow-hidden flex-shrink-0' : 'h-40 w-full overflow-hidden'">
       <img
           :src="cardImage"
-          :alt="cardImageAlt" />
+          :alt="cardImageAlt"
+          class="w-full h-full object-cover"
+      />
     </figure>
+
+
     <div class="card-body p-0 gap-[var(--spacing-in-sections)]" :class="{'pr-[var(--spacing-in-sections)]': vertical}">
       <Heading heading="h2" class="card-title" :class="{'pl-4': !vertical}">{{cardTitle}}</Heading>
       <Text v-if="cardText" class=" line-clamp-3" :class="{'pl-4': !vertical}">{{cardText}}</Text>
