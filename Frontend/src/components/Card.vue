@@ -26,8 +26,7 @@
       <Heading heading="h2" class="card-title" :class="{'pl-4': !vertical}">{{cardTitle}}</Heading>
       <Text v-if="cardText" class=" line-clamp-3" :class="{'pl-4': !vertical}">{{cardText}}</Text>
       <div v-if="cardDate" class="flex gap-[var(--spacing-in-sections)] items-center justify-center whitespace-nowrap">
-        <Text :class="{'pl-4': !vertical}">{{formattedDate}}</Text>
-        <Text :class="{'pl-4': !vertical}">{{formattedTime}}</Text>
+        <Text :class="{'pl-4': !vertical}"> 🗓️ {{formattedDate}}, {{formattedTime}}</Text>
       </div>
       <div class="card-actions">
         <button class="btn btn-primary w-full whitespace-nowrap" @click="router.push(link)">

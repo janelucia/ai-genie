@@ -7,7 +7,7 @@
         :card-title="`${researcher.firstname} ${researcher.surname}`"
         button-title="Learn more"
         :link="'/researchers/' + researcher.id.toString()"
-        card-text="This researcher is exceptional!"
+        card-text="This is a placeholder text for the researcher description. It should be replaced with the actual researcher description."
         vertical
     />
   </div>
