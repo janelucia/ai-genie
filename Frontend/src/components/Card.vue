@@ -1,13 +1,26 @@
 <template>
   <div class="card bg-base-100 w-full gap-[var(--spacing-in-sections)]" :class="{'card-side': vertical}">
-    <figure :class="vertical ? 'w-28 overflow-hidden flex-shrink-0' : 'h-40 w-full overflow-hidden'">
-      <img
-          :src="cardImage"
-          :alt="cardImageAlt"
-          class="w-full h-full object-cover"
-      />
-    </figure>
+    <figure :class="vertical ? 'w-28 flex-shrink-0' : 'h-40 w-full'">
+      <div class="relative w-full h-full rounded-lg">
+        <img
+            :src="cardImage"
+            :alt="cardImageAlt"
+            class="w-full h-full object-cover"
+        />
 
+        <div
+          v-if="tooltipText"
+          class="absolute bottom-2 right-2 tooltip tooltip-info tooltip-left"
+          :data-tip="tooltipText"
+        >
+          <button class="btn btn-xs btn-circle btn-info">
+            <Text>
+              i
+            </Text>
+          </button>
+        </div>
+      </div>
+    </figure>
 
     <div class="card-body p-0 gap-[var(--spacing-in-sections)]" :class="{'pr-[var(--spacing-in-sections)]': vertical}">
       <Heading heading="h2" class="card-title" :class="{'pl-4': !vertical}">{{cardTitle}}</Heading>
@@ -39,6 +52,7 @@ const props = defineProps<{
   cardDate?: string
   buttonTitle: string
   link?: string
+  tooltipText?: string
   vertical?: boolean
 }>()
 
