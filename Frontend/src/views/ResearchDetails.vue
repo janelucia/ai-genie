@@ -1,6 +1,6 @@
 <template>
   <Header :header-title="'Research ' + id" />
-  <div class="pt-20 flex flex-col items-center justify-center gap-7 w-full">
+  <div class="pt-24 flex flex-col items-center justify-center gap-7 w-full">
     <Heading heading="h1" class="text-center">
       {{ result.name }}
     </Heading>

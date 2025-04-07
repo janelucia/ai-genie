@@ -1,6 +1,6 @@
 <template>
   <Header headerTitle="Research" />
-  <div class="pt-20 flex flex-col items-center justify-center gap-7">
+  <div class="pt-24 flex flex-col items-center justify-center gap-7">
     <Card
       v-for="event in result"
       :key="event.id"
