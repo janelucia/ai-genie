@@ -1,8 +1,37 @@
 <template>
   <Header headerTitle="Research" />
-  <div class="pt-20 flex flex-col items-center justify-center gap-7">
+  <div
+    class="pt-24 flex flex-col items-center justify-center gap-[var(--spacing-between-sections)]"
+  >
+    <div class="flex justify-between gap-[var(--spacing-in-sections)] w-full">
+      <label class="input">
+        <svg
+          class="h-[1em] opacity-50"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input
+          v-model="searchQuery"
+          type="search"
+          class="grow"
+          placeholder="Search"
+        />
+      </label>
+      <button class="btn btn-secondary">Filter</button>
+    </div>
     <Card
-      v-for="research in result"
+      v-for="research in filteredResults"
       :key="research.id"
       :card-image="researchBanner"
       card-image-alt="Research Banner"
@@ -16,7 +45,7 @@
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Research } from "../types/types.ts";
 import Header from "../components/Header.vue";
@@ -30,5 +59,15 @@ watch(data, () => {
   if (data.value) {
     result.value = data.value;
   }
+});
+
+const searchQuery = ref("");
+
+const filteredResults = computed(() => {
+  return result.value.filter(
+    (research) =>
+      research.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      research.summary?.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  );
 });
 </script>
