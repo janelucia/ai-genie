@@ -1,9 +1,15 @@
 <template>
   <Header :header-title="'Research ' + id" back />
   <div class="pt-20 flex flex-col items-center justify-center gap-7 w-full">
-    <Heading heading="h1">
+    <Heading heading="h1" class="text-center">
       {{ result.name }}
     </Heading>
+    <PictureWithToolTip
+      :image="ResearchBanner"
+      image-alt="ResearchBanner"
+      tooltip-text="This image was created using AI and has no relation to the research."
+      picture-class="rounded"
+    />
     <div
       v-if="relatedResearchers.length"
       class="carousel overflow-x-auto max-w-full px-4 space-x-4"
@@ -48,6 +54,8 @@ import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
 import Heading from "../components/Heading.vue";
+import PictureWithToolTip from "../components/PictureWithToolTip.vue";
+import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 
 const route = useRoute();
 const id = route.params.id;
