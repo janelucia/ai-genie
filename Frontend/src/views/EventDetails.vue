@@ -111,7 +111,7 @@
       </button>
     </fieldset>
     <Alert v-if="showConfirmation" class="absolute top-0 right-0 m-4" success>
-      You have successfully signed up for the event!
+      <Text> You have successfully signed up for the event! </Text>
     </Alert>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h2"> Event Organizer </Heading>
