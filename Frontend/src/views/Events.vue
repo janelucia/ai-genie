@@ -7,6 +7,7 @@
         :card-title="event.name"
         :card-date="event.date"
         button-title="Sign up"
+        :link="`/events/${event.id}`"
         vertical
     />
   </div>
