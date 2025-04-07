@@ -25,6 +25,7 @@ import Text from "./Text.vue";
 import Heading from "./Heading.vue";
 import {computed} from "vue";
 import router from "../router";
+import {formatDate, formatTime} from "../utils/dateUtils.ts";
 
 const props = defineProps<{
   cardImage: string
@@ -39,21 +40,14 @@ const props = defineProps<{
 
 const formattedDate = computed(() => {
   if (props.cardDate) {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }).format(new Date(props.cardDate));
+    return formatDate(props.cardDate);
   }
   return '';
 });
 
 const formattedTime = computed(() => {
   if (props.cardDate) {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-    }).format(new Date(props.cardDate));
+    return formatTime(props.cardDate);
   }
   return '';
 });
