@@ -34,11 +34,13 @@
         This section is currently under construction!
       </Text>
     </CollapseSection>
-    <CollapseSection collapse-title="Paper">
-      <Text class="break-words break-all whitespace-pre-wrap">
-        {{ result.source_file }}
-      </Text>
-    </CollapseSection>
+    <a
+      :href="result.source_file"
+      download
+      class="btn btn-accent text-base-100 w-full"
+    >
+      Download Paper
+    </a>
   </div>
 </template>
 
