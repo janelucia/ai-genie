@@ -1,6 +1,7 @@
 <template>
   <Header headerTitle="Researchers" />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
+    <Heading heading="h1" class="text-center">Researchers</Heading>
     <label class="input w-full">
       <svg
         class="h-[1em] opacity-50"
@@ -44,6 +45,7 @@ import { computed, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Researchers } from "../types/types.ts";
 import Header from "../components/Header.vue";
+import Heading from "../components/Heading.vue";
 
 const searchQuery = ref("");
 const result = ref<Researchers[]>([]);

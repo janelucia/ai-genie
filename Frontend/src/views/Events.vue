@@ -1,6 +1,7 @@
 <template>
-  <Header headerTitle="Research" />
+  <Header />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
+    <Heading heading="h1" class="text-center"> Events </Heading>
     <div
       class="flex flex-col gap-[var(--spacing-in-sections)] items-end w-full"
     >
@@ -30,6 +31,7 @@ import Header from "../components/Header.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
 import Text from "../components/Text.vue";
+import Heading from "../components/Heading.vue";
 
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);

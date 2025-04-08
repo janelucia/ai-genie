@@ -3,6 +3,7 @@
   <div
     class="pt-24 flex flex-col items-center justify-center gap-[var(--spacing-between-sections)]"
   >
+    <Heading heading="h1" class="text-center">Research</Heading>
     <label class="input w-full">
       <svg
         class="h-[1em] opacity-50"
@@ -47,6 +48,7 @@ import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Research } from "../types/types.ts";
 import Header from "../components/Header.vue";
 import researchBanner from "../assets/img/research-paper-banner-ai.png";
+import Heading from "../components/Heading.vue";
 
 const searchQuery = ref("");
 const result = ref<Research[]>([]);
