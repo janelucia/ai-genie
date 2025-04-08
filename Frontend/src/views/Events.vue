@@ -1,6 +1,7 @@
 <template>
   <Header headerTitle="Research" />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
+    <Calendar />
     <Card
       v-for="event in result"
       :key="event.id"
@@ -22,6 +23,7 @@ import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Events } from "../types/types.ts";
 import Header from "../components/Header.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
+import Calendar from "../components/Calendar.vue";
 
 const result = ref<Events[]>([]);
 
