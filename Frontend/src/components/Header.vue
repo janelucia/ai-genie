@@ -6,7 +6,10 @@
       <Text>Back</Text>
     </button>
     <Text class="flex-grow text-center font-bold"> Oslo Met AI Lab </Text>
-    <FloatChatButton />
+    <div v-if="noChat" class="w-18"></div>
+    <router-link v-else to="/chat">
+      <FloatChatButton />
+    </router-link>
   </div>
 </template>
 <script setup lang="ts">
@@ -15,6 +18,6 @@ import Text from "./Text.vue";
 import FloatChatButton from "./FloatChatButton.vue";
 
 defineProps<{
-  headerTitle: string;
+  noChat?: boolean;
 }>();
 </script>

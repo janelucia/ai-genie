@@ -17,3 +17,9 @@ export type Research = {
   summary: string;
   source_file: string;
 };
+
+export type ChatMessage = {
+  text: string;
+  sender: "you" | "bot";
+  timestamp: string;
+};
