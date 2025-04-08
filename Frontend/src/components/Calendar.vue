@@ -1,6 +1,8 @@
 <template>
   <calendar-date
     class="cally bg-base-100 border border-base-300 shadow-lg rounded-box w-full text-lg"
+    ref="calendarRef"
+    @change="onDateChange"
   >
     <template v-slot:previous>
       <svg
@@ -29,4 +31,18 @@
 </template>
 <script setup lang="ts">
 import "cally";
+import { ref } from "vue";
+
+const calendarRef = ref();
+
+const emit = defineEmits<{
+  (e: "date-selected", date: string): void;
+}>();
+
+function onDateChange() {
+  const selectedDate = calendarRef.value?.value;
+  if (selectedDate) {
+    emit("date-selected", selectedDate);
+  }
+}
 </script>

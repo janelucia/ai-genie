@@ -1,9 +1,9 @@
 <template>
   <Header headerTitle="Research" />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
-    <Calendar />
+    <Calendar @date-selected="filterByDate" />
     <Card
-      v-for="event in result"
+      v-for="event in selectedDate ? filtered : result"
       :key="event.id"
       :card-image="EventBanner"
       card-image-alt="Event Banner"
@@ -26,6 +26,8 @@ import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
 
 const result = ref<Events[]>([]);
+const filtered = ref<Events[]>([]);
+const selectedDate = ref<string | null>(null);
 
 const { data } = useApiFetch<Events[]>("events");
 
@@ -34,4 +36,9 @@ watch(data, () => {
     result.value = data.value;
   }
 });
+
+function filterByDate(date: string) {
+  selectedDate.value = date;
+  filtered.value = result.value.filter((event) => event.date.startsWith(date));
+}
 </script>
