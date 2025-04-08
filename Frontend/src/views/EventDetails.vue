@@ -95,20 +95,31 @@
         placeholder="Message"
       ></textarea>
 
-      <button
-        class="btn mt-4"
-        :class="[
-          submitted
-            ? 'btn-disabled bg-gray-400 border-gray-400 cursor-not-allowed'
-            : !isValidEmail || !name || !message
-              ? 'btn-disabled opacity-50 cursor-not-allowed'
-              : 'btn-primary',
-        ]"
-        :disabled="submitted || !isValidEmail || !name || !message"
-        @click="handleSubmit"
+      <div
+        class="w-full flex items-center gap-[var(--spacing-in-sections)] pt-[var(--spacing-in-sections)]"
       >
-        {{ submitted ? "Already Signed Up" : "Sign Up" }}
-      </button>
+        <button
+          class="btn"
+          :class="[
+            submitted
+              ? 'btn-disabled bg-gray-400 border-gray-400 cursor-not-allowed flex-grow'
+              : !isValidEmail || !name || !message
+                ? 'btn-disabled opacity-50 cursor-not-allowed w-full'
+                : 'btn-primary w-full',
+          ]"
+          :disabled="submitted || !isValidEmail || !name || !message"
+          @click="handleSubmit"
+        >
+          {{ submitted ? "Already Signed Up" : "Sign Up" }}
+        </button>
+        <button
+          v-if="submitted"
+          class="btn btn-secondary"
+          @click="exportToICS(result.name, result.date)"
+        >
+          Export ICS
+        </button>
+      </div>
     </fieldset>
     <Alert v-if="showConfirmation" class="absolute top-0 right-0 m-4" success>
       <Text> You have successfully signed up for the event! </Text>
@@ -123,7 +134,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { useApiFetch } from "../api/useApiFetch.ts";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import type { Events } from "../types/types.ts";
 import Header from "../components/Header.vue";
 import Heading from "../components/Heading.vue";
@@ -132,6 +143,7 @@ import { formatDate, formatTime } from "../utils/dateUtils.ts";
 import Alert from "../components/Alert.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
+import { format } from "date-fns";
 
 const route = useRoute();
 const id = route.params.id;
@@ -194,4 +206,27 @@ function handleSubmit() {
   showConfirmation.value = true;
   setTimeout(() => (showConfirmation.value = false), 4000);
 }
+
+function exportToICS(
+  eventTitle: string,
+  eventStart: string,
+  eventEnd?: string,
+) {
+  const dtStart = format(new Date(eventStart), "yyyyMMdd'T'HHmmss");
+  const dtEnd = format(new Date(eventEnd || eventStart), "yyyyMMdd'T'HHmmss");
+
+  const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${eventTitle}\nDTSTART:${dtStart}\nDTEND:${dtEnd}\nEND:VEVENT\nEND:VCALENDAR`;
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${eventTitle.replace(/\s+/g, "_")}.ics`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
