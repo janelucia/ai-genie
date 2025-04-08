@@ -31,7 +31,11 @@
 </template>
 <script setup lang="ts">
 import "cally";
-import { ref } from "vue";
+import { ref, watch } from "vue";
+
+const props = defineProps<{
+  selectedDate?: string | null;
+}>();
 
 const calendarRef = ref();
 
@@ -45,4 +49,13 @@ function onDateChange() {
     emit("date-selected", selectedDate);
   }
 }
+
+watch(
+  () => props.selectedDate,
+  (newDate) => {
+    if (!newDate && calendarRef.value) {
+      calendarRef.value.value = "";
+    }
+  },
+);
 </script>

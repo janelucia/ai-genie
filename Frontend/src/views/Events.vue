@@ -1,7 +1,12 @@
 <template>
   <Header headerTitle="Research" />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
-    <Calendar @date-selected="filterByDate" />
+    <div
+      class="flex flex-col gap-[var(--spacing-in-sections)] items-end w-full"
+    >
+      <Text v-if="selectedDate" @click="clearSelectedDate">Remove Filter</Text>
+      <Calendar @date-selected="filterByDate" :selected-date="selectedDate" />
+    </div>
     <Card
       v-for="event in selectedDate ? filtered : result"
       :key="event.id"
@@ -24,6 +29,7 @@ import type { Events } from "../types/types.ts";
 import Header from "../components/Header.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
+import Text from "../components/Text.vue";
 
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);
@@ -40,5 +46,10 @@ watch(data, () => {
 function filterByDate(date: string) {
   selectedDate.value = date;
   filtered.value = result.value.filter((event) => event.date.startsWith(date));
+}
+
+function clearSelectedDate() {
+  selectedDate.value = null;
+  filtered.value = [];
 }
 </script>
