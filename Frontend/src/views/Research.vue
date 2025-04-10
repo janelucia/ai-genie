@@ -31,7 +31,7 @@
     <Card
       v-for="research in filteredResults"
       :key="research.id"
-      :card-image="researchBanner"
+      :card-image="ResearchBanner"
       card-image-alt="Research Banner"
       :card-title="research.name"
       :card-text="research.summary"
@@ -47,7 +47,7 @@ import { computed, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Research } from "../types/types.ts";
 import Header from "../components/Header.vue";
-import researchBanner from "../assets/img/research-paper-banner-ai.png";
+import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import Heading from "../components/Heading.vue";
 
 const searchQuery = ref("");

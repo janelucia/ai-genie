@@ -20,9 +20,11 @@
         v-for="research in relatedResearch"
         :key="research.id"
         button-title="Learn more"
-        card-image=""
-        card-image-alt=""
+        :card-image="ResearchBanner"
+        card-image-alt="Research Paper Banner"
         :card-title="research.name"
+        :card-text="research.summary"
+        :link="'/research/' + research.id.toString()"
       />
     </CollapseSection>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -52,6 +54,7 @@ import Keywords from "../components/Keywords.vue";
 import CollapseSection from "../components/CollapseSection.vue";
 import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
+import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 
 const route = useRoute();
 const id = route.params.id;
