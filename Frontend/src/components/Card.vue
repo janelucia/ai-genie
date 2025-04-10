@@ -34,6 +34,7 @@
       <div class="card-actions">
         <button
           class="btn btn-primary w-full whitespace-nowrap"
+          :class="buttonClass"
           @click="router.push(link)"
         >
           <Text button>{{ buttonTitle }}</Text>
@@ -57,6 +58,7 @@ const props = defineProps<{
   cardText?: string;
   cardDate?: string;
   buttonTitle: string;
+  buttonClass?: string;
   link?: string;
   tooltipText?: string;
   vertical?: boolean;
