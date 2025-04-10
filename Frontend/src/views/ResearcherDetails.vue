@@ -34,10 +34,12 @@
         <Text>Office 2.01</Text>
       </div>
       <div class="w-full flex gap-[var(--spacing-in-sections)]">
-        <button class="btn btn-secondary flex-grow">
-          <Text button>Contact</Text>
+        <a class="btn btn-secondary flex-grow" :href="'mailto:' + email">
+          <Text button>Contact via E-Mail</Text>
+        </a>
+        <button v-if="linkedIn" class="btn btn-outline btn-secondary">
+          LinkedIn
         </button>
-        <button class="btn btn-outline btn-secondary">LinkedIn</button>
       </div>
     </div>
   </div>
@@ -67,6 +69,12 @@ const result = ref<Researchers>({
 });
 
 const relatedResearch = ref<Research[]>([]);
+
+// TODO: change this when a researcher has an email
+const email = "someEmail@gmail.com";
+
+// TODO: change this when a researcher has a linkedIn
+const linkedIn = true;
 
 const { data: researchersData } = useApiFetch<Researchers>("researchers/" + id);
 const { data: researchData } = useApiFetch<Research[]>("research");
