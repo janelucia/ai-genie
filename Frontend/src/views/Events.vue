@@ -2,12 +2,17 @@
   <Header />
   <div class="pt-24 flex flex-col items-center justify-center gap-7">
     <Heading heading="h1" class="text-center"> Events </Heading>
-    <div
-      class="flex flex-col gap-[var(--spacing-in-sections)] items-end w-full"
-    >
-      <Text v-if="selectedDate" @click="clearSelectedDate">Remove Filter</Text>
-      <Calendar @date-selected="filterByDate" :selected-date="selectedDate" />
-    </div>
+    <CollapseSection collapse-title="Filter by Date" open>
+      <div
+        class="flex flex-col gap-[var(--spacing-in-sections)] items-end w-full"
+      >
+        <Text v-if="selectedDate" @click="clearSelectedDate"
+          >Remove Filter</Text
+        >
+        <Calendar @date-selected="filterByDate" :selected-date="selectedDate" />
+      </div>
+    </CollapseSection>
+
     <Card
       v-for="event in selectedDate ? filtered : result"
       :key="event.id"
@@ -37,6 +42,7 @@ import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
 import Text from "../components/Text.vue";
 import Heading from "../components/Heading.vue";
+import CollapseSection from "../components/CollapseSection.vue";
 
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);

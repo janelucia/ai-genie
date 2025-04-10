@@ -1,5 +1,5 @@
 <template>
-  <details class="collapse collapse-plus">
+  <details class="collapse collapse-plus" :open="open">
     <summary class="collapse-title pl-0">
       <Heading heading="h3">{{ collapseTitle }}</Heading>
     </summary>
@@ -13,5 +13,6 @@ import Heading from "./Heading.vue";
 
 defineProps<{
   collapseTitle: string;
+  open?: boolean;
 }>();
 </script>
