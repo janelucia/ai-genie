@@ -85,8 +85,6 @@ watch(researchersData, () => {
   }
 });
 
-console.log(result.value);
-
 watch(researchData, () => {
   if (researchData.value) {
     relatedResearch.value = researchData.value.filter(
