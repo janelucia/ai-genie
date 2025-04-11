@@ -111,7 +111,7 @@ class FindResearchTool(BaseTool):
 
         _, _, index = result
         best_research = research_list[index]
-        researchers = [f"{res.firstname} {res.surname}" for res in best_research.researchers.all()]
+        researchers = [f"{res.firstname} {res.surname}" for res in best_research.researchers_related.all()]
 
         return [{"name": best_research.name, "summary": best_research.summary, "researchers": researchers}]
 
@@ -126,3 +126,14 @@ class ListResearchTool(BaseTool):
             return "No research is being performed at the moment."
         
         return research
+    
+class ResearchDetailsInput(BaseModel):
+    context : str = Field(description="User question and tile of the research the question asks about")
+
+class ResearchDetailsTool(BaseTool):
+    name : str = "GetDetails"
+    description : str = "Answers question about content of the research papers"
+    args_schema : Type[BaseModel]
+
+    def _run(self, context):
+        pass

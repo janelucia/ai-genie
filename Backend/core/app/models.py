@@ -5,9 +5,17 @@ import os
 class Event(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
+    img = models.ImageField(upload_to='events_images/', blank=True)
 
     def __str__(self):
         return self.name
+    
+    def delete(self, *args, **kwargs):
+        """Delete the file from storage when the object is deleted"""
+        if self.img:
+            if os.path.isfile(self.img.path):
+                os.remove(self.img.path)
+        super().delete(*args, **kwargs)
 
 class Research(models.Model):
     name = models.CharField(max_length=100)
@@ -33,13 +41,21 @@ class Researcher(models.Model):
     surname = models.CharField(max_length=60)
     related_research = models.ManyToManyField(
         Research,
-        related_name="researchers",
+        related_name="researchers_related",
         blank=True,
     )
+    img = models.ImageField(upload_to='researchers_images/',blank=True)
 
     def __str__(self) -> str:
         return (self.firstname + " " + self.surname)
     
+    def delete(self, *args, **kwargs):
+        """Delete the file from storage when the object is deleted"""
+        if self.img:
+            if os.path.isfile(self.img.path):
+                os.remove(self.img.path)
+        super().delete(*args, **kwargs)
+
 class Chat(models.Model):
     created = models.DateTimeField(auto_now_add = True, null = True)
     

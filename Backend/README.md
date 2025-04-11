@@ -26,6 +26,12 @@ to create an admin profile:
     admin panel is accessed at 'http://localhost:8000/admin'
 ```
 
+loading a mock_db.json:
+```
+    go to core directory ('Backend/core')
+    type 'python manage.py loaddata mock_db.json'
+```
+
 start dev env:
 ```
     go to core directory ('Backend/core')

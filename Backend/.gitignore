@@ -176,6 +176,8 @@ cython_debug/
 .pypirc
 
 vector_db
-
-app/migrations/
-!migrations/__init__.py
+research_files/
+researchers_images/
+events_images/
+migrations/
+!__init__.py

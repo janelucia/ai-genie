@@ -11,17 +11,6 @@ from .ai_engine.ai_genie import AIGenie
 
 #______________Initialize things on start______________ < ---- shall be moved somewhere else
 
-# SYSTEM_PROMPT = """
-# You are an AI assistant specialized in research retrieval and event analysis. 
-# Be casual as you perform this roles for guests of AI Lab
-# AI Lab is part of Oslo Metropolitan University - OsloMet in short.
-# It performs research, holds events and gathers various researchers.
-# Be friendly and welcoming.
-# Use available tools to answer questions accurately. Maintain professionalism in responses. 
-# Enccourage user to ask more questions, ex. do you want to know details about that research?
-# """
-
-
 # llm = OllamaLLM(model="llama3.1", temperature=0)
 
 # # Setup memory
@@ -106,7 +95,7 @@ class EventByID(APIView):
 class ResearchEndpoint(APIView):
     def get(self, request):
         '''Lists all the research'''
-        research = Research.objects.all()
+        research = Research.objects.prefetch_related('researchers_related').all()
         serializer = ResearchSerializer(research, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -124,7 +113,7 @@ class ResearchEndpoint(APIView):
 class ResearchByID(APIView):
     def get_object(self, id):
         try:
-            return Research.objects.get(id=id)
+            return Research.objects.prefetch_related('researchers_related').get(id=id)
         except Research.DoesNotExist:
             return None
     
@@ -158,7 +147,7 @@ class ResearchByID(APIView):
 class ResearchersEndpoint(APIView):
     def get(self, request):
         '''Lists all the researchers'''
-        researchers = Researcher.objects.all()
+        researchers = Researcher.objects.prefetch_related('related_research').all()
         serializer = ResearcherSerializer(researchers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -264,12 +253,15 @@ class ClearMessagesByChatID(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddMessageWithAIResponse(APIView):
+    @swagger_auto_schema(request_body=MessageSerializer)
     def post(self, request, chat_id):
         # Check if the chat exists
         if not Chat.objects.filter(id=chat_id).exists():
             return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        user_message_serializer = MessageSerializer(data=request.data)
+        data = request.data.copy()
+        data['chat'] = chat_id
+        user_message_serializer = MessageSerializer(data=data)
 
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.validated_data
