@@ -18,8 +18,18 @@ export type Research = {
   source_file: string;
 };
 
-export type ChatMessage = {
-  text: string;
-  sender: "you" | "bot";
-  timestamp: string;
+export type Chat = {
+  chat: {
+    id?: number;
+    created?: Date;
+  };
+  messages: Message[];
+};
+
+export type Message = {
+  id?: number;
+  content: string;
+  ai_response: boolean;
+  created?: Date;
+  chat?: number;
 };

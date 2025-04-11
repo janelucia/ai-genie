@@ -11,18 +11,17 @@
       <div
         :class="[
           'p-2 rounded w-fit',
-          msg.sender === 'you'
-            ? 'bg-primary text-primary-content self-end'
-            : 'bg-base-300 self-start',
+          msg.ai_response
+            ? 'bg-base-300 self-start'
+            : 'bg-primary text-primary-content self-end',
         ]"
       >
         <Text>
-          {{ msg.text }}
+          {{ msg.content }}
         </Text>
       </div>
-      <Text :class="msg.sender === 'you' ? 'self-end' : 'self-start'" small
-        >{{ msg.sender }} - {{ formatDate(msg.timestamp) }},
-        {{ formatTime(msg.timestamp) }}
+      <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
+        {{ msg.ai_response ? "AI" : "You" }}
       </Text>
     </div>
   </div>
@@ -38,51 +37,100 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import type { ChatMessage } from "../types/types.ts";
+import type { Chat, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
+import { useApiFetch } from "../api/useApiFetch.ts";
 
-const messages = ref<ChatMessage[]>([]);
 const input = ref("");
+const result = ref<Chat | null>(null);
+const messages = ref<Message[]>([]);
 
-const LOCAL_STORAGE_KEY = "my-chat-history";
+const LOCAL_STORAGE_KEY = "chat-id";
 
-function sendMessage() {
-  if (!input.value.trim()) return;
+const sendMessage = async () => {
+  const content = input.value.trim();
+  if (!content) return;
 
-  const userMessage: ChatMessage = {
-    text: input.value,
-    sender: "you",
-    timestamp: new Date().toISOString(),
+  const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!chatId) return;
+
+  const userMessage: Message = {
+    content,
+    ai_response: false,
   };
 
   messages.value.push(userMessage);
-
-  // Bot response simulation
-  setTimeout(() => {
-    messages.value.push({
-      text: `Echo: ${input.value}`,
-      sender: "bot",
-      timestamp: new Date().toISOString(),
-    });
-  }, 500);
-
   input.value = "";
-}
+
+  const resp = await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content: userMessage.content,
+      ai_response: userMessage.ai_response,
+    }),
+  });
+
+  const data = await resp.json();
+
+  console.log(data);
+};
+
+onMounted(async () => {
+  const id = localStorage.getItem(LOCAL_STORAGE_KEY);
+  messages.value = [];
+
+  if (id) {
+    const { data } = useApiFetch<Chat>("chats/" + id);
+
+    const waitForData = () =>
+      new Promise<void>((resolve) => {
+        const interval = setInterval(() => {
+          if (data.value) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
+      });
+
+    await waitForData();
+
+    if (data.value) {
+      result.value = data.value;
+      messages.value = data.value.messages;
+    }
+  } else {
+    const response = await fetch("http://localhost:8000/api/chats/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    result.value = data;
+
+    if (data?.id) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, data.id);
+    }
+  }
+});
 
 watch(
-  messages,
-  () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(messages.value));
+  () => result.value,
+  async (chat) => {
+    if (chat?.chat?.id) {
+      const { data } = useApiFetch<Chat>("chats/" + chat.chat.id);
+
+      if (data.value?.messages?.length > messages.value.length) {
+        messages.value = data.value.messages;
+      }
+    }
   },
   { deep: true },
 );
-
-onMounted(() => {
-  const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (saved) {
-    messages.value = JSON.parse(saved);
-  }
-});
 </script>
