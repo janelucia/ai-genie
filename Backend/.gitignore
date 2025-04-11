@@ -181,3 +181,6 @@ researchers_images/
 events_images/
 migrations/
 !__init__.py
+
+NumericalMethodsResearchPaper.pdf
+rector.pdf

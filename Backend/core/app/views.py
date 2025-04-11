@@ -253,12 +253,15 @@ class ClearMessagesByChatID(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddMessageWithAIResponse(APIView):
+    @swagger_auto_schema(request_body=MessageSerializer)
     def post(self, request, chat_id):
         # Check if the chat exists
         if not Chat.objects.filter(id=chat_id).exists():
             return Response({"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        user_message_serializer = MessageSerializer(data=request.data)
+        data = request.data.copy()
+        data['chat'] = chat_id
+        user_message_serializer = MessageSerializer(data=data)
 
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.validated_data

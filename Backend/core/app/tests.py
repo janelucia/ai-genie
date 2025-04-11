@@ -44,6 +44,7 @@ class ChatbotIntegrationTest(TestCase):
         """Test if chatbot responds to user input"""
         conversation = []
         status = "PASS"
+        self.clear_chat_history()
 
         user_message = "Hello, what research is available?"
         response = self.message_ai(user_message)
@@ -60,6 +61,7 @@ class ChatbotIntegrationTest(TestCase):
         """Ensure chatbot remembers previous messages"""
         conversation = []
         status = "PASS"
+        self.clear_chat_history()
         
         user_message = "What is AI Lab?"
         response = self.message_ai(user_message)
@@ -78,6 +80,62 @@ class ChatbotIntegrationTest(TestCase):
             status = "FAIL"
         
         self.log_conversation("Chat Memory", status, conversation)
+
+    def test_ask_about_researcher(self):
+        """Tests if chatbot can find researcher based on the exact name"""
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+        
+        user_message = "Who is Mia Martin?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            status = "FAIL"
+
+        self.log_conversation("Ask Abt Researcher", status, conversation)
+
+    def test_ask_about_researcher_wrong_name(self):
+        """Tests if chatbot can find researcher based on the misspealed name"""
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+        
+        user_message = "Who is Mio Marton?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            status = "FAIL"
+
+        self.log_conversation("Misspealled Researcher", status, conversation)
+
+    def test_ask_about_researcher_from_memory(self):
+        """Tests if chatbot can find information about researcher from memory context"""
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+        
+        user_message = "Could you tell me what researchers there are at OsloMet?"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            status = "FAIL"
+
+        user_message = "I want to know more about Emily"
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
+        else:
+            status = "FAIL"
+
+        self.log_conversation("Ask Abt Researcher Memory", status, conversation)
 
     def test_invalid_chat_id(self):
         """Test error handling for non-existent chat"""
