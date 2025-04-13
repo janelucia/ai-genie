@@ -1,21 +1,24 @@
 export type Researchers = {
-  id: number;
+  id?: number;
   firstname: string;
   surname: string;
-  related_research: number;
+  img?: string;
+  related_research?: string;
 };
 
 export type Events = {
-  id: number;
+  id?: number;
   name: string;
   date: string;
+  img?: string;
 };
 
 export type Research = {
-  id: number;
+  id?: number;
   name: string;
   summary: string;
-  source_file: string;
+  source_file?: string;
+  researchers_related?: string;
 };
 
 export type Chat = {

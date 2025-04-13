@@ -1,7 +1,7 @@
 <template>
   <Header no-chat />
   <div
-    class="pt-24 flex flex-col w-full max-w-md mx-auto gap-[var(--spacing-between-sections)]"
+    class="pt-24 py-24 flex flex-col w-full max-w-md mx-auto gap-[var(--spacing-between-sections)]"
   >
     <div
       v-for="(msg, i) in messages"
@@ -21,7 +21,8 @@
         </Text>
       </div>
       <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
-        {{ msg.ai_response ? "AI" : "You" }}
+        {{ msg.ai_response ? "AI" : "You" }} - {{ formatDate(msg.created) }}
+        {{ formatTime(msg.created) }}
       </Text>
     </div>
   </div>
@@ -35,6 +36,7 @@
     <button class="btn btn-primary" @click="sendMessage">Send</button>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import type { Chat, Message } from "../types/types.ts";
@@ -59,6 +61,7 @@ const sendMessage = async () => {
   const userMessage: Message = {
     content,
     ai_response: false,
+    created: new Date(),
   };
 
   messages.value.push(userMessage);

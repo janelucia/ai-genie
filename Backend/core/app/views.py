@@ -266,24 +266,21 @@ class AddMessageWithAIResponse(APIView):
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.validated_data
             # AI stuff
-            memory = create_memory(chat_id)
-            ai_genie_agent = AIGenie(memory)
-            ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
-            ai_message_data = {
-                "content": ai_response_content,
-                "chat": chat_id,
-                "ai_response": True
-            }
+#             memory = create_memory(chat_id)
+#             ai_genie_agent = AIGenie(memory)
+#             ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
+#             ai_message_data = {
+#                 "content": ai_response_content,
+#                 "chat": chat_id,
+#                 "ai_response": True
+#             }
 
             # Switch to Echo functionality if you don't have AI
-            # memory = create_memory(chat_id)
-            # ai_genie_agent = AIGenie(memory)
-            # ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
-            # ai_message_data = {
-            #                "content": "Echo: " + user_message['content'],
-            #               "chat": chat_id,
-            #              "ai_response": True
-            #         }
+            ai_message_data = {
+                           "content": "Echo: " + user_message['content'],
+                          "chat": chat_id,
+                         "ai_response": True
+                    }
 
             ai_message_serializer = MessageSerializer(data=ai_message_data)
 
