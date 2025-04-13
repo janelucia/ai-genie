@@ -1,8 +1,6 @@
 <template>
   <Header no-chat />
-  <div
-    class="pt-24 py-24 flex flex-col w-full max-w-md mx-auto gap-[var(--spacing-between-sections)] overflow-hidden"
-  >
+  <div class="overflow-y-auto max-h-[90vh]">
     <div
       v-for="(msg, i) in messages"
       :key="i"
@@ -28,7 +26,7 @@
     <div v-if="isLoading" class="self-start text-sm text-gray-500">
       AI is typing…
     </div>
-    <div id="bottomRef"></div>
+    <div id="bottomRef" class="h-14"></div>
   </div>
   <div class="flex w-full gap-2 fixed bottom-14 left-0 p-4 bg-base-100">
     <input
@@ -42,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import type { Chat, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
@@ -57,10 +55,10 @@ const LOCAL_STORAGE_KEY = "chat-id";
 
 const isLoading = ref(false);
 
-const scrollToBottom = () => {
+const scrollToBottom = (behavior: string) => {
   const bottomRef = document.getElementById("bottomRef");
   if (bottomRef) {
-    bottomRef.scrollIntoView({ behavior: "smooth" });
+    bottomRef.scrollIntoView({ behavior });
   }
 };
 
@@ -80,7 +78,9 @@ const sendMessage = async () => {
   messages.value.push(userMessage);
   input.value = "";
   isLoading.value = true;
-  scrollToBottom();
+
+  await nextTick();
+  scrollToBottom("smooth");
 
   try {
     await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
@@ -115,7 +115,7 @@ const sendMessage = async () => {
     console.error("Error during message send or AI response wait:", err);
   } finally {
     isLoading.value = false;
-    scrollToBottom();
+    scrollToBottom("smooth");
   }
 };
 
@@ -142,6 +142,9 @@ onMounted(async () => {
       result.value = data.value;
       messages.value = data.value.messages;
     }
+
+    await nextTick();
+    scrollToBottom("instant");
   } else {
     const response = await fetch("http://localhost:8000/api/chats/", {
       method: "POST",
