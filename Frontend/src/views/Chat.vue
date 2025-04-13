@@ -1,7 +1,7 @@
 <template>
   <Header no-chat />
   <div
-    class="pt-24 py-24 flex flex-col w-full max-w-md mx-auto gap-[var(--spacing-between-sections)]"
+    class="pt-24 py-24 flex flex-col w-full max-w-md mx-auto gap-[var(--spacing-between-sections)] overflow-hidden"
   >
     <div
       v-for="(msg, i) in messages"
@@ -25,6 +25,10 @@
         {{ formatTime(msg.created) }}
       </Text>
     </div>
+    <div v-if="isLoading" class="self-start text-sm text-gray-500">
+      AI is typing…
+    </div>
+    <div id="bottomRef"></div>
   </div>
   <div class="flex w-full gap-2 fixed bottom-14 left-0 p-4 bg-base-100">
     <input
@@ -51,6 +55,15 @@ const messages = ref<Message[]>([]);
 
 const LOCAL_STORAGE_KEY = "chat-id";
 
+const isLoading = ref(false);
+
+const scrollToBottom = () => {
+  const bottomRef = document.getElementById("bottomRef");
+  if (bottomRef) {
+    bottomRef.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
 const sendMessage = async () => {
   const content = input.value.trim();
   if (!content) return;
@@ -66,21 +79,44 @@ const sendMessage = async () => {
 
   messages.value.push(userMessage);
   input.value = "";
+  isLoading.value = true;
+  scrollToBottom();
 
-  const resp = await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      content: userMessage.content,
-      ai_response: userMessage.ai_response,
-    }),
-  });
+  try {
+    await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userMessage),
+    });
 
-  const data = await resp.json();
+    const waitForAIResponse = async () => {
+      const MAX_TRIES = 30;
+      const DELAY_MS = 1000;
+      let tries = 0;
 
-  console.log(data);
+      while (tries < MAX_TRIES) {
+        const { data } = useApiFetch<Chat>("chats/" + chatId);
+        await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+        tries++;
+
+        if (data.value?.messages?.length > messages.value.length) {
+          messages.value = data.value.messages;
+          return;
+        }
+      }
+
+      console.warn("AI response timeout");
+    };
+
+    await waitForAIResponse();
+  } catch (err) {
+    console.error("Error during message send or AI response wait:", err);
+  } finally {
+    isLoading.value = false;
+    scrollToBottom();
+  }
 };
 
 onMounted(async () => {
