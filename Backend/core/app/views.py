@@ -9,24 +9,6 @@ from .ai_engine.memory import create_memory
 from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
 from .ai_engine.ai_genie import AIGenie
 
-#______________Initialize things on start______________ < ---- shall be moved somewhere else
-
-# llm = OllamaLLM(model="llama3.1", temperature=0)
-
-# # Setup memory
-# memory = ConversationBufferMemory(memory_key="chat_history",
-#                                   return_messages=True)
-
-# tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), ListEventsTool(), ListResearchersTool(), ListResearchTool()]
-# agent = initialize_agent(tools=tools, 
-#                          llm=llm,
-#                          memory=memory, 
-#                          verbose=True,
-#                          agent="chat-conversational-react-description",
-#                          agent_kwargs={"system_message": SYSTEM_PROMPT}
-#                          )
-
-
 # Create your views here.
 class Home(APIView):
     def get(self, request):
@@ -288,6 +270,7 @@ class AddMessageWithAIResponse(APIView):
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 #______________FILES RETRIVAL______________
+from .ai_engine.vector_db_service import VectorDatabaseService
 class TestFileRetrivalOfDocuments(APIView):
     def get_object(self, id):
         try:
@@ -295,9 +278,16 @@ class TestFileRetrivalOfDocuments(APIView):
         except Research.DoesNotExist:
             return None
     
-    def get(self, request, id):
-        research = self.get_object(id)
-        if research:
-            serializer = ResearchSerializer(research)
-            return Response(serializer.data)
-        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, file):
+        vectorstore = VectorDatabaseService()
+        # vectorstore.drop_collection()
+        # vectorstore.add_file("rector.pdf")
+        # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")
+        print("ID IN VIEW: " + str(id(vectorstore)))
+        results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
+        # for i, res in enumerate(results):
+        #     print(f"\nResult {i + 1}:")
+        #     print(f"Score: {res['score']}")
+        #     print(f"Title: {res['research_title']}")
+        #     print(f"Text: {res['text']}...")
+        return Response(results, status=status.HTTP_200_OK)

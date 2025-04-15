@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from ..models import Researcher, Event, Research
 from rapidfuzz import process
 from app.ai_engine import consts
+from app.ai_engine.vector_db_service import VectorDatabaseService
 
 
 class EmptyInput(BaseModel):
@@ -128,12 +129,38 @@ class ListResearchTool(BaseTool):
         return research
     
 class ResearchDetailsInput(BaseModel):
-    context : str = Field(description="User question and tile of the research the question asks about")
+    context: str = Field(
+        description="Provide two parts: a question and the research paper title, separated by a '|' character. For example: 'What is the main contribution? | Research_Paper_Title.pdf'"
+    )
 
 class ResearchDetailsTool(BaseTool):
-    name : str = "GetDetails"
-    description : str = "Answers question about content of the research papers"
-    args_schema : Type[BaseModel]
+    name: str = "GetDetails"
+    description: str = (
+        "Use this tool to answer questions about specific research papers. "
+        "You must provide a question and the paper's title, separated by '|'."
+        "If output is empty it means that research paper doesnt have an answer to the question"
+    )
+    args_schema: Type[BaseModel] = ResearchDetailsInput
 
-    def _run(self, context):
-        pass
+    def extract_file_name(self, path : str):
+        return path[(path.find("/")+1):]
+
+    def _run(self, context: str):
+        parts = [p.strip() for p in context.split('|', maxsplit=1)]  # clean whitespace
+        if len(parts) == 2:
+            user_question, research_title = parts
+            research_list = Research.objects.all()
+            research_titles = [research.name for research in research_list]
+
+            result = process.extractOne(research_title, research_titles, score_cutoff=10)
+            _, _, index = result
+            research_title = self.extract_file_name(str(research_list[index].source_file))
+        else:
+            user_question = parts[0]
+            research_title = None
+
+        vector_service = VectorDatabaseService()  # Singleton or injected service
+        print(f"USER QUESTION: {user_question}")
+        print(f"RESEARCH PAPER: {research_title}")
+        results = vector_service.find_similar(query=user_question, source=research_title, top_k=2)
+        return results

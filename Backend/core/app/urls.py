@@ -21,5 +21,5 @@ urlpatterns = [
     path('message-ai/<int:chat_id>/', view = AddMessageWithAIResponse.as_view()),
     path('clear/<int:chat_id>/', view = ClearMessagesByChatID.as_view()),
     # testing files endpoints
-    path('research-file/<int:id>/', view = TestFileRetrivalOfDocuments.as_view()),
+    path('test/<str:file>/', view = TestFileRetrivalOfDocuments.as_view()),
 ]

@@ -88,6 +88,15 @@ DATABASES = {
     }
 }
 
+VECTOR_DATABASES = {
+    'default': {
+        'ENGINE': 'milvus',
+        'COLLECTION': 'research_papers',
+        'TOKEN': "root:Milvus",
+        'SOURCE': "http://localhost:19530"
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
