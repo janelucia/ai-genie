@@ -6,6 +6,7 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
     img = models.ImageField(upload_to='events_images/', blank=True)
+    description = models.CharField(max_length=500)
 
     def __str__(self):
         return self.name
@@ -19,8 +20,9 @@ class Event(models.Model):
 
 class Research(models.Model):
     name = models.CharField(max_length=100)
-    summary = models.CharField(max_length=255)
+    summary = models.CharField(max_length=500)
     source_file = models.FileField(upload_to='research_files/')
+    keywords = models.CharField(max_length=500, blank=True) # coma separated tags
 
     def __str__(self):
         return self.name
@@ -39,6 +41,12 @@ class Research(models.Model):
 class Researcher(models.Model):
     firstname = models.CharField(max_length=60)
     surname = models.CharField(max_length=60)
+    position = models.CharField(max_length=25)
+    short_about = models.CharField(max_length=30)
+    about = models.CharField(max_length=500)
+    email = models.EmailField(blank=True)
+    linkedin = models.CharField(max_length=25, blank=True)
+    keywords = models.CharField(max_length=500, blank=True) # coma separated tags
     related_research = models.ManyToManyField(
         Research,
         related_name="researchers_related",
