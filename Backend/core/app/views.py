@@ -9,6 +9,7 @@ from drf_yasg import openapi
 from .ai_engine.memory import create_memory
 from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
 from .ai_engine.ai_genie import AIGenie
+from .ai_engine.vector_db_service import VectorDatabaseService
 
 # Create your views here.
 class Home(APIView):
@@ -391,7 +392,13 @@ class AddMessageWithAIResponse(APIView):
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 #______________FILES RETRIVAL______________
-from .ai_engine.vector_db_service import VectorDatabaseService
+class VectorDB(APIView):
+    def get(self, request):
+        vectorstore = VectorDatabaseService()
+        limit = request.query_params.get("limit")
+        files = vectorstore.list_files(limit=limit)
+        return Response(files, status=status.HTTP_200_OK)
+
 class TestFileRetrivalOfDocuments(APIView):
     def get_object(self, id):
         try:
@@ -405,7 +412,9 @@ class TestFileRetrivalOfDocuments(APIView):
         # vectorstore.add_file("rector.pdf")
         # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")
         print("ID IN VIEW: " + str(id(vectorstore)))
-        results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
+        print("________________________________")
+        results = vectorstore.file_exists(file_path=file)
+        # results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
         # for i, res in enumerate(results):
         #     print(f"\nResult {i + 1}:")
         #     print(f"Score: {res['score']}")

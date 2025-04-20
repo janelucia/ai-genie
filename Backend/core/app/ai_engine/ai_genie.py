@@ -1,3 +1,4 @@
+from django.conf import settings
 from langchain.agents import initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
 from langchain_ollama import OllamaLLM
@@ -8,7 +9,7 @@ from app.ai_engine import consts
 
 class AIGenie():
     def __init__(self, memory : ConversationBufferMemory) -> None:
-        self.llm = OllamaLLM(model="llama3.1", temperature=0)
+        self.llm = OllamaLLM(model=settings.AI_MODEL_NAME, temperature=0)
 
         self.tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), 
                       ListEventsTool(), ListResearchersTool(), ListResearchTool(),
