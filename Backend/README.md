@@ -38,4 +38,11 @@ start dev env:
     type 'python manage.py runserver'
 ```
 
-happy coding!
+alternative way:
+1. go to the `Backend` directory
+2. run the following command:
+```
+    python core/manage.py runserver
+```
+
+Happy Coding🌻

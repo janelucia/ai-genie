@@ -15,4 +15,4 @@ start dev env:
     bun dev
 ```
 
-happy coding!
+Happy Coding🌻
