@@ -88,6 +88,30 @@ DATABASES = {
     }
 }
 
+VECTOR_DATABASES = {
+    # Default DB
+    'default': {
+        'ENGINE': 'milvus',
+        'COLLECTION': 'research_papers',
+        'TOKEN': "root:Milvus",
+        'SOURCE': "http://localhost:19530"
+    },
+    # Linux DB
+    'posix': {
+        'ENGINE': 'milvus',
+        'COLLECTION': 'research_papers',
+        'TOKEN': "",
+        'SOURCE': "vector_db.db"
+    },
+    # Windows DB
+    'nt': {
+        'ENGINE': 'milvus',
+        'COLLECTION': 'research_papers',
+        'TOKEN': "root:Milvus",
+        'SOURCE': "http://localhost:19530"
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -135,6 +159,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 print("BASE_DIR LOOKS LIKE: " + str(BASE_DIR))
 
 MEDIA_URL = '/media/'  # URL prefix for media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'core/media')  # Root directory for media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'core', 'media')  # Root directory for media files
 
 RESEARCH_FILES_DIR = os.path.join(MEDIA_ROOT, 'research_files')
+
+# Ai models
+AI_MODEL_NAME = "llama3.1"

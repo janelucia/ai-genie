@@ -1,16 +1,19 @@
-from langchain.agents import initialize_agent
+from django.conf import settings
+from langchain.agents import initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
 from langchain_ollama import OllamaLLM
 
-from .tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
+from .tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool, ResearchDetailsTool
 from app.ai_engine import consts
 
 
 class AIGenie():
     def __init__(self, memory : ConversationBufferMemory) -> None:
-        self.llm = OllamaLLM(model="llama3.1", temperature=0)
+        self.llm = OllamaLLM(model=settings.AI_MODEL_NAME, temperature=0)
 
-        self.tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), ListEventsTool(), ListResearchersTool(), ListResearchTool()]
+        self.tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), 
+                      ListEventsTool(), ListResearchersTool(), ListResearchTool(),
+                      ResearchDetailsTool()]
 
         self.memory = memory
         
@@ -22,7 +25,7 @@ class AIGenie():
                                  llm=self.llm, 
                                  memory=self.memory, 
                                  verbose=True, 
-                                 agent="chat-conversational-react-description",
+                                 agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
                                  handle_parsing_errors=consts.HANDLE_PARSING_ERROR_PROMPT,
                                  agent_kwargs={"system_message": consts.SYSTEM_PROMPT})
         

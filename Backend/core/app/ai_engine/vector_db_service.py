@@ -1,17 +1,34 @@
+from typing import List
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pymilvus import MilvusClient, DataType, CollectionSchema
 from langchain.embeddings.ollama import OllamaEmbeddings
 import fitz 
-from pathlib import Path
+from django.conf import settings
+import os
+
+# file_path requires file to be passed as file_name.pdf
 
 class VectorDatabaseService():
-    def __init__(self, reset_collection = False, source_uri = 'milvus_demo.db', token="", embeddings = OllamaEmbeddings):
-        
-        self.client = MilvusClient(uri=source_uri, token=token)
-    
+    # This service is a singleton research vector database service. It performs actions ONLY on research
+    _instance = None
 
-        self.embeddings = embeddings(model="llama3.1")
-        self.collection_name = "research_papers"
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(VectorDatabaseService, cls).__new__(cls)
+        return cls._instance
+    
+    def __init__(self, reset_collection = False, embeddings = OllamaEmbeddings):
+        if hasattr(self, '_initialized') and self._initialized:
+            return
+        print("INIT CALLED")
+
+        system = os.name
+        self.client = MilvusClient(uri=settings.VECTOR_DATABASES[system]['SOURCE'], 
+                                   token=settings.VECTOR_DATABASES[system]['TOKEN'])
+        self.collection_name = settings.VECTOR_DATABASES[system]['COLLECTION']
+
+        self.embeddings = embeddings(model=settings.AI_MODEL_NAME)
+        
         
         if reset_collection:
             if self.client.has_collection(self.collection_name):
@@ -27,6 +44,8 @@ class VectorDatabaseService():
             )
         else:
             self.client.load_collection(collection_name=self.collection_name)
+
+        self._initialized = True
 
     def drop_collection(self):
         self.client.drop_collection(collection_name = self.collection_name)
@@ -72,7 +91,11 @@ class VectorDatabaseService():
         return schema
 
     def add_file(self, file_path: str):
-        absolute_path = Path(__file__).parent / file_path
+        file_path = os.path.basename(file_path)
+        if self.file_exists(file_path):
+            print(f"File '{file_path}' already exists. Skipping insertion.")
+            return
+        absolute_path = os.path.join(settings.RESEARCH_FILES_DIR, file_path)
         doc = fitz.open(str(absolute_path))
         full_text = ""
         for page in doc:
@@ -95,26 +118,93 @@ class VectorDatabaseService():
             "research_title": file_path
         } for i, vec in enumerate(embeddings)]
 
-        self.client.insert(
+        res = self.client.insert(
             collection_name=self.collection_name,
             data=data,
         )
 
         print(f"Inserted {len(data)} chunks from '{file_path}' into '{self.collection_name}'.")
+        return res
 
-    def find_similar(self, query: str, top_k: int = 3):
+    def delete_file(self, file_path):
+        file_path = os.path.basename(file_path)
+        res = self.client.delete(
+            collection_name=self.collection_name,
+            filter=f"research_title == '{file_path}'",
+        )
+        return res
+
+    def update_file(self, file_path):
+        file_path = os.path.basename(file_path)
+        self.delete_file(file_path)
+        res = self.add_file(file_path)
+        return res
+
+    def file_exists(self, file_path: str) -> bool:
+        # This method queries collection to check if the file exists by its title
+        file_path = os.path.basename(file_path)
+        result = self.client.query(
+            collection_name=self.collection_name,
+            filter=f"research_title == '{file_path}'",
+            limit=1,
+            consistency_level = "Strong"
+        )
+        return len(result) > 0  # If a result is found, it means the file exists
+    
+    def list_files(self, limit = 2000):
+        result = self.client.query(
+            collection_name=self.collection_name,
+            limit = limit,
+            output_fields=["id", "research_title"]
+        )
+
+        return result
+    
+    def get_file_text(self, file_path) -> str:
+        file_path = os.path.basename(file_path)
+        result = self.client.query(
+            collection_name=self.collection_name,
+            filter=f"research_title == '{file_path}'",
+            output_fields=["text"]
+        )
+
+        plain_text = ''.join(row['text'] for row in result)
+
+        return plain_text
+    
+    def get_file_embeddings(self, file_path) -> List[dict]:
+        file_path = os.path.basename(file_path)
+        result = self.client.query(
+            collection_name=self.collection_name,
+            filter=f"research_title == '{file_path}'",
+            output_fields=["vector"]
+        )
+
+        return result
+
+    def find_similar(self, query: str, source: str = None, top_k: int = 3):
         # Embed the query
         query_vectors = self.embeddings.embed_query(query)
         self.client.load_collection(collection_name=self.collection_name)
 
         # Search in the collection
-        results = self.client.search(
-            collection_name = self.collection_name,
-            anns_field="vector",
-            data = [query_vectors],
-            limit = top_k,
-            output_fields = ["text", "research_title"],
-        )
+        if source is not None:
+            results = self.client.search(
+                collection_name = self.collection_name,
+                anns_field="vector",
+                data = [query_vectors],
+                filter=f"research_title == '{source}'",
+                limit = top_k,
+                output_fields = ["text", "research_title"],
+            )
+        else:
+            results = self.client.search(
+                collection_name = self.collection_name,
+                anns_field="vector",
+                data = [query_vectors],
+                limit = top_k,
+                output_fields = ["text", "research_title"],
+            )
 
         # Parse and return results
         hits = results[0]  # Each query returns a list of hits
@@ -130,7 +220,7 @@ class VectorDatabaseService():
 
 def main():
     print("Hello world2")
-    vectorstore = VectorDatabaseService(reset_collection=False, source_uri="http://localhost:19530", token="root:Milvus")
+    vectorstore = VectorDatabaseService(reset_collection=False)
     # vectorstore.drop_collection()
     # vectorstore.add_file("rector.pdf")
     # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")

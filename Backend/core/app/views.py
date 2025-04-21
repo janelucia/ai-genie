@@ -4,28 +4,12 @@ from rest_framework import status
 from .models import *
 from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from .ai_engine.memory import create_memory
 from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
 from .ai_engine.ai_genie import AIGenie
-
-#______________Initialize things on start______________ < ---- shall be moved somewhere else
-
-# llm = OllamaLLM(model="llama3.1", temperature=0)
-
-# # Setup memory
-# memory = ConversationBufferMemory(memory_key="chat_history",
-#                                   return_messages=True)
-
-# tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), ListEventsTool(), ListResearchersTool(), ListResearchTool()]
-# agent = initialize_agent(tools=tools, 
-#                          llm=llm,
-#                          memory=memory, 
-#                          verbose=True,
-#                          agent="chat-conversational-react-description",
-#                          agent_kwargs={"system_message": SYSTEM_PROMPT}
-#                          )
-
+from .ai_engine.vector_db_service import VectorDatabaseService
 
 # Create your views here.
 class Home(APIView):
@@ -35,15 +19,24 @@ class Home(APIView):
 #______________EVENTS ENDPOINTS______________
 
 class EventsEndpoint(APIView):
+    @swagger_auto_schema(
+        operation_description="List all events",
+        responses={200: EventSerializer(many=True)}
+    )
     def get(self, request):
-        '''Lists all the events'''
         events = Event.objects.all()
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(request_body=EventSerializer)
+    @swagger_auto_schema(
+        operation_description="Create a new event",
+        request_body=EventSerializer,
+        responses={
+            201: EventSerializer,
+            400: 'Bad Request'
+        }
+    )
     def post(self, request):
-        '''Create a new event'''
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -51,6 +44,10 @@ class EventsEndpoint(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class MultiEditEvents(APIView):
+    @swagger_auto_schema(
+        request_body=EventSerializer(many=True),
+        responses={201: EventSerializer(many=True), 400: 'Bad Request'}
+    )
     def post(self, request):
         serializer = EventSerializer(data = request.data, many=True)
         if serializer.is_valid():
@@ -65,6 +62,10 @@ class EventByID(APIView):
         except Event.DoesNotExist:
             return None
 
+    @swagger_auto_schema(
+        operation_description="Retrieve event by ID",
+        responses={200: EventSerializer, 404: 'Not Found'}
+    )
     def get(self, request, id):
         event = self.get_object(id)
         if event:
@@ -72,7 +73,10 @@ class EventByID(APIView):
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    @swagger_auto_schema(request_body=EventSerializer)
+    @swagger_auto_schema(
+        request_body=EventSerializer,
+        responses={200: EventSerializer, 400: 'Bad Request', 404: 'Not Found'}
+    )
     def put(self, request, id):
         event = self.get_object(id)
         if event:
@@ -83,6 +87,10 @@ class EventByID(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+        operation_description="Delete event by ID",
+        responses={204: 'No Content', 404: 'Not Found'}
+    )
     def delete(self, request, id):
         event = self.get_object(id)
         if event:
@@ -93,17 +101,26 @@ class EventByID(APIView):
 #______________RESEARCH ENDPOINTS______________
 
 class ResearchEndpoint(APIView):
+    @swagger_auto_schema(
+        operation_description="List all research entries",
+        responses={200: ResearchSerializer(many=True)}
+    )
     def get(self, request):
-        '''Lists all the research'''
         research = Research.objects.prefetch_related('researchers_related').all()
         serializer = ResearchSerializer(research, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(request_body=ResearchSerializer)
-    def post(self, request):
-        '''Create a new research 
+    @swagger_auto_schema(
+        operation_description='''Create a new research 
         [for this one 'source_file' field is also mandatory but automaatic documentation doesn't support it yet]
-        [source_file should be of a pdf file format of an actual research paper]'''
+        [source_file should be of a pdf file format of an actual research paper]''',
+        request_body=ResearchSerializer,
+        responses={
+            201: ResearchSerializer,
+            400: 'Bad Request'
+        }
+    )
+    def post(self, request):
         serializer = ResearchSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -117,6 +134,10 @@ class ResearchByID(APIView):
         except Research.DoesNotExist:
             return None
     
+    @swagger_auto_schema(
+        operation_description="Retrieve research by ID",
+        responses={200: ResearcherSerializer, 404: 'Not Found'}
+    )
     def get(self, request, id):
         research = self.get_object(id)
         if research:
@@ -124,7 +145,10 @@ class ResearchByID(APIView):
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    @swagger_auto_schema(request_body=ResearchSerializer)
+    @swagger_auto_schema(
+        request_body=ResearcherSerializer,
+        responses={200: ResearcherSerializer, 400: 'Bad Request', 404: 'Not Found'}
+    )
     def put(self, request, id):
         research = self.get_object(id)
         if research:
@@ -135,6 +159,10 @@ class ResearchByID(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
     
+    @swagger_auto_schema(
+        operation_description="Delete research by ID",
+        responses={204: 'No Content', 404: 'Not Found'}
+    )
     def delete(self, request, id):
         research = self.get_object(id)
         if research:
@@ -145,13 +173,21 @@ class ResearchByID(APIView):
 #______________RESEARCHERS ENDPOINTS______________
 
 class ResearchersEndpoint(APIView):
+    @swagger_auto_schema(
+        operation_description="List all researchers",
+        responses={200: ResearcherSerializer(many=True)}
+    )
     def get(self, request):
         '''Lists all the researchers'''
         researchers = Researcher.objects.prefetch_related('related_research').all()
         serializer = ResearcherSerializer(researchers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    @swagger_auto_schema(request_body=ResearcherSerializer)
+    
+    @swagger_auto_schema(
+        request_body=ResearcherSerializer,
+        responses={201: ResearcherSerializer, 400: 'Bad Request'}
+    )
     def post(self, request):
         '''Create a new researcher'''
         serializer = ResearcherSerializer(data=request.data)
@@ -161,6 +197,10 @@ class ResearchersEndpoint(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class MultiEditResearchers(APIView):
+    @swagger_auto_schema(
+        request_body=ResearcherSerializer(many=True),
+        responses={201: ResearcherSerializer(many=True), 400: 'Bad Request'}
+    )
     def post(self, request):
         serializer = ResearcherSerializer(data = request.data, many=True)
         if serializer.is_valid():
@@ -175,6 +215,13 @@ class ResearcherByID(APIView):
         except Researcher.DoesNotExist:
             return None
 
+    @swagger_auto_schema(
+        operation_description="Retrieve a researcher by ID",
+        responses={
+            200: ResearcherSerializer,
+            404: 'Not found'
+        }
+    )
     def get(self, request, id):
         researcher = self.get_object(id)
         if researcher:
@@ -182,7 +229,15 @@ class ResearcherByID(APIView):
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    @swagger_auto_schema(request_body=ResearcherSerializer)
+    @swagger_auto_schema(
+        operation_description="Add a researcher",
+        request_body=ResearcherSerializer,
+        responses={
+            200: ResearcherSerializer,
+            400: 'Bad Request',
+            404: 'Not Found'
+        }
+    )
     def put(self, request, id):
         researcher = self.get_object(id)
         if researcher:
@@ -193,6 +248,14 @@ class ResearcherByID(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+        operation_description="Delete a researcher by ID",
+        request_body=ResearcherSerializer,
+        responses={
+            204: 'Deleted',
+            404: 'Not Found'
+        }
+    )
     def delete(self, request, id):
         researcher = self.get_object(id)
         if researcher:
@@ -203,6 +266,10 @@ class ResearcherByID(APIView):
 #______________CHATS ENDPOINTS______________
 
 class ChatsEndpoint(APIView):
+    @swagger_auto_schema(
+        operation_description="List all chats",
+        responses={200: ChatSerializer(many=True), 404: 'Not Found'}
+    )
     def get(self, request):
         '''Lists all the chats'''
         chats = Chat.objects.all()
@@ -211,6 +278,10 @@ class ChatsEndpoint(APIView):
             return Response(chats_serializer.data, status=status.HTTP_200_OK)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
     
+    @swagger_auto_schema(
+        request_body=ChatSerializer,
+        responses={201: ChatSerializer, 400: 'Bad Request'}
+    )
     def post(self, request):
         '''Create a new chat'''
         serializer = ChatSerializer(data=request.data)
@@ -225,7 +296,32 @@ class ChatByID(APIView):
             return Chat.objects.get(id=id)
         except Chat.DoesNotExist:
             return None
-        
+    
+    @swagger_auto_schema(
+        operation_description="Retrieve a chat and its messages by ID",
+        responses={200: openapi.Response(
+            description="Chat and messages",
+            schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "chat": openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                        "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                        "created": openapi.Schema(type=openapi.TYPE_STRING),
+                    }),
+                    "messages": openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                            "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                            "content": openapi.Schema(type=openapi.TYPE_STRING),
+                            "chat": openapi.Schema(type=openapi.TYPE_INTEGER),
+                            "ai_response": openapi.Schema(type=openapi.TYPE_BOOLEAN),
+                            "created": openapi.Schema(type=openapi.TYPE_STRING),
+                        })
+                    )
+                }
+            )
+        ), 404: 'Not Found'}
+    )
     def get(self, request, id):
         '''Gets all the messages from the chat'''
         chat = self.get_object(id)
@@ -243,6 +339,10 @@ class ChatByID(APIView):
 #______________MESSAGES ENDPOINTS______________
 
 class ClearMessagesByChatID(APIView):
+    @swagger_auto_schema(
+        operation_description="Delete all messages in a chat",
+        responses={204: 'No Content', 404: 'Chat not found'}
+    )
     def delete(self, request, chat_id):
         try:
             chat = Chat.objects.get(id=chat_id)
@@ -253,7 +353,11 @@ class ClearMessagesByChatID(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AddMessageWithAIResponse(APIView):
-    @swagger_auto_schema(request_body=MessageSerializer)
+    @swagger_auto_schema(
+        request_body=MessageSerializer,
+        operation_description="Add a message and get an AI response",
+        responses={201: MessageSerializer, 400: 'Bad Request', 404: 'Chat not found'}
+    )
     def post(self, request, chat_id):
         # Check if the chat exists
         if not Chat.objects.filter(id=chat_id).exists():
@@ -266,21 +370,21 @@ class AddMessageWithAIResponse(APIView):
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.validated_data
             # AI stuff
-#             memory = create_memory(chat_id)
-#             ai_genie_agent = AIGenie(memory)
-#             ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
-#             ai_message_data = {
-#                 "content": ai_response_content,
-#                 "chat": chat_id,
-#                 "ai_response": True
-#             }
+            memory = create_memory(chat_id)
+            ai_genie_agent = AIGenie(memory)
+            ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
+            ai_message_data = {
+                "content": ai_response_content,
+                "chat": chat_id,
+                "ai_response": True
+            }
 
             # Switch to Echo functionality if you don't have AI
-            ai_message_data = {
-                           "content": "Echo: " + user_message['content'],
-                          "chat": chat_id,
-                         "ai_response": True
-                    }
+            # ai_message_data = {
+            #                "content": "Echo: " + user_message['content'],
+            #               "chat": chat_id,
+            #              "ai_response": True
+            #         }
 
             ai_message_serializer = MessageSerializer(data=ai_message_data)
 
@@ -295,6 +399,13 @@ class AddMessageWithAIResponse(APIView):
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 #______________FILES RETRIVAL______________
+class VectorDB(APIView):
+    def get(self, request):
+        vectorstore = VectorDatabaseService()
+        limit = request.query_params.get("limit")
+        files = vectorstore.list_files(limit=limit)
+        return Response(files, status=status.HTTP_200_OK)
+
 class TestFileRetrivalOfDocuments(APIView):
     def get_object(self, id):
         try:
@@ -302,9 +413,18 @@ class TestFileRetrivalOfDocuments(APIView):
         except Research.DoesNotExist:
             return None
     
-    def get(self, request, id):
-        research = self.get_object(id)
-        if research:
-            serializer = ResearchSerializer(research)
-            return Response(serializer.data)
-        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+    def get(self, request, file):
+        vectorstore = VectorDatabaseService()
+        # vectorstore.drop_collection()
+        # vectorstore.add_file("rector.pdf")
+        # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")
+        print("ID IN VIEW: " + str(id(vectorstore)))
+        print("________________________________")
+        results = vectorstore.file_exists(file_path=file)
+        # results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
+        # for i, res in enumerate(results):
+        #     print(f"\nResult {i + 1}:")
+        #     print(f"Score: {res['score']}")
+        #     print(f"Title: {res['research_title']}")
+        #     print(f"Text: {res['text']}...")
+        return Response(results, status=status.HTTP_200_OK)

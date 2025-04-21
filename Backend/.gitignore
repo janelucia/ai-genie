@@ -181,3 +181,4 @@ researchers_images/
 events_images/
 migrations/
 !__init__.py
+media/
