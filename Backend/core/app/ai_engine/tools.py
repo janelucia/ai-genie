@@ -18,7 +18,7 @@ class FindResearcherInput(BaseModel):
 
 class FindResearcherTool(BaseTool):
     name : str = "FindResearcher"
-    description : str  = "Finds a researcher by firstname, surname or both in the database. Also used when user asks about research that the person performs"
+    description : str  = "Finds a researcher by firstname, surname or both in the database. Also used when user asks about research that the person performs or when user wants to know more about researcher"
     args_schema : Type[BaseModel] = FindResearcherInput
 
     def _run(self, name: str): # could be changed to include rapidfuzz
@@ -43,7 +43,7 @@ class FindResearcherTool(BaseTool):
     
 class ListResearchersTool(BaseTool):
     name : str = "ListResearchers"
-    description : str = "Lists all researchers"
+    description : str = "Lists all researchers. Usefull when user wants to know what researchers work for ai Lab"
     args_schema: Type[BaseModel] = EmptyInput
 
     def _run(self, arg):
@@ -81,7 +81,7 @@ class FindEventTool(BaseTool):
     
 class ListEventsTool(BaseTool):
     name : str = "ListEvents"
-    description : str = "Lists all events"
+    description : str = "Lists all events. Use if user wants to know what events are happening at AI Lab."
     args_schema: Type[BaseModel] = EmptyInput
 
     def _run(self, arg):
@@ -118,7 +118,7 @@ class FindResearchTool(BaseTool):
 
 class ListResearchTool(BaseTool):
     name : str = "ListResearch"
-    description : str = "Lists all research"
+    description : str = "Lists all research. Use it when user asks what research is being perfomed at ai lab"
     args_schema: Type[BaseModel] = EmptyInput
 
     def _run(self, arg):
@@ -130,13 +130,13 @@ class ListResearchTool(BaseTool):
     
 class ResearchDetailsInput(BaseModel):
     context: str = Field(
-        description="Provide two parts: a question and the research paper title, separated by a '|' character. For example: 'What is the main contribution? | Research_Paper_Title.pdf'"
+        description="Provide two parts: a question and the research paper title, separated by a '|' character. For example: 'Research_Paper_Title.pdf | What is the main contribution?'"
     )
 
 class ResearchDetailsTool(BaseTool):
     name: str = "GetDetails"
     description: str = (
-        "Use this tool to answer questions about specific research papers. "
+        "Use this tool to answer questions about details (such as results, conclusion, metholodogies) of research papers"
         "You must provide a question and the paper's title, separated by '|'."
         "If output is empty it means that research paper doesnt have an answer to the question"
     )
@@ -148,7 +148,7 @@ class ResearchDetailsTool(BaseTool):
     def _run(self, context: str):
         parts = [p.strip() for p in context.split('|', maxsplit=1)]  # clean whitespace
         if len(parts) == 2:
-            user_question, research_title = parts
+            research_title, user_question = parts
             research_list = Research.objects.all()
             research_titles = [research.name for research in research_list]
 
