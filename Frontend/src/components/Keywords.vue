@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap gap-[var(--spacing-in-sections)]">
+  <div class="flex flex-wrap gap-[var(--spacing-in-sections)] self-start">
     <div
       v-for="keyword in keywords"
       :key="keyword"

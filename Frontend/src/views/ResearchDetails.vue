@@ -28,7 +28,10 @@
       </div>
     </div>
     <Text class="w-full">{{ result.summary }}</Text>
-    <Keywords :keywords="keywordsStringToArray(result.keywords)" />
+    <Keywords
+      v-if="result.keywords"
+      :keywords="keywordsStringToArray(result.keywords)"
+    />
     <CollapseSection collapse-title="Abstract">
       <Text class="break-words break-all whitespace-pre-wrap">
         This section is currently under construction!
