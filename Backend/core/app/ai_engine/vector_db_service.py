@@ -20,7 +20,7 @@ class VectorDatabaseService():
     def __init__(self, reset_collection = False, embeddings = OllamaEmbeddings):
         if hasattr(self, '_initialized') and self._initialized:
             return
-        print("INIT CALLED")
+        # print("INIT CALLED")
 
         system = os.name
         self.client = MilvusClient(uri=settings.VECTOR_DATABASES[system]['SOURCE'], 
@@ -93,7 +93,7 @@ class VectorDatabaseService():
     def add_file(self, file_path: str):
         file_path = os.path.basename(file_path)
         if self.file_exists(file_path):
-            print(f"File '{file_path}' already exists. Skipping insertion.")
+            # print(f"File '{file_path}' already exists. Skipping insertion.")
             return
         absolute_path = os.path.join(settings.RESEARCH_FILES_DIR, file_path)
         doc = fitz.open(str(absolute_path))
@@ -123,7 +123,7 @@ class VectorDatabaseService():
             data=data,
         )
 
-        print(f"Inserted {len(data)} chunks from '{file_path}' into '{self.collection_name}'.")
+        # print(f"Inserted {len(data)} chunks from '{file_path}' into '{self.collection_name}'.")
         return res
 
     def delete_file(self, file_path):
@@ -162,6 +162,7 @@ class VectorDatabaseService():
     
     def get_file_text(self, file_path) -> str:
         file_path = os.path.basename(file_path)
+        self.client.load_collection(collection_name=self.collection_name)
         result = self.client.query(
             collection_name=self.collection_name,
             filter=f"research_title == '{file_path}'",
@@ -186,6 +187,7 @@ class VectorDatabaseService():
         # Embed the query
         query_vectors = self.embeddings.embed_query(query)
         self.client.load_collection(collection_name=self.collection_name)
+        source = os.path.basename(source)
 
         # Search in the collection
         if source is not None:
