@@ -10,9 +10,6 @@
           {{ result.firstname }} {{ result.surname }}
         </Heading>
         <Text>
-          {{ result.about }}
-        </Text>
-        <Text>
           {{ result.position }}
         </Text>
       </div>
@@ -23,7 +20,7 @@
     />
     <CollapseSection collapse-title="About">
       <Text class="break-words break-all whitespace-pre-wrap">
-        This section is currently under construction!
+        {{ result.about }}
       </Text>
     </CollapseSection>
     <CollapseSection collapse-title="Publications & Research">
