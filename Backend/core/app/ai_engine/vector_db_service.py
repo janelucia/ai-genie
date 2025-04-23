@@ -23,7 +23,7 @@ class VectorDatabaseService():
         # print("INIT CALLED")
 
         system = os.name
-        self.client = MilvusClient(uri=settings.VECTOR_DATABASES[system]['SOURCE'], 
+        self.client = MilvusClient(uri=settings.VECTOR_DATABASES[system]['SOURCE'],
                                    token=settings.VECTOR_DATABASES[system]['TOKEN'])
         self.collection_name = settings.VECTOR_DATABASES[system]['COLLECTION']
 

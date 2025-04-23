@@ -380,11 +380,11 @@ class AddMessageWithAIResponse(APIView):
             }
 
             # Switch to Echo functionality if you don't have AI
-            # ai_message_data = {
-            #                "content": "Echo: " + user_message['content'],
-            #               "chat": chat_id,
-            #              "ai_response": True
-            #         }
+#             ai_message_data = {
+#                            "content": "Echo: " + user_message['content'],
+#                           "chat": chat_id,
+#                          "ai_response": True
+#                     }
 
             ai_message_serializer = MessageSerializer(data=ai_message_data)
 

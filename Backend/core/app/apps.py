@@ -11,7 +11,7 @@ class AppConfig(AppConfig):
         # import app.signals
         try:
             # Initialize the vector DB service (without resetting collection on each startup)
-            self.vector_db_service = VectorDatabaseService(reset_collection=False)
+            self.vector_db_service = VectorDatabaseService(reset_collection=True)
             research_dir = settings.RESEARCH_FILES_DIR
             for file in os.listdir(research_dir):
                 full_path = os.path.join(research_dir, file)
