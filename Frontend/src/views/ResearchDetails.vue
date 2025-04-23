@@ -62,6 +62,7 @@ import Keywords from "../components/Keywords.vue";
 import Heading from "../components/Heading.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import { keywordsStringToArray } from "../utils/helpers.ts";
 
 const route = useRoute();
 const id = route.params.id;
@@ -94,7 +95,4 @@ watch(researchersData, () => {
     );
   }
 });
-
-const keywordsStringToArray = (keywords: string | undefined): string[] =>
-  keywords ? keywords.split(",").map((keyword) => keyword.trim()) : [];
 </script>

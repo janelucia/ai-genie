@@ -5,11 +5,22 @@
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
       <Avatar class="w-32" />
-      <Heading heading="h1">
-        {{ result.firstname }} {{ result.surname }}
-      </Heading>
+      <div>
+        <Heading heading="h1">
+          {{ result.firstname }} {{ result.surname }}
+        </Heading>
+        <Text>
+          {{ result.about }}
+        </Text>
+        <Text>
+          {{ result.position }}
+        </Text>
+      </div>
     </div>
-    <Keywords :keywords="keywords" />
+    <Keywords
+      v-if="result.keywords"
+      :keywords="keywordsStringToArray(result.keywords)"
+    />
     <CollapseSection collapse-title="About">
       <Text class="break-words break-all whitespace-pre-wrap">
         This section is currently under construction!
@@ -34,12 +45,21 @@
         <Text>Office 2.01</Text>
       </div>
       <div class="w-full flex gap-[var(--spacing-in-sections)]">
-        <a class="btn btn-secondary flex-grow" :href="'mailto:' + email">
+        <a
+          v-if="result.email"
+          class="btn btn-secondary flex-grow"
+          :href="'mailto:' + result.email"
+        >
           <Text button>Contact via E-Mail</Text>
         </a>
-        <button v-if="linkedIn" class="btn btn-outline btn-secondary">
+        <a
+          v-if="result.linkedIn"
+          class="btn btn-outline btn-secondary"
+          :href="result.linkedIn"
+          target="_blank"
+        >
           LinkedIn
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -57,6 +77,7 @@ import CollapseSection from "../components/CollapseSection.vue";
 import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import { keywordsStringToArray } from "../utils/helpers.ts";
 
 const route = useRoute();
 const id = route.params.id;
@@ -69,12 +90,6 @@ const result = ref<Researchers>({
 });
 
 const relatedResearch = ref<Research[]>([]);
-
-// TODO: change this when a researcher has an email
-const email = "someEmail@gmail.com";
-
-// TODO: change this when a researcher has a linkedIn
-const linkedIn = true;
 
 const { data: researchersData } = useApiFetch<Researchers>("researchers/" + id);
 const { data: researchData } = useApiFetch<Research[]>("research");
