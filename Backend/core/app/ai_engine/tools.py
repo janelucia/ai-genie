@@ -130,7 +130,7 @@ class ListResearchTool(BaseTool):
     
 class ResearchDetailsInput(BaseModel):
     context: str = Field(
-        description="Provide two parts: a question and the research paper title, separated by a '|' character. For example: 'Research_Paper_Title.pdf | What is the main contribution?'"
+        description="Provide two parts: a question and the research paper title, separated by a '|' character. For example: 'Research_Paper_Title.pdf | What is the main contribution?', do not create your own use question, cite user"
     )
 
 class ResearchDetailsTool(BaseTool):
