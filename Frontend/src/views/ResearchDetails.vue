@@ -28,7 +28,7 @@
       </div>
     </div>
     <Text class="w-full">{{ result.summary }}</Text>
-    <Keywords :keywords="keywords" />
+    <Keywords :keywords="keywordsStringToArray(result.keywords)" />
     <CollapseSection collapse-title="Abstract">
       <Text class="break-words break-all whitespace-pre-wrap">
         This section is currently under construction!
@@ -67,6 +67,7 @@ const result = ref<Research>({
   id: 0,
   name: "",
   summary: "",
+  keywords: "",
   source_file: "",
 });
 
@@ -91,5 +92,6 @@ watch(researchersData, () => {
   }
 });
 
-const keywords = ["Keyword 1", "Keyword 2", "Keyword 3"];
+const keywordsStringToArray = (keywords: string | undefined): string[] =>
+  keywords ? keywords.split(",").map((keyword) => keyword.trim()) : [];
 </script>
