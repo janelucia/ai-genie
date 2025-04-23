@@ -20,7 +20,7 @@
       card-image-alt="Event Banner"
       :card-title="event.name"
       :card-date="event.date"
-      card-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
+      :card-text="event.description"
       :button-title="
         alreadySignedUp(event.id.toString()) ? 'Already Signed Up' : 'Sign Up'
       "

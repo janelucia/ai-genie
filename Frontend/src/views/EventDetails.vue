@@ -29,16 +29,7 @@
         </div>
       </div>
       <Text>
-        This event offers a unique opportunity to connect, learn, and grow.
-        Whether you're here to gain new insights, meet like-minded individuals,
-        or explore something new, this experience is designed to inspire and
-        engage. Everyone is welcome — come as you are and take part in something
-        meaningful. (This needs to be replaced by the actual event description.)
-      </Text>
-      <Text>
-        This event is for everyone. No prior knowledge is required. Just bring
-        your enthusiasm and willingness to learn! (Must be replaced by the
-        actual event description.)
+        {{ result.description }}
       </Text>
     </div>
     <fieldset
