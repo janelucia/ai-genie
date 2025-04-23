@@ -32,11 +32,6 @@
       v-if="result.keywords"
       :keywords="keywordsStringToArray(result.keywords)"
     />
-    <CollapseSection collapse-title="Abstract">
-      <Text class="break-words break-all whitespace-pre-wrap">
-        This section is currently under construction!
-      </Text>
-    </CollapseSection>
     <a
       :href="'http://localhost:8000' + result.source_file"
       download
