@@ -35,8 +35,9 @@
       </Text>
     </CollapseSection>
     <a
-      :href="result.source_file"
+      :href="'http://localhost:8000' + result.source_file"
       download
+      target="_blank"
       class="btn btn-accent text-base-100 w-full"
     >
       Download Paper
