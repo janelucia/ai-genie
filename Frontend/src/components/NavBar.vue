@@ -15,6 +15,11 @@
           </router-link>
         </li>
         <li>
+          <router-link to="/chat">
+            <Text>Chat</Text>
+          </router-link>
+        </li>
+        <li>
           <router-link to="/research">
             <Text>Research</Text>
           </router-link>

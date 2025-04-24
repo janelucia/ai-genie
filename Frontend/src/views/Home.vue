@@ -1,8 +1,5 @@
 <template>
   <div class="flex flex-col gap-[var(--spacing-between-sections)]">
-    <router-link to="/chat">
-      <FloatChatButton class="fixed top-0 right-0 m-4 z-10" />
-    </router-link>
     <img src="../assets/img/logo.png" alt="logo" />
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -53,7 +50,6 @@ import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import Alert from "../components/Alert.vue";
 import Text from "../components/Text.vue";
 import CardCarousel from "../components/CardCarousel.vue";
-import FloatChatButton from "../components/FloatChatButton.vue";
 
 const researchResult = ref<Research[]>([]);
 const eventsResult = ref<Events[]>([]);

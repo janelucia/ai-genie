@@ -1,5 +1,5 @@
 <template>
-  <Header no-chat />
+  <Header chat />
   <div class="overflow-y-auto max-h-[90vh]">
     <div
       v-for="(msg, i) in messages"

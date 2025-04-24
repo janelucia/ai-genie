@@ -7,13 +7,11 @@
     </button>
     <Text class="flex-grow text-center font-bold"> Oslo Met AI Lab </Text>
 
-    <template v-if="!noChat">
-      <router-link to="/chat">
-        <FloatChatButton />
-      </router-link>
+    <template v-if="chat">
+      <button class="btn btn-primary" @click="openModal">Delete Chat</button>
     </template>
     <template v-else>
-      <button class="btn btn-primary" @click="openModal">Delete Chat</button>
+      <div class="w-8"></div>
     </template>
 
     <dialog ref="modal" id="delete-confirmation-modal" class="modal">
@@ -44,13 +42,12 @@
 <script setup lang="ts">
 import router from "../router";
 import Text from "./Text.vue";
-import FloatChatButton from "./FloatChatButton.vue";
 import { ref } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Chat } from "../types/types.ts";
 
 defineProps<{
-  noChat?: boolean;
+  chat?: boolean;
 }>();
 
 const modal = ref<HTMLDialogElement | null>(null);
