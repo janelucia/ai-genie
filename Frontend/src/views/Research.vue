@@ -1,7 +1,7 @@
 <template>
   <Header headerTitle="Research" />
   <div
-    class="pt-24 flex flex-col items-center justify-center gap-[var(--spacing-between-sections)]"
+    class="pt-14 flex flex-col items-center justify-center gap-[var(--spacing-between-sections)]"
   >
     <Heading heading="h1" class="text-center">Research</Heading>
     <label class="input w-full">

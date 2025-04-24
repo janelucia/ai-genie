@@ -1,6 +1,6 @@
 <template>
   <Header :header-title="'Research ' + id" />
-  <div class="pt-24 flex flex-col items-center justify-center gap-7 w-full">
+  <div class="pt-14 flex flex-col items-center justify-center gap-7 w-full">
     <Heading heading="h1" class="text-center">
       {{ result.name }}
     </Heading>
@@ -50,7 +50,6 @@ import { useApiFetch } from "../api/useApiFetch.ts";
 import Header from "../components/Header.vue";
 import Text from "../components/Text.vue";
 import type { Research, Researchers } from "../types/types.ts";
-import CollapseSection from "../components/CollapseSection.vue";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";

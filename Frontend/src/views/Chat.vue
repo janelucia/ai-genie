@@ -1,6 +1,8 @@
 <template>
   <Header chat />
-  <div class="overflow-y-auto max-h-[90vh]">
+  <div
+    class="overflow-y-auto max-h-[90vh] pt-14 flex flex-col gap-[var(--spacing-in-sections)]"
+  >
     <div
       v-for="(msg, i) in messages"
       :key="i"
