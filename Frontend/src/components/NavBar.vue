@@ -4,35 +4,52 @@
       class="bg-primary w-full flex justify-center rounded-tl-lg rounded-tr-lg"
     >
       <ul class="menu menu-horizontal flex-nowrap">
-        <li>
-          <router-link to="/">
-            <Text>Home</Text>
+        <li class="w-12 h-12">
+          <router-link class="w-full h-full" to="/">
+            <img
+              src="../assets/icons/home.svg"
+              alt="Home"
+              class="w-full h-full"
+            />
           </router-link>
         </li>
-        <li>
-          <router-link to="/events">
-            <Text>Events</Text>
+        <li class="w-12 h-12">
+          <router-link class="w-full h-full" to="/events">
+            <img
+              src="../assets/icons/events.svg"
+              alt="Events"
+              class="w-full h-full"
+            />
           </router-link>
         </li>
-        <li>
-          <router-link to="/chat">
-            <Text>Chat</Text>
+        <li class="w-12 h-12">
+          <router-link class="w-full h-full" to="/chat">
+            <img
+              src="../assets/icons/chat.svg"
+              alt="Chat"
+              class="w-full h-full"
+            />
           </router-link>
         </li>
-        <li>
-          <router-link to="/research">
-            <Text>Research</Text>
+        <li class="w-12 h-12">
+          <router-link class="w-full h-full block" to="/research">
+            <img
+              src="../assets/icons/research.svg"
+              alt="Research"
+              class="w-full h-full block"
+            />
           </router-link>
         </li>
-        <li>
-          <router-link to="/researchers">
-            <Text>Researchers</Text>
+        <li class="w-12 h-12">
+          <router-link class="w-full h-full block" to="/researchers">
+            <img
+              src="../assets/icons/researcher.svg"
+              alt="Researchers"
+              class="w-full h-full block"
+            />
           </router-link>
         </li>
       </ul>
     </nav>
   </div>
 </template>
-<script setup lang="ts">
-import Text from "./Text.vue";
-</script>
