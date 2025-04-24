@@ -9,6 +9,8 @@ class Event(models.Model):
     date = models.DateTimeField()
     img = models.ImageField(upload_to='events_images/', blank=True)
     description = models.CharField(max_length=500)
+    contact_email = models.EmailField()
+    location = models.CharField(max_length=100, default="AILab")
 
     def __str__(self):
         return self.name
