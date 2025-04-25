@@ -11,7 +11,7 @@
             Lab. Have fun exploring!
           </Text>
           <router-link to="/chat">
-            <button class="btn btn-primary w-full">Try it out!</button>
+            <button class="btn btn-secondary w-full">Try it out!</button>
           </router-link>
         </div>
       </Alert>
@@ -25,6 +25,7 @@
         banner-image-alt="Event Banner"
         placeholder-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
         link="/events/"
+        vertical
       />
     </div>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
