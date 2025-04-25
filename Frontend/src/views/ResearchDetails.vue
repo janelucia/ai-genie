@@ -1,9 +1,5 @@
 <template>
-  <Header :header-title="'Research ' + id" />
-  <div class="pt-14 flex flex-col items-center justify-center gap-7 w-full">
-    <Heading heading="h1" class="text-center">
-      {{ result.name }}
-    </Heading>
+  <View :title="researchData?.name">
     <PictureWithToolTip
       :image="ResearchBanner"
       image-alt="ResearchBanner"
@@ -40,23 +36,22 @@
     >
       Download Paper
     </a>
-  </div>
+  </View>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
-import Header from "../components/Header.vue";
 import Text from "../components/Text.vue";
 import type { Research, Researchers } from "../types/types.ts";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
-import Heading from "../components/Heading.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
+import View from "../components/View.vue";
 
 const route = useRoute();
 const id = route.params.id;

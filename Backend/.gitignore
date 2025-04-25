@@ -184,3 +184,4 @@ migrations/
 media/
 
 /vector_db.db
+/.vector_db.db.lock

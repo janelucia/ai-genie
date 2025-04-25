@@ -42,10 +42,17 @@ class VectorDatabaseService():
                 collection_name=self.collection_name,
                 index_params=self._create_params()
             )
-        else:
-            self.client.load_collection(collection_name=self.collection_name)
+
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)\
 
         self._initialized = True
+
+    def is_collection_loaded(self) -> bool:
+        res = self.client.get_load_state(
+            collection_name=self.collection_name
+        )
+        return str(res['state']) == "Loaded"
 
     def drop_collection(self):
         self.client.drop_collection(collection_name = self.collection_name)
@@ -91,6 +98,8 @@ class VectorDatabaseService():
         return schema
 
     def add_file(self, file_path: str):
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         if self.file_exists(file_path):
             # print(f"File '{file_path}' already exists. Skipping insertion.")
@@ -123,10 +132,12 @@ class VectorDatabaseService():
             data=data,
         )
 
-        # print(f"Inserted {len(data)} chunks from '{file_path}' into '{self.collection_name}'.")
+        print(f"Inserted {len(data)} chunks from '{file_path}' into '{self.collection_name}'.")
         return res
 
     def delete_file(self, file_path):
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         res = self.client.delete(
             collection_name=self.collection_name,
@@ -135,6 +146,8 @@ class VectorDatabaseService():
         return res
 
     def update_file(self, file_path):
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         self.delete_file(file_path)
         res = self.add_file(file_path)
@@ -142,6 +155,8 @@ class VectorDatabaseService():
 
     def file_exists(self, file_path: str) -> bool:
         # This method queries collection to check if the file exists by its title
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         result = self.client.query(
             collection_name=self.collection_name,
@@ -152,6 +167,8 @@ class VectorDatabaseService():
         return len(result) > 0  # If a result is found, it means the file exists
     
     def list_files(self, limit = 2000):
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         result = self.client.query(
             collection_name=self.collection_name,
             limit = limit,
@@ -161,6 +178,8 @@ class VectorDatabaseService():
         return result
     
     def get_file_text(self, file_path) -> str:
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         self.client.load_collection(collection_name=self.collection_name)
         result = self.client.query(
@@ -174,6 +193,8 @@ class VectorDatabaseService():
         return plain_text
     
     def get_file_embeddings(self, file_path) -> List[dict]:
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         file_path = os.path.basename(file_path)
         result = self.client.query(
             collection_name=self.collection_name,
@@ -185,8 +206,9 @@ class VectorDatabaseService():
 
     def find_similar(self, query: str, source: str = None, top_k: int = 3):
         # Embed the query
+        if not self.is_collection_loaded():
+            self.client.load_collection(collection_name=self.collection_name)
         query_vectors = self.embeddings.embed_query(query)
-        self.client.load_collection(collection_name=self.collection_name)
         source = os.path.basename(source)
 
         # Search in the collection
