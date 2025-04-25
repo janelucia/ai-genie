@@ -6,7 +6,9 @@
     "name": "AI Research Summit",
     "date": "2025-05-15T09:00:00Z",
     "img": "events_images/3c8950b1-01c9-4b5d-bbbd-2d32fc3feb83_G67lFWc.jfif",
-    "description": "Summit about progress in AI and how it can be used"
+    "description": "Summit about progress in AI and how it can be used",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -16,7 +18,9 @@
     "name": "Quantum Computing Workshop",
     "date": "2025-06-20T14:30:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -26,7 +30,9 @@
     "name": "Data Science Conference",
     "date": "2025-07-10T10:00:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -36,7 +42,9 @@
     "name": "Neuroscience and AI Forum",
     "date": "2025-08-05T11:45:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -46,7 +54,9 @@
     "name": "Cybersecurity Summit",
     "date": "2025-09-18T13:15:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -56,7 +66,9 @@
     "name": "Space Exploration Symposium",
     "date": "2025-10-22T16:00:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -66,7 +78,9 @@
     "name": "Biotechnology Innovations Expo",
     "date": "2025-11-30T09:30:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -76,7 +90,9 @@
     "name": "Climate Change & Sustainability Panel",
     "date": "2025-12-12T15:00:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "Room A10"
   }
 },
 {
@@ -86,7 +102,9 @@
     "name": "Blockchain & Finance Summit",
     "date": "2026-01-25T12:00:00Z",
     "img": "",
-    "description": "sth"
+    "description": "sth",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
@@ -96,7 +114,9 @@
     "name": "Human-Robot Interaction Conference",
     "date": "2026-02-14T10:45:00Z",
     "img": "events_images/3c8950b1-01c9-4b5d-bbbd-2d32fc3feb83.jfif",
-    "description": "Even about HCI and how it can impact us"
+    "description": "Even about HCI and how it can impact us",
+    "contact_email": "example@mail.com",
+    "location": "AILab"
   }
 },
 {
