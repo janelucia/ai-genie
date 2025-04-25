@@ -1,6 +1,5 @@
 <template>
-  <Header :header-title="'Researcher ' + id" />
-  <div class="pt-14 flex flex-col gap-7">
+  <View>
     <div
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
@@ -59,11 +58,10 @@
         </a>
       </div>
     </div>
-  </div>
+  </View>
 </template>
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import Header from "../components/Header.vue";
 import { ref, watch } from "vue";
 import type { Research, Researchers } from "../types/types.ts";
 import { useApiFetch } from "../api/useApiFetch.ts";
@@ -75,6 +73,7 @@ import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
+import View from "../components/View.vue";
 
 const route = useRoute();
 const id = route.params.id;
@@ -83,7 +82,9 @@ const result = ref<Researchers>({
   id: 0,
   firstname: "",
   surname: "",
-  related_research: 0,
+  position: "",
+  about: "",
+  related_research: "",
 });
 
 const relatedResearch = ref<Research[]>([]);

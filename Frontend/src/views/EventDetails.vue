@@ -1,6 +1,5 @@
 <template>
-  <Header :header-title="result.name" />
-  <div class="pt-14 flex flex-col gap-[var(--spacing-between-sections)] w-full">
+  <View>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h1" class="text-center">
         {{ result.name }}
@@ -119,7 +118,7 @@
       <Heading heading="h2"> Event Organizer </Heading>
       <Text> Organizer: ??? </Text>
     </div>
-  </div>
+  </View>
 </template>
 
 <script setup lang="ts">
@@ -127,7 +126,6 @@ import { useRoute } from "vue-router";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import { computed, onMounted, ref, watch } from "vue";
 import type { Events } from "../types/types.ts";
-import Header from "../components/Header.vue";
 import Heading from "../components/Heading.vue";
 import Text from "../components/Text.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -135,6 +133,7 @@ import Alert from "../components/Alert.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import { format } from "date-fns";
+import View from "../components/View.vue";
 
 const route = useRoute();
 const id = route.params.id;
@@ -143,6 +142,7 @@ const result = ref<Events>({
   id: 0,
   name: "",
   date: "",
+  description: "",
 });
 const name = ref("");
 const email = ref("");
