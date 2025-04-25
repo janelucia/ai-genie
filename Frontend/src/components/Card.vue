@@ -34,7 +34,7 @@
       >
       <div class="card-actions">
         <button
-          class="btn btn-primary w-full whitespace-nowrap"
+          class="btn btn-secondary w-full whitespace-nowrap"
           :class="buttonClass"
           @click="router.push(link)"
         >

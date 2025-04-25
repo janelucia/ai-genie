@@ -37,7 +37,7 @@
       placeholder="Type your message..."
       @keyup.enter="sendMessage"
     />
-    <button class="btn btn-primary" @click="sendMessage">Send</button>
+    <button class="btn btn-secondary" @click="sendMessage">Send</button>
   </div>
 </template>
 
