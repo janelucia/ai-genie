@@ -1,5 +1,5 @@
 <template>
-  <View>
+  <PageStructure>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h1" class="text-center">
         {{ result.name }}
@@ -118,7 +118,7 @@
       <Heading heading="h2"> Event Organizer </Heading>
       <Text> Organizer: ??? </Text>
     </div>
-  </View>
+  </PageStructure>
 </template>
 
 <script setup lang="ts">
@@ -133,7 +133,7 @@ import Alert from "../components/Alert.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import { format } from "date-fns";
-import View from "../components/View.vue";
+import PageStructure from "../components/PageStructure.vue";
 
 const route = useRoute();
 const id = route.params.id;

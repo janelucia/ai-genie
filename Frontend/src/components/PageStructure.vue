@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header :no-back="noBack" />
   <div class="py-14 flex flex-col gap-[var(--spacing-between-sections)] w-full">
     <Heading v-if="title" heading="h1" class="text-center">
       {{ title }}
@@ -12,5 +12,6 @@ import Header from "./Header.vue";
 import Heading from "./Heading.vue";
 defineProps<{
   title?: string;
+  noBack?: boolean;
 }>();
 </script>

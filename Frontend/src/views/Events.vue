@@ -1,5 +1,5 @@
 <template>
-  <View title="Events">
+  <PageStructure title="Events">
     <CollapseSection collapse-title="Filter by Date" open>
       <div
         class="flex flex-col gap-[var(--spacing-in-sections)] items-end w-full"
@@ -29,7 +29,7 @@
       :link="`/events/${event.id}`"
       vertical
     />
-  </View>
+  </PageStructure>
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
@@ -40,7 +40,7 @@ import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
 import Text from "../components/Text.vue";
 import CollapseSection from "../components/CollapseSection.vue";
-import View from "../components/View.vue";
+import PageStructure from "../components/PageStructure.vue";
 
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);

@@ -1,5 +1,5 @@
 <template>
-  <View title="Researchers">
+  <PageStructure title="Researchers">
     <label class="input w-full">
       <svg
         class="h-[1em] opacity-50"
@@ -35,14 +35,14 @@
       card-text="This is a placeholder text for the researcher description. It should be replaced with the actual researcher description."
       vertical
     />
-  </View>
+  </PageStructure>
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import { computed, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Researchers } from "../types/types.ts";
-import View from "../components/View.vue";
+import PageStructure from "../components/PageStructure.vue";
 
 const searchQuery = ref("");
 const result = ref<Researchers[]>([]);

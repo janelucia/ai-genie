@@ -2,12 +2,17 @@
   <div
     class="flex w-full justify-between gap-[var(--spacing-in-sections)] items-center fixed bg-base-100 top-0 left-0 z-10 p-4"
   >
-    <img
-      src="../assets/icons/arrow-back.svg"
-      alt="Back"
-      class="w-8 h-8 cursor-pointer"
-      @click="router.go(-1)"
-    />
+    <template v-if="noBack">
+      <div class="w-8"></div>
+    </template>
+    <template v-else>
+      <img
+        src="../assets/icons/arrow-back.svg"
+        alt="Back"
+        class="w-8 h-8 cursor-pointer"
+        @click="router.go(-1)"
+      />
+    </template>
     <img
       src="../assets/icons/logo.svg"
       alt="Logo"
@@ -48,14 +53,13 @@
 </template>
 <script setup lang="ts">
 import router from "../router";
-import Text from "./Text.vue";
 import { ref } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Chat } from "../types/types.ts";
-import ArrowBack from "../assets/icons/arrow-back.svg";
 
 defineProps<{
   chat?: boolean;
+  noBack?: boolean;
 }>();
 
 const modal = ref<HTMLDialogElement | null>(null);

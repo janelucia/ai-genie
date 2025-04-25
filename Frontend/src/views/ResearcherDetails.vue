@@ -1,5 +1,5 @@
 <template>
-  <View>
+  <PageStructure>
     <div
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
@@ -58,7 +58,7 @@
         </a>
       </div>
     </div>
-  </View>
+  </PageStructure>
 </template>
 <script setup lang="ts">
 import { useRoute } from "vue-router";
@@ -73,7 +73,7 @@ import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
-import View from "../components/View.vue";
+import PageStructure from "../components/PageStructure.vue";
 
 const route = useRoute();
 const id = route.params.id;
