@@ -19,10 +19,11 @@
       }}</Heading>
       <div
         v-if="cardDate"
-        class="flex gap-[var(--spacing-in-sections)] items-center justify-center whitespace-nowrap"
+        class="flex gap-[var(--spacing-in-sections)] justify-center"
       >
-        <Text :class="{ 'pl-4': !vertical }">
-          🗓️ {{ formattedDate }}, {{ formattedTime }}</Text
+        <Text>🗓️</Text>
+        <Text :class="{ 'pl-4 whitespace-nowrap': !vertical }">
+          {{ formattedDate }}, {{ formattedTime }}</Text
         >
       </div>
       <Text

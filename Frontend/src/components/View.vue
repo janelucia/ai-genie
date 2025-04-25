@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <div class="pt-14 flex flex-col gap-[var(--spacing-between-sections)] w-full">
+  <div class="py-14 flex flex-col gap-[var(--spacing-between-sections)] w-full">
     <Heading v-if="title" heading="h1" class="text-center">
       {{ title }}
     </Heading>
