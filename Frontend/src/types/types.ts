@@ -17,6 +17,8 @@ export type Events = {
   date: string;
   img?: string;
   description: string;
+  contact_email: string;
+  location: string;
 };
 
 export type Research = {

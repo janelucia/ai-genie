@@ -22,9 +22,12 @@
             </Text>
           </div>
         </div>
-        <div class="flex gap-[var(--spacing-in-sections)] w-1/3">
+        <div
+          v-if="result.location"
+          class="flex gap-[var(--spacing-in-sections)] w-1/3"
+        >
           <Text>📍</Text>
-          <Text> ??? </Text>
+          <Text> {{ result.location }} </Text>
         </div>
       </div>
       <Text>
@@ -116,7 +119,7 @@
     </Alert>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h2"> Event Organizer </Heading>
-      <Text> Organizer: ??? </Text>
+      <Text> Organizer: {{ result.contact_email }} </Text>
     </div>
   </PageStructure>
 </template>
@@ -143,6 +146,8 @@ const result = ref<Events>({
   name: "",
   date: "",
   description: "",
+  contact_email: "",
+  location: "",
 });
 const name = ref("");
 const email = ref("");
