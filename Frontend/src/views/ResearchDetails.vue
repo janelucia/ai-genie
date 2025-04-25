@@ -32,7 +32,7 @@
       :href="'http://localhost:8000' + result.source_file"
       download
       target="_blank"
-      class="btn btn-accent text-base-100 w-full"
+      class="btn btn-secondary text-base-100 w-full"
     >
       Download Paper
     </a>
