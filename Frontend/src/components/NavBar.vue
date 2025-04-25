@@ -3,49 +3,16 @@
     <nav
       class="bg-primary w-full flex justify-center rounded-tl-lg rounded-tr-lg"
     >
-      <ul class="menu menu-horizontal flex-nowrap">
-        <li class="w-12 h-12">
-          <router-link class="w-full h-full" to="/">
+      <ul class="menu menu-horizontal flex-nowrap justify-evenly w-full">
+        <li v-for="(link, index) in links" :key="index">
+          <router-link
+            :to="link.to"
+            class="w-full h-full flex items-center justify-center"
+          >
             <img
-              src="../assets/icons/home.svg"
-              alt="Home"
-              class="w-full h-full"
-            />
-          </router-link>
-        </li>
-        <li class="w-12 h-12">
-          <router-link class="w-full h-full" to="/events">
-            <img
-              src="../assets/icons/events.svg"
-              alt="Events"
-              class="w-full h-full"
-            />
-          </router-link>
-        </li>
-        <li class="w-12 h-12">
-          <router-link class="w-full h-full" to="/chat">
-            <img
-              src="../assets/icons/chat.svg"
-              alt="Chat"
-              class="w-full h-full"
-            />
-          </router-link>
-        </li>
-        <li class="w-12 h-12">
-          <router-link class="w-full h-full block" to="/research">
-            <img
-              src="../assets/icons/research.svg"
-              alt="Research"
-              class="w-full h-full block"
-            />
-          </router-link>
-        </li>
-        <li class="w-12 h-12">
-          <router-link class="w-full h-full block" to="/researchers">
-            <img
-              src="../assets/icons/researcher.svg"
-              alt="Researchers"
-              class="w-full h-full block"
+              :src="link.icon"
+              :alt="link.alt"
+              class="w-8 h-8 object-contain aspect-square"
             />
           </router-link>
         </li>
@@ -53,3 +20,17 @@
     </nav>
   </div>
 </template>
+
+<script setup lang="ts">
+const links = [
+  { to: "/", icon: "src/assets/icons/home.svg", alt: "Home" },
+  { to: "/events", icon: "src/assets/icons/events.svg", alt: "Events" },
+  { to: "/chat", icon: "src/assets/icons/chat.svg", alt: "Chat" },
+  { to: "/research", icon: "src/assets/icons/research.svg", alt: "Research" },
+  {
+    to: "/researchers",
+    icon: "src/assets/icons/researcher.svg",
+    alt: "Researchers",
+  },
+];
+</script>
