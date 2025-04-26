@@ -137,9 +137,12 @@ import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import { format } from "date-fns";
 import PageStructure from "../components/PageStructure.vue";
+import { isUserSignedUp, signUpForEvent } from "../utils/helpers.ts";
 
 const route = useRoute();
-const id = route.params.id;
+const id = Array.isArray(route.params.id)
+  ? route.params.id[0]
+  : route.params.id;
 
 const result = ref<Events>({
   id: 0,
@@ -156,10 +159,6 @@ const submitted = ref(false);
 const emailTouched = ref(false);
 const nameTouched = ref(false);
 const showConfirmation = ref(false);
-
-if (localStorage.getItem(`signed-up-${id}`)) {
-  submitted.value = true;
-}
 
 const { data } = useApiFetch<Events>("events/" + id);
 
@@ -196,7 +195,7 @@ function handleSubmit() {
   console.log("From:", email.value);
   console.log("Message:", message.value);
 
-  localStorage.setItem(`signed-up-${id}`, "true");
+  signUpForEvent(id);
   submitted.value = true;
 
   showConfirmation.value = true;
@@ -224,5 +223,6 @@ function exportToICS(
 
 onMounted(() => {
   window.scrollTo(0, 0);
+  isUserSignedUp(id);
 });
 </script>

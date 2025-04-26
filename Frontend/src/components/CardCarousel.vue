@@ -21,10 +21,17 @@
         "
         :button-title="
           event
-            ? alreadySignedUp(item.id?.toString())
+            ? isUserSignedUp(item.id?.toString() ?? '')
               ? 'Already Signed Up'
               : 'Sign Up'
             : buttonTitle || 'Learn More'
+        "
+        :button-class="
+          event
+            ? isUserSignedUp(item.id?.toString() ?? '')
+              ? '!btn-accent'
+              : ''
+            : ''
         "
         :tooltip-text="
           tooltipText ||
@@ -52,7 +59,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import Card from "./Card.vue";
-import { alreadySignedUp } from "../utils/helpers.ts";
+import { isUserSignedUp } from "../utils/helpers.ts";
 
 const props = defineProps<{
   items: Array<{
