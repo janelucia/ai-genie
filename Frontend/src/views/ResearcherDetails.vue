@@ -107,6 +107,4 @@ watch(researchData, () => {
     );
   }
 });
-
-const keywords = ["Keyword 1", "Keyword 2", "Keyword 3"];
 </script>
