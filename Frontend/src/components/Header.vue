@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import router from "../router";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Chat } from "../types/types.ts";
 
@@ -74,8 +74,8 @@ const deleteChat = async () => {
     if (!chatId) {
       toastMessage.value = "No chat ID found.";
       toastClass.value = "alert-error";
-      showToast.value = true;
       modal.value?.close();
+      toastTimeout();
       return;
     }
 
@@ -97,8 +97,8 @@ const deleteChat = async () => {
     if (!data.value?.messages || data.value.messages.length === 0) {
       toastMessage.value = "No messages to delete.";
       toastClass.value = "alert-error";
-      showToast.value = true;
       modal.value?.close();
+      toastTimeout();
       return;
     }
 
@@ -108,32 +108,47 @@ const deleteChat = async () => {
         "Content-Type": "application/json",
       },
     });
-    toastMessage.value = "Chat deleted successfully!";
-    toastClass.value = "alert-success";
-    localStorage.removeItem("chat-id");
 
-    showToast.value = true;
+    localStorage.setItem("toast-message", "Chat deleted successfully!");
+    localStorage.setItem("toast-class", "alert-success");
+    localStorage.setItem("toast-should-show", "true");
+
+    localStorage.removeItem("chat-id");
 
     modal.value?.close();
 
-    setTimeout(() => {
-      showToast.value = false;
-      window.location.reload();
-    }, 4000);
+    window.location.reload();
   } catch (e) {
     console.error("Error deleting chat:", e);
     toastMessage.value = "Error deleting chat. Please try again.";
     toastClass.value = "alert-error";
-
-    showToast.value = true;
-
-    setTimeout(() => {
-      showToast.value = false;
-    }, 4000);
+    toastTimeout();
   }
 };
 
 const openModal = () => {
   modal.value?.showModal();
 };
+
+const toastTimeout = () => {
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 4000);
+};
+
+onMounted(() => {
+  const shouldShowToast = localStorage.getItem("toast-should-show");
+
+  if (shouldShowToast === "true") {
+    toastMessage.value = localStorage.getItem("toast-message") || "";
+    toastClass.value = localStorage.getItem("toast-class") || "alert-success";
+    toastTimeout();
+
+    // cleanup after showing
+    localStorage.removeItem("toast-message");
+    localStorage.removeItem("toast-class");
+    localStorage.removeItem("toast-should-show");
+  }
+});
 </script>
