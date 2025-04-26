@@ -26,6 +26,7 @@
         placeholder-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
         link="/events/"
         vertical
+        event
       />
     </div>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">

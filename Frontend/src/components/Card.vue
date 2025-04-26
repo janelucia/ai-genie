@@ -58,7 +58,7 @@ const props = defineProps<{
   cardTitle: string;
   cardText?: string;
   cardDate?: string;
-  buttonTitle: string;
+  buttonTitle?: string;
   buttonClass?: string;
   link?: string;
   tooltipText?: string;

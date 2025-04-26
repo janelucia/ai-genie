@@ -39,6 +39,7 @@ import Calendar from "../components/Calendar.vue";
 import Text from "../components/Text.vue";
 import CollapseSection from "../components/CollapseSection.vue";
 import PageStructure from "../components/PageStructure.vue";
+import { alreadySignedUp } from "../utils/helpers.ts";
 
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);
@@ -60,10 +61,5 @@ function filterByDate(date: string) {
 function clearSelectedDate() {
   selectedDate.value = null;
   filtered.value = [];
-}
-
-function alreadySignedUp(id: string | undefined) {
-  if (!id) return false;
-  return !!localStorage.getItem(`signed-up-${id}`);
 }
 </script>
