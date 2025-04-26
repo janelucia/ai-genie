@@ -13,11 +13,14 @@
         @click="router.go(-1)"
       />
     </template>
-    <img
-      src="../assets/icons/logo.svg"
-      alt="Logo"
-      class="cursor-pointer h-10"
-    />
+
+    <div class="flex-grow flex items-center justify-center">
+      <img
+        src="../assets/icons/logo.svg"
+        alt="Logo"
+        class="cursor-pointer h-10"
+      />
+    </div>
 
     <template v-if="chat">
       <button class="btn btn-primary" @click="openModal">Delete Chat</button>
