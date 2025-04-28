@@ -1,7 +1,7 @@
 <template>
   <div
     role="alert"
-    class="alert"
+    class="alert z-10"
     :class="{
       'alert-success': success,
       'alert-info': info,

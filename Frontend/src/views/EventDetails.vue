@@ -94,19 +94,27 @@
         <button
           class="btn"
           :class="[
-            submitted
+            submitted || isUserSignedUp(id)
               ? 'btn-disabled bg-gray-400 border-gray-400 cursor-not-allowed flex-grow'
               : !isValidEmail || !name || !message
                 ? 'btn-disabled opacity-50 cursor-not-allowed w-full'
                 : 'btn-primary w-full',
           ]"
-          :disabled="submitted || !isValidEmail || !name || !message"
+          :disabled="
+            submitted ||
+            !isValidEmail ||
+            !name ||
+            !message ||
+            isUserSignedUp(id)
+          "
           @click="handleSubmit"
         >
-          {{ submitted ? "Already Signed Up" : "Sign Up" }}
+          {{
+            submitted || isUserSignedUp(id) ? "Already Signed Up" : "Sign Up"
+          }}
         </button>
         <button
-          v-if="submitted"
+          v-if="submitted || isUserSignedUp(id)"
           class="btn btn-secondary"
           @click="exportToICS(result.name, result.date)"
         >
@@ -114,8 +122,10 @@
         </button>
       </div>
     </fieldset>
-    <Alert v-if="showConfirmation" class="absolute top-0 right-0 m-4" success>
-      <Text> You have successfully signed up for the event! </Text>
+    <Alert v-if="showConfirmation" class="toast toast-top" success>
+      <Text class="text-wrap">
+        You have successfully signed up for the event!
+      </Text>
     </Alert>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h2"> Event Organizer </Heading>
