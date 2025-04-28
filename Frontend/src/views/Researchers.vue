@@ -49,7 +49,7 @@
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Researchers } from "../types/types.ts";
 import PageStructure from "../components/PageStructure.vue";
