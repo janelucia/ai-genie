@@ -29,7 +29,7 @@
       </label>
       <FilterModal
         v-if="data?.find((d) => d.keywords)"
-        :selected-keywords="storedSelectedKeywords"
+        :selected-keywords="selectedKeywords"
         ref="keywordModal"
         :keywords="data?.map((d) => d.keywords ?? '') ?? []"
         @filter="applyKeywordFilter"
@@ -57,10 +57,11 @@ import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
 import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
+import { useRoute, useRouter } from "vue-router";
 
+const route = useRoute();
+const router = useRouter();
 const keywordModal = ref();
-let storedSearchQuery = ref("");
-let storedSelectedKeywords = ref<string[]>([]);
 
 const { data } = useApiFetch<Research[]>("research");
 
@@ -70,31 +71,28 @@ const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
     (research: Research) => [research.name, research.summary ?? ""],
   );
 
-watch(searchQuery, () => {
-  storedSearchQuery.value = searchQuery.value;
-  localStorage.setItem("searchQuery-research", searchQuery.value);
-});
-
-watch(selectedKeywords, () => {
-  storedSelectedKeywords.value = selectedKeywords.value;
-  localStorage.setItem(
-    "selectedKeywords-research",
-    JSON.stringify(selectedKeywords.value),
-  );
-});
-
 onMounted(() => {
-  storedSearchQuery.value = localStorage.getItem("searchQuery-research") || "";
-  storedSelectedKeywords.value = JSON.parse(
-    localStorage.getItem("selectedKeywords-research") || "[]",
-  );
+  searchQuery.value = route.query.search?.toString() || "";
+  selectedKeywords.value = route.query.keywords
+    ? route.query.keywords.toString().split(",")
+    : [];
+});
 
-  if (storedSearchQuery.value) {
-    searchQuery.value = storedSearchQuery.value;
-  }
+watch(searchQuery, (newQuery) => {
+  router.replace({
+    query: {
+      ...route.query,
+      search: newQuery || undefined,
+    },
+  });
+});
 
-  if (storedSelectedKeywords.value) {
-    selectedKeywords.value = storedSelectedKeywords.value;
-  }
+watch(selectedKeywords, (newKeywords) => {
+  router.replace({
+    query: {
+      ...route.query,
+      keywords: newKeywords.length ? newKeywords.join(",") : undefined,
+    },
+  });
 });
 </script>

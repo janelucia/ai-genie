@@ -30,19 +30,19 @@
       <FilterModal
         v-if="data?.find((d) => d.keywords)"
         ref="keywordModal"
-        :selected-keywords="storedSelectedKeywords"
+        :selected-keywords="selectedKeywords"
         :keywords="data?.map((d) => d.keywords ?? '') ?? []"
         @filter="applyKeywordFilter"
       />
     </div>
     <Card
       v-for="researcher in filteredResults"
-      :key="researcher.id"
+      :key="researcher.id ?? ''"
       card-image="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
       card-image-alt="Some Profile Picture"
       :card-title="`${researcher.firstname} ${researcher.surname}`"
       button-title="Learn more"
-      :link="'/researchers/' + researcher.id.toString()"
+      :link="'/researchers/' + (researcher.id?.toString() ?? '')"
       :card-text="researcher.about"
       vertical
     />
@@ -56,12 +56,14 @@ import type { Researchers } from "../types/types.ts";
 import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
 import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
+import { useRoute, useRouter } from "vue-router";
+
+const route = useRoute();
+const router = useRouter();
 
 const keywordModal = ref();
 
 const { data } = useApiFetch<Researchers[]>("researchers");
-let storedSearchQuery = ref("");
-let storedSelectedKeywords = ref<string[]>([]);
 
 const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
   useSearchAndFilter(
@@ -69,32 +71,28 @@ const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
     (researcher: Researchers) => [researcher.firstname, researcher.surname],
   );
 
-watch(searchQuery, () => {
-  storedSearchQuery.value = searchQuery.value;
-  localStorage.setItem("searchQuery-researcher", searchQuery.value);
-});
-
-watch(selectedKeywords, () => {
-  storedSelectedKeywords.value = selectedKeywords.value;
-  localStorage.setItem(
-    "selectedKeywords-researcher",
-    JSON.stringify(selectedKeywords.value),
-  );
-});
-
 onMounted(() => {
-  storedSearchQuery.value =
-    localStorage.getItem("searchQuery-researcher") || "";
-  storedSelectedKeywords.value = JSON.parse(
-    localStorage.getItem("selectedKeywords-researcher") || "[]",
-  );
+  searchQuery.value = route.query.search?.toString() || "";
+  selectedKeywords.value = route.query.keywords
+    ? route.query.keywords.toString().split(",")
+    : [];
+});
 
-  if (storedSearchQuery.value) {
-    searchQuery.value = storedSearchQuery.value;
-  }
+watch(searchQuery, (newQuery) => {
+  router.replace({
+    query: {
+      ...route.query,
+      search: newQuery || undefined,
+    },
+  });
+});
 
-  if (storedSelectedKeywords.value) {
-    selectedKeywords.value = storedSelectedKeywords.value;
-  }
+watch(selectedKeywords, (newKeywords) => {
+  router.replace({
+    query: {
+      ...route.query,
+      keywords: newKeywords.length ? newKeywords.join(",") : undefined,
+    },
+  });
 });
 </script>
