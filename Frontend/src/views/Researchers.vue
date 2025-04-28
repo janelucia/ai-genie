@@ -30,6 +30,7 @@
       <FilterModal
         v-if="data?.find((d) => d.keywords)"
         ref="keywordModal"
+        :selected-keywords="storedSelectedKeywords"
         :keywords="data?.map((d) => d.keywords ?? '') ?? []"
         @filter="applyKeywordFilter"
       />
@@ -49,7 +50,7 @@
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Researchers } from "../types/types.ts";
 import PageStructure from "../components/PageStructure.vue";
@@ -59,9 +60,41 @@ import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
 const keywordModal = ref();
 
 const { data } = useApiFetch<Researchers[]>("researchers");
+let storedSearchQuery = ref("");
+let storedSelectedKeywords = ref<string[]>([]);
 
-const { searchQuery, filteredResults, applyKeywordFilter } = useSearchAndFilter(
-  computed(() => data.value ?? []),
-  (researcher: Researchers) => [researcher.firstname, researcher.surname],
-);
+const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
+  useSearchAndFilter(
+    computed(() => data.value ?? []),
+    (researcher: Researchers) => [researcher.firstname, researcher.surname],
+  );
+
+watch(searchQuery, () => {
+  storedSearchQuery.value = searchQuery.value;
+  localStorage.setItem("searchQuery-researcher", searchQuery.value);
+});
+
+watch(selectedKeywords, () => {
+  storedSelectedKeywords.value = selectedKeywords.value;
+  localStorage.setItem(
+    "selectedKeywords-researcher",
+    JSON.stringify(selectedKeywords.value),
+  );
+});
+
+onMounted(() => {
+  storedSearchQuery.value =
+    localStorage.getItem("searchQuery-researcher") || "";
+  storedSelectedKeywords.value = JSON.parse(
+    localStorage.getItem("selectedKeywords-researcher") || "[]",
+  );
+
+  if (storedSearchQuery.value) {
+    searchQuery.value = storedSearchQuery.value;
+  }
+
+  if (storedSelectedKeywords.value) {
+    selectedKeywords.value = storedSelectedKeywords.value;
+  }
+});
 </script>

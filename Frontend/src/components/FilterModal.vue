@@ -19,7 +19,7 @@
             <input
               type="checkbox"
               :value="keyword"
-              :checked="selectedKeywords.includes(keyword)"
+              :checked="localSelectedKeywords.includes(keyword)"
               @change="toggleKeyword(keyword)"
               class="checkbox checkbox-secondary"
             />
@@ -41,6 +41,7 @@ import Text from "./Text.vue";
 
 const props = defineProps<{
   keywords: string[];
+  selectedKeywords: string[];
 }>();
 
 const emit = defineEmits<{
@@ -48,7 +49,7 @@ const emit = defineEmits<{
 }>();
 
 const modalRef = ref<HTMLDialogElement | null>(null);
-const selectedKeywords = ref<string[]>([]);
+const localSelectedKeywords = ref<string[]>([]);
 
 const uniqueKeywords = computed(() => {
   const keywords = props.keywords
@@ -59,21 +60,22 @@ const uniqueKeywords = computed(() => {
 });
 
 function toggleKeyword(keyword: string) {
-  if (selectedKeywords.value.includes(keyword)) {
-    selectedKeywords.value = selectedKeywords.value.filter(
+  if (localSelectedKeywords.value.includes(keyword)) {
+    localSelectedKeywords.value = localSelectedKeywords.value.filter(
       (k) => k !== keyword,
     );
   } else {
-    selectedKeywords.value.push(keyword);
+    localSelectedKeywords.value.push(keyword);
   }
 }
 
 function applyFilter() {
-  emit("filter", selectedKeywords.value);
+  emit("filter", localSelectedKeywords.value);
   close();
 }
 
 function open() {
+  localSelectedKeywords.value = [...props.selectedKeywords];
   modalRef.value?.showModal();
 }
 

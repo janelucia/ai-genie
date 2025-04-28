@@ -29,6 +29,7 @@
       </label>
       <FilterModal
         v-if="data?.find((d) => d.keywords)"
+        :selected-keywords="storedSelectedKeywords"
         ref="keywordModal"
         :keywords="data?.map((d) => d.keywords ?? '') ?? []"
         @filter="applyKeywordFilter"
@@ -49,7 +50,7 @@
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Research } from "../types/types.ts";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
@@ -58,11 +59,42 @@ import FilterModal from "../components/FilterModal.vue";
 import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
 
 const keywordModal = ref();
+let storedSearchQuery = ref("");
+let storedSelectedKeywords = ref<string[]>([]);
 
 const { data } = useApiFetch<Research[]>("research");
 
-const { searchQuery, filteredResults, applyKeywordFilter } = useSearchAndFilter(
-  computed(() => data.value ?? []),
-  (research: Research) => [research.name, research.summary ?? ""],
-);
+const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
+  useSearchAndFilter(
+    computed(() => data.value ?? []),
+    (research: Research) => [research.name, research.summary ?? ""],
+  );
+
+watch(searchQuery, () => {
+  storedSearchQuery.value = searchQuery.value;
+  localStorage.setItem("searchQuery-research", searchQuery.value);
+});
+
+watch(selectedKeywords, () => {
+  storedSelectedKeywords.value = selectedKeywords.value;
+  localStorage.setItem(
+    "selectedKeywords-research",
+    JSON.stringify(selectedKeywords.value),
+  );
+});
+
+onMounted(() => {
+  storedSearchQuery.value = localStorage.getItem("searchQuery-research") || "";
+  storedSelectedKeywords.value = JSON.parse(
+    localStorage.getItem("selectedKeywords-research") || "[]",
+  );
+
+  if (storedSearchQuery.value) {
+    searchQuery.value = storedSearchQuery.value;
+  }
+
+  if (storedSelectedKeywords.value) {
+    selectedKeywords.value = storedSelectedKeywords.value;
+  }
+});
 </script>
