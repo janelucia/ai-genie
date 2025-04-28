@@ -8,6 +8,8 @@ TBC
 install dependencies:
 ```
     create and activate virtual environment
+        - creation command 'python -m venv .venv'
+        - activation is sytem dependent
     install requirements through 'pip install -r requirements.txt' command
 ```
 
@@ -30,6 +32,12 @@ loading a mock_db.json:
 ```
     go to core directory ('Backend/core')
     type 'python manage.py loaddata mock_db.json'
+```
+
+setting up vector database:
+```
+    On windows refer to: https://milvus.io/docs/install_standalone-windows.md
+    On linux no further actions need to be taken
 ```
 
 start dev env:
