@@ -27,7 +27,12 @@ export type Research = {
   summary?: string;
   source_file?: string;
   keywords?: string;
-  researchers_related?: string;
+  researchers_related?: {
+    id?: number;
+    firstname: string;
+    surname: string;
+    img?: string;
+  }[];
 };
 
 export type Chat = {
