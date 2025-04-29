@@ -34,6 +34,7 @@
       >
       <div class="card-actions">
         <button
+          v-if="link"
           class="btn btn-secondary w-full whitespace-nowrap"
           :class="buttonClass"
           @click="router.push(link)"
@@ -57,7 +58,7 @@ const props = defineProps<{
   cardImageAlt: string;
   cardTitle: string;
   cardText?: string;
-  cardDate?: string;
+  cardDate?: Date | string;
   buttonTitle?: string;
   buttonClass?: string;
   link?: string;
