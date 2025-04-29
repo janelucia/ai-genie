@@ -14,7 +14,7 @@
       class="card-body p-0 gap-[var(--spacing-in-sections)]"
       :class="{ 'pr-[var(--spacing-in-sections)]': vertical }"
     >
-      <Heading heading="h2" class="card-title" :class="{ 'pl-4': !vertical }">{{
+      <Heading heading="h3" class="card-title" :class="{ 'pl-4': !vertical }">{{
         cardTitle
       }}</Heading>
       <div
