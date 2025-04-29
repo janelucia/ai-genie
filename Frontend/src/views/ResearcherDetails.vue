@@ -6,20 +6,20 @@
       <Avatar class="w-32" />
       <div>
         <Heading heading="h1">
-          {{ result.firstname }} {{ result.surname }}
+          {{ data?.firstname }} {{ data?.surname }}
         </Heading>
         <Text>
-          {{ result.position }}
+          {{ data?.position }}
         </Text>
       </div>
     </div>
     <Keywords
-      v-if="result.keywords"
-      :keywords="keywordsStringToArray(result.keywords)"
+      v-if="data?.keywords"
+      :keywords="keywordsStringToArray(data?.keywords)"
     />
     <CollapseSection collapse-title="About">
       <Text class="break-words break-all whitespace-pre-wrap">
-        {{ result.about }}
+        {{ data?.about }}
       </Text>
     </CollapseSection>
     <CollapseSection collapse-title="Publications & Research">
@@ -42,16 +42,16 @@
       </div>
       <div class="w-full flex gap-[var(--spacing-in-sections)]">
         <a
-          v-if="result.email"
+          v-if="data?.email"
           class="btn btn-secondary flex-grow"
-          :href="'mailto:' + result.email"
+          :href="'mailto:' + data?.email"
         >
           <Text button>Contact via E-Mail</Text>
         </a>
         <a
-          v-if="result.linkedIn"
+          v-if="data?.linkedIn"
           class="btn btn-outline btn-secondary"
-          :href="result.linkedIn"
+          :href="data?.linkedIn"
           target="_blank"
         >
           LinkedIn
@@ -78,31 +78,16 @@ import PageStructure from "../components/PageStructure.vue";
 const route = useRoute();
 const id = route.params.id;
 
-const result = ref<Researchers>({
-  id: 0,
-  firstname: "",
-  surname: "",
-  position: "",
-  about: "",
-  related_research: "",
-});
-
 const relatedResearch = ref<Research[]>([]);
 
-const { data: researchersData } = useApiFetch<Researchers>("researchers/" + id);
+const { data } = useApiFetch<Researchers>("researchers/" + id);
 const { data: researchData } = useApiFetch<Research[]>("research");
-
-watch(researchersData, () => {
-  if (researchersData.value) {
-    result.value = researchersData.value;
-  }
-});
 
 watch(researchData, () => {
   if (researchData.value) {
     relatedResearch.value = researchData.value.filter(
       (research) =>
-        Array.isArray(result.value.related_research) &&
+        Array.isArray(data.value.related_research) &&
         research.id === Number(id),
     );
   }

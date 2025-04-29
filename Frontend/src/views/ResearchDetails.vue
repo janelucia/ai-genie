@@ -1,5 +1,5 @@
 <template>
-  <PageStructure :title="researchData?.name">
+  <PageStructure>
     <PictureWithToolTip
       :image="ResearchBanner"
       image-alt="ResearchBanner"
