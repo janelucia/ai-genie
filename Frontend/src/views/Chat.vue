@@ -1,6 +1,16 @@
 <template>
-  <Header no-chat />
-  <div class="overflow-y-auto max-h-[90vh]">
+  <Header chat />
+  <div
+    class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
+  >
+    <div class="w-full flex justify-center">
+      <video
+        autoplay
+        loop
+        src="../assets/video/blinking-pepper.mp4"
+        class="w-full xs:w-1/2"
+      />
+    </div>
     <div
       v-for="(msg, i) in messages"
       :key="i"
@@ -10,8 +20,8 @@
         :class="[
           'p-2 rounded w-fit',
           msg.ai_response
-            ? 'bg-base-300 self-start'
-            : 'bg-primary text-primary-content self-end',
+            ? 'bg-neutral text-neutral-content self-start'
+            : 'bg-secondary text-base-100 self-end',
         ]"
       >
         <Text>
@@ -19,8 +29,12 @@
         </Text>
       </div>
       <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
-        {{ msg.ai_response ? "AI" : "You" }} - {{ formatDate(msg.created) }}
-        {{ formatTime(msg.created) }}
+        {{ msg.ai_response ? "AI" : "You" }} -
+        {{
+          msg.created
+            ? `${formatDate(msg.created)} ${formatTime(msg.created)}`
+            : "Unknown time"
+        }}
       </Text>
     </div>
     <div v-if="isLoading" class="self-start text-sm text-gray-500">
@@ -35,7 +49,7 @@
       placeholder="Type your message..."
       @keyup.enter="sendMessage"
     />
-    <button class="btn btn-primary" @click="sendMessage">Send</button>
+    <button class="btn btn-secondary" @click="sendMessage">Send</button>
   </div>
 </template>
 
@@ -52,10 +66,9 @@ const result = ref<Chat | null>(null);
 const messages = ref<Message[]>([]);
 
 const LOCAL_STORAGE_KEY = "chat-id";
-
 const isLoading = ref(false);
 
-const scrollToBottom = (behavior: string) => {
+const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
   const bottomRef = document.getElementById("bottomRef");
   if (bottomRef) {
     bottomRef.scrollIntoView({ behavior });
@@ -77,54 +90,55 @@ const sendMessage = async () => {
 
   messages.value.push(userMessage);
   input.value = "";
-  isLoading.value = true;
 
   await nextTick();
-  scrollToBottom("smooth");
+  scrollToBottom();
 
+  await useChatAPI(chatId, userMessage);
+};
+
+const useChatAPI = async (chatId: string, userMessage: Message) => {
   try {
+    isLoading.value = true;
+
     await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userMessage),
     });
 
-    const waitForAIResponse = async () => {
-      const MAX_TRIES = 30;
-      const DELAY_MS = 1000;
-      let tries = 0;
+    const MAX_TRIES = 30;
+    const DELAY_MS = 1000;
+    let tries = 0;
 
-      while (tries < MAX_TRIES) {
-        const { data } = useApiFetch<Chat>("chats/" + chatId);
-        await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
-        tries++;
+    while (tries < MAX_TRIES) {
+      const { data } = await useApiFetch<Chat>("chats/" + chatId);
+      await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+      tries++;
 
-        if (data.value?.messages?.length > messages.value.length) {
-          messages.value = data.value.messages;
-          return;
-        }
+      if (
+        data.value?.messages?.length &&
+        data.value.messages.length > messages.value.length
+      ) {
+        messages.value = data.value.messages;
+        return;
       }
+    }
 
-      console.warn("AI response timeout");
-    };
-
-    await waitForAIResponse();
+    console.warn("AI response timeout");
   } catch (err) {
-    console.error("Error during message send or AI response wait:", err);
+    console.error("Chat API error:", err);
   } finally {
     isLoading.value = false;
-    scrollToBottom("smooth");
   }
 };
 
 onMounted(async () => {
-  const id = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
   messages.value = [];
 
-  if (id) {
-    const { data } = useApiFetch<Chat>("chats/" + id);
+  if (chatId) {
+    const { data } = useApiFetch<Chat>("chats/" + chatId);
 
     const waitForData = () =>
       new Promise<void>((resolve) => {
@@ -143,35 +157,39 @@ onMounted(async () => {
       messages.value = data.value.messages;
     }
 
+    const queuedMsg = localStorage.getItem("chat-message-research");
+    if (queuedMsg) {
+      const msg: Message = {
+        content: queuedMsg,
+        ai_response: false,
+        created: new Date(),
+      };
+      messages.value.push(msg);
+      localStorage.removeItem("chat-message-research");
+      await useChatAPI(chatId, msg);
+    }
+
     await nextTick();
     scrollToBottom("instant");
   } else {
-    const response = await fetch("http://localhost:8000/api/chats/", {
+    const res = await fetch("http://localhost:8000/api/chats/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
+    const newChat = await res.json();
+    result.value = newChat;
 
-    const data = await response.json();
-    result.value = data;
-
-    if (data?.id) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, data.id);
+    if (newChat?.id) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, newChat.id);
     }
   }
 });
 
 watch(
-  () => result.value,
-  async (chat) => {
-    if (chat?.chat?.id) {
-      const { data } = useApiFetch<Chat>("chats/" + chat.chat.id);
-
-      if (data.value?.messages?.length > messages.value.length) {
-        messages.value = data.value.messages;
-      }
-    }
+  [messages, isLoading],
+  async () => {
+    await nextTick();
+    scrollToBottom();
   },
   { deep: true },
 );

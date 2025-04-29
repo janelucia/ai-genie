@@ -3,6 +3,11 @@ export type Researchers = {
   firstname: string;
   surname: string;
   img?: string;
+  position: string;
+  about: string;
+  email?: string;
+  linkedIn?: string;
+  keywords?: string;
   related_research?: string;
 };
 
@@ -11,14 +16,23 @@ export type Events = {
   name: string;
   date: string;
   img?: string;
+  description: string;
+  contact_email: string;
+  location: string;
 };
 
 export type Research = {
   id?: number;
   name: string;
-  summary: string;
+  summary?: string;
   source_file?: string;
-  researchers_related?: string;
+  keywords?: string;
+  researchers_related?: {
+    id?: number;
+    firstname: string;
+    surname: string;
+    img?: string;
+  }[];
 };
 
 export type Chat = {

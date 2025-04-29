@@ -1,8 +1,5 @@
 <template>
-  <div class="flex flex-col gap-[var(--spacing-between-sections)]">
-    <router-link to="/chat">
-      <FloatChatButton class="fixed top-0 right-0 m-4 z-10" />
-    </router-link>
+  <PageStructure no-back>
     <img src="../assets/img/logo.png" alt="logo" />
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -14,7 +11,7 @@
             Lab. Have fun exploring!
           </Text>
           <router-link to="/chat">
-            <button class="btn btn-primary w-full">Try it out!</button>
+            <button class="btn btn-secondary w-full">Try it out!</button>
           </router-link>
         </div>
       </Alert>
@@ -28,6 +25,8 @@
         banner-image-alt="Event Banner"
         placeholder-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
         link="/events/"
+        vertical
+        event
       />
     </div>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -40,7 +39,7 @@
         link="/research/"
       />
     </div>
-  </div>
+  </PageStructure>
 </template>
 
 <script setup lang="ts">
@@ -53,7 +52,7 @@ import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import Alert from "../components/Alert.vue";
 import Text from "../components/Text.vue";
 import CardCarousel from "../components/CardCarousel.vue";
-import FloatChatButton from "../components/FloatChatButton.vue";
+import PageStructure from "../components/PageStructure.vue";
 
 const researchResult = ref<Research[]>([]);
 const eventsResult = ref<Events[]>([]);

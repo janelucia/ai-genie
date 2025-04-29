@@ -1,5 +1,5 @@
 <template>
-  <component :is="headingTag" :class="headingClass">
+  <component :is="headingTag" class="text-secondary" :class="headingClass">
     <slot />
   </component>
 </template>

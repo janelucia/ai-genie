@@ -1,9 +1,5 @@
 <template>
-  <Header :header-title="'Research ' + id" />
-  <div class="pt-24 flex flex-col items-center justify-center gap-7 w-full">
-    <Heading heading="h1" class="text-center">
-      {{ result.name }}
-    </Heading>
+  <PageStructure>
     <PictureWithToolTip
       :image="ResearchBanner"
       image-alt="ResearchBanner"
@@ -11,85 +7,65 @@
       picture-class="rounded"
     />
     <div
-      v-if="relatedResearchers.length"
+      v-if="data?.researchers_related?.length"
       class="carousel overflow-x-auto max-w-full px-4 space-x-4"
     >
       <div
-        v-for="researcher in relatedResearchers"
+        v-for="researcher in data.researchers_related"
         :key="researcher.id"
-        class="carousel-item w-24 shrink-0 flex flex-col items-center"
+        class="carousel-item w-24 shrink-0 flex flex-col items-center relative"
       >
         <button @click="router.push(`/researchers/${researcher.id}`)">
           <Avatar class="w-24" />
         </button>
-        <Text small class="text-center">
+        <Text
+          small
+          class="text-center badge badge-secondary h-fit absolute bottom-0 w-full"
+        >
           {{ researcher.firstname }} {{ researcher.surname }}
         </Text>
       </div>
     </div>
-    <Text class="w-full">{{ result.summary }}</Text>
-    <Keywords :keywords="keywords" />
-    <CollapseSection collapse-title="Abstract">
-      <Text class="break-words break-all whitespace-pre-wrap">
-        This section is currently under construction!
-      </Text>
-    </CollapseSection>
+    <Text class="w-full">{{ data?.summary }}</Text>
+    <Keywords
+      v-if="data?.keywords"
+      :keywords="keywordsStringToArray(data.keywords)"
+    />
+    <button class="btn btn-primary w-full" @click="openChat">
+      <Text button>ELIF</Text>
+    </button>
     <a
-      :href="'http://localhost:8000' + result.source_file"
+      :href="'http://localhost:8000' + data?.source_file"
       download
       target="_blank"
-      class="btn btn-accent text-base-100 w-full"
+      class="btn btn-secondary text-base-100 w-full"
     >
       Download Paper
     </a>
-  </div>
+  </PageStructure>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
-import Header from "../components/Header.vue";
 import Text from "../components/Text.vue";
-import type { Research, Researchers } from "../types/types.ts";
-import CollapseSection from "../components/CollapseSection.vue";
+import type { Research } from "../types/types.ts";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
-import Heading from "../components/Heading.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import { keywordsStringToArray } from "../utils/helpers.ts";
+import PageStructure from "../components/PageStructure.vue";
 
 const route = useRoute();
 const id = route.params.id;
 
-const result = ref<Research>({
-  id: 0,
-  name: "",
-  summary: "",
-  source_file: "",
-});
+const { data } = useApiFetch<Research>("research/" + id);
 
-const relatedResearchers = ref<Researchers[]>([]);
-
-const { data: researchData } = useApiFetch<Research>("research/" + id);
-const { data: researchersData } = useApiFetch<Researchers[]>("researchers");
-
-watch(researchData, () => {
-  if (researchData.value) {
-    result.value = researchData.value;
-  }
-});
-
-watch(researchersData, () => {
-  if (researchersData.value) {
-    relatedResearchers.value = researchersData.value.filter(
-      (researcher) =>
-        Array.isArray(researcher.related_research) &&
-        researcher.related_research.includes(Number(id)),
-    );
-  }
-});
-
-const keywords = ["Keyword 1", "Keyword 2", "Keyword 3"];
+function openChat() {
+  const message = `Hello, I am interested in the research paper titled "${data?.value?.name}". Can you provide me with more information?`;
+  localStorage.setItem("chat-message-research", message);
+  router.push("/chat");
+}
 </script>

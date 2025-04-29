@@ -1,6 +1,5 @@
 <template>
-  <Header :header-title="result.name" />
-  <div class="pt-24 flex flex-col gap-[var(--spacing-between-sections)] w-full">
+  <PageStructure>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h1" class="text-center">
         {{ result.name }}
@@ -23,22 +22,16 @@
             </Text>
           </div>
         </div>
-        <div class="flex gap-[var(--spacing-in-sections)] w-1/3">
+        <div
+          v-if="result.location"
+          class="flex gap-[var(--spacing-in-sections)] w-1/3"
+        >
           <Text>📍</Text>
-          <Text> ??? </Text>
+          <Text> {{ result.location }} </Text>
         </div>
       </div>
       <Text>
-        This event offers a unique opportunity to connect, learn, and grow.
-        Whether you're here to gain new insights, meet like-minded individuals,
-        or explore something new, this experience is designed to inspire and
-        engage. Everyone is welcome — come as you are and take part in something
-        meaningful. (This needs to be replaced by the actual event description.)
-      </Text>
-      <Text>
-        This event is for everyone. No prior knowledge is required. Just bring
-        your enthusiasm and willingness to learn! (Must be replaced by the
-        actual event description.)
+        {{ result.description }}
       </Text>
     </div>
     <fieldset
@@ -101,19 +94,27 @@
         <button
           class="btn"
           :class="[
-            submitted
+            submitted || isUserSignedUp(id)
               ? 'btn-disabled bg-gray-400 border-gray-400 cursor-not-allowed flex-grow'
               : !isValidEmail || !name || !message
                 ? 'btn-disabled opacity-50 cursor-not-allowed w-full'
                 : 'btn-primary w-full',
           ]"
-          :disabled="submitted || !isValidEmail || !name || !message"
+          :disabled="
+            submitted ||
+            !isValidEmail ||
+            !name ||
+            !message ||
+            isUserSignedUp(id)
+          "
           @click="handleSubmit"
         >
-          {{ submitted ? "Already Signed Up" : "Sign Up" }}
+          {{
+            submitted || isUserSignedUp(id) ? "Already Signed Up" : "Sign Up"
+          }}
         </button>
         <button
-          v-if="submitted"
+          v-if="submitted || isUserSignedUp(id)"
           class="btn btn-secondary"
           @click="exportToICS(result.name, result.date)"
         >
@@ -121,14 +122,16 @@
         </button>
       </div>
     </fieldset>
-    <Alert v-if="showConfirmation" class="absolute top-0 right-0 m-4" success>
-      <Text> You have successfully signed up for the event! </Text>
+    <Alert v-if="showConfirmation" class="toast toast-top z-10" success>
+      <Text class="text-wrap">
+        You have successfully signed up for the event!
+      </Text>
     </Alert>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h2"> Event Organizer </Heading>
-      <Text> Organizer: ??? </Text>
+      <Text> Organizer: {{ result.contact_email }} </Text>
     </div>
-  </div>
+  </PageStructure>
 </template>
 
 <script setup lang="ts">
@@ -136,7 +139,6 @@ import { useRoute } from "vue-router";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import { computed, onMounted, ref, watch } from "vue";
 import type { Events } from "../types/types.ts";
-import Header from "../components/Header.vue";
 import Heading from "../components/Heading.vue";
 import Text from "../components/Text.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -144,14 +146,21 @@ import Alert from "../components/Alert.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import { format } from "date-fns";
+import PageStructure from "../components/PageStructure.vue";
+import { isUserSignedUp, signUpForEvent } from "../utils/helpers.ts";
 
 const route = useRoute();
-const id = route.params.id;
+const id = Array.isArray(route.params.id)
+  ? route.params.id[0]
+  : route.params.id;
 
 const result = ref<Events>({
   id: 0,
   name: "",
   date: "",
+  description: "",
+  contact_email: "",
+  location: "",
 });
 const name = ref("");
 const email = ref("");
@@ -160,10 +169,6 @@ const submitted = ref(false);
 const emailTouched = ref(false);
 const nameTouched = ref(false);
 const showConfirmation = ref(false);
-
-if (localStorage.getItem(`signed-up-${id}`)) {
-  submitted.value = true;
-}
 
 const { data } = useApiFetch<Events>("events/" + id);
 
@@ -200,7 +205,7 @@ function handleSubmit() {
   console.log("From:", email.value);
   console.log("Message:", message.value);
 
-  localStorage.setItem(`signed-up-${id}`, "true");
+  signUpForEvent(id);
   submitted.value = true;
 
   showConfirmation.value = true;
@@ -228,5 +233,6 @@ function exportToICS(
 
 onMounted(() => {
   window.scrollTo(0, 0);
+  isUserSignedUp(id);
 });
 </script>

@@ -3,31 +3,34 @@
     <nav
       class="bg-primary w-full flex justify-center rounded-tl-lg rounded-tr-lg"
     >
-      <ul class="menu menu-horizontal flex-nowrap">
-        <li>
-          <router-link to="/">
-            <Text>Home</Text>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/events">
-            <Text>Events</Text>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/research">
-            <Text>Research</Text>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/researchers">
-            <Text>Researchers</Text>
+      <ul class="menu menu-horizontal flex-nowrap justify-evenly w-full">
+        <li v-for="(link, index) in links" :key="index">
+          <router-link
+            :to="link.to"
+            class="w-full h-full flex items-center justify-center"
+          >
+            <img
+              :src="link.icon"
+              :alt="link.alt"
+              class="w-8 h-8 object-contain aspect-square"
+            />
           </router-link>
         </li>
       </ul>
     </nav>
   </div>
 </template>
+
 <script setup lang="ts">
-import Text from "./Text.vue";
+const links = [
+  { to: "/", icon: "src/assets/icons/home.svg", alt: "Home" },
+  { to: "/events", icon: "src/assets/icons/events.svg", alt: "Events" },
+  { to: "/chat", icon: "src/assets/icons/chat.svg", alt: "Chat" },
+  { to: "/research", icon: "src/assets/icons/research.svg", alt: "Research" },
+  {
+    to: "/researchers",
+    icon: "src/assets/icons/researcher.svg",
+    alt: "Researchers",
+  },
+];
 </script>

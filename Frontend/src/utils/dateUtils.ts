@@ -1,4 +1,4 @@
-export function formatDate(date: string): string {
+export function formatDate(date: Date | string): string {
   const d = new Date(date);
   if (isNaN(d.getTime())) {
     console.warn("Invalid date passed to formatDate:", date);
@@ -12,7 +12,7 @@ export function formatDate(date: string): string {
   }).format(d);
 }
 
-export function formatTime(date: string): string {
+export function formatTime(date: Date | string): string {
   const d = new Date(date);
   if (isNaN(d.getTime())) {
     console.warn("Invalid date passed to formatTime:", date);

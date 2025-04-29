@@ -1,19 +1,32 @@
 <template>
   <div
-    class="flex w-full justify-between gap-[var(--spacing-in-sections)] items-center fixed bg-base-100 top-0 left-0 z-10 p-4"
+    class="flex w-full justify-between gap-[var(--spacing-in-sections)] items-center fixed bg-primary top-0 left-0 z-10 px-4 py-2 rounded-b-lg"
   >
-    <button class="btn btn-secondary" @click="router.go(-1)">
-      <Text>Back</Text>
-    </button>
-    <Text class="flex-grow text-center font-bold"> Oslo Met AI Lab </Text>
-
-    <template v-if="!noChat">
-      <router-link to="/chat">
-        <FloatChatButton />
-      </router-link>
+    <template v-if="noBack">
+      <div class="w-8"></div>
     </template>
     <template v-else>
+      <img
+        src="../assets/icons/arrow-back.svg"
+        alt="Back"
+        class="w-8 h-8 cursor-pointer"
+        @click="router.go(-1)"
+      />
+    </template>
+
+    <div class="flex-grow flex items-center justify-center">
+      <img
+        src="../assets/icons/logo.svg"
+        alt="Logo"
+        class="cursor-pointer h-10"
+      />
+    </div>
+
+    <template v-if="chat">
       <button class="btn btn-primary" @click="openModal">Delete Chat</button>
+    </template>
+    <template v-else>
+      <div class="w-8"></div>
     </template>
 
     <dialog ref="modal" id="delete-confirmation-modal" class="modal">
@@ -43,14 +56,13 @@
 </template>
 <script setup lang="ts">
 import router from "../router";
-import Text from "./Text.vue";
-import FloatChatButton from "./FloatChatButton.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Chat } from "../types/types.ts";
 
 defineProps<{
-  noChat?: boolean;
+  chat?: boolean;
+  noBack?: boolean;
 }>();
 
 const modal = ref<HTMLDialogElement | null>(null);
@@ -65,8 +77,8 @@ const deleteChat = async () => {
     if (!chatId) {
       toastMessage.value = "No chat ID found.";
       toastClass.value = "alert-error";
-      showToast.value = true;
       modal.value?.close();
+      toastTimeout();
       return;
     }
 
@@ -88,8 +100,8 @@ const deleteChat = async () => {
     if (!data.value?.messages || data.value.messages.length === 0) {
       toastMessage.value = "No messages to delete.";
       toastClass.value = "alert-error";
-      showToast.value = true;
       modal.value?.close();
+      toastTimeout();
       return;
     }
 
@@ -99,32 +111,47 @@ const deleteChat = async () => {
         "Content-Type": "application/json",
       },
     });
-    toastMessage.value = "Chat deleted successfully!";
-    toastClass.value = "alert-success";
-    localStorage.removeItem("chat-id");
 
-    showToast.value = true;
+    localStorage.setItem("toast-message", "Chat deleted successfully!");
+    localStorage.setItem("toast-class", "alert-success");
+    localStorage.setItem("toast-should-show", "true");
+
+    localStorage.removeItem("chat-id");
 
     modal.value?.close();
 
-    setTimeout(() => {
-      showToast.value = false;
-      window.location.reload();
-    }, 4000);
+    window.location.reload();
   } catch (e) {
     console.error("Error deleting chat:", e);
     toastMessage.value = "Error deleting chat. Please try again.";
     toastClass.value = "alert-error";
-
-    showToast.value = true;
-
-    setTimeout(() => {
-      showToast.value = false;
-    }, 4000);
+    toastTimeout();
   }
 };
 
 const openModal = () => {
   modal.value?.showModal();
 };
+
+const toastTimeout = () => {
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 4000);
+};
+
+onMounted(() => {
+  const shouldShowToast = localStorage.getItem("toast-should-show");
+
+  if (shouldShowToast === "true") {
+    toastMessage.value = localStorage.getItem("toast-message") || "";
+    toastClass.value = localStorage.getItem("toast-class") || "alert-success";
+    toastTimeout();
+
+    // cleanup after showing
+    localStorage.removeItem("toast-message");
+    localStorage.removeItem("toast-class");
+    localStorage.removeItem("toast-should-show");
+  }
+});
 </script>

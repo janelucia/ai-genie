@@ -1,70 +1,98 @@
 <template>
-  <Header headerTitle="Researchers" />
-  <div class="pt-24 flex flex-col items-center justify-center gap-7">
-    <Heading heading="h1" class="text-center">Researchers</Heading>
-    <label class="input w-full">
-      <svg
-        class="h-[1em] opacity-50"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-      >
-        <g
-          stroke-linejoin="round"
-          stroke-linecap="round"
-          stroke-width="2.5"
-          fill="none"
-          stroke="currentColor"
+  <PageStructure title="Researchers">
+    <div
+      class="w-full flex justify-between items-center gap-[var(--spacing-in-sections)]"
+    >
+      <label class="input w-full">
+        <svg
+          class="h-[1em] opacity-50"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
         >
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.3-4.3"></path>
-        </g>
-      </svg>
-      <input
-        v-model="searchQuery"
-        type="search"
-        class="grow"
-        placeholder="Search"
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </g>
+        </svg>
+        <input
+          v-model="searchQuery"
+          type="search"
+          class="grow"
+          placeholder="Search"
+        />
+      </label>
+      <FilterModal
+        v-if="data?.find((d) => d.keywords)"
+        ref="keywordModal"
+        :selected-keywords="selectedKeywords"
+        :keywords="data?.map((d) => d.keywords ?? '') ?? []"
+        @filter="applyKeywordFilter"
       />
-    </label>
+    </div>
     <Card
       v-for="researcher in filteredResults"
-      :key="researcher.id"
+      :key="researcher.id ?? ''"
       card-image="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
       card-image-alt="Some Profile Picture"
       :card-title="`${researcher.firstname} ${researcher.surname}`"
       button-title="Learn more"
-      :link="'/researchers/' + researcher.id.toString()"
-      card-text="This is a placeholder text for the researcher description. It should be replaced with the actual researcher description."
+      :link="'/researchers/' + (researcher.id?.toString() ?? '')"
+      :card-text="researcher.about"
       vertical
     />
-  </div>
+  </PageStructure>
 </template>
 <script setup lang="ts">
 import Card from "../components/Card.vue";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useApiFetch } from "../api/useApiFetch.ts";
 import type { Researchers } from "../types/types.ts";
-import Header from "../components/Header.vue";
-import Heading from "../components/Heading.vue";
+import PageStructure from "../components/PageStructure.vue";
+import FilterModal from "../components/FilterModal.vue";
+import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
+import { useRoute, useRouter } from "vue-router";
 
-const searchQuery = ref("");
-const result = ref<Researchers[]>([]);
+const route = useRoute();
+const router = useRouter();
+
+const keywordModal = ref();
 
 const { data } = useApiFetch<Researchers[]>("researchers");
 
-watch(data, () => {
-  if (data.value) {
-    result.value = data.value;
-  }
+const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
+  useSearchAndFilter(
+    computed(() => data.value ?? []),
+    (researcher: Researchers) => [researcher.firstname, researcher.surname],
+  );
+
+onMounted(() => {
+  searchQuery.value = route.query.search?.toString() || "";
+  selectedKeywords.value = route.query.keywords
+    ? route.query.keywords.toString().split(",")
+    : [];
 });
 
-const filteredResults = computed(() => {
-  return result.value.filter(
-    (research) =>
-      research.firstname
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase()) ||
-      research.surname.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  );
+watch(searchQuery, (newQuery) => {
+  router.replace({
+    query: {
+      ...route.query,
+      search: newQuery || undefined,
+    },
+  });
+});
+
+watch(selectedKeywords, (newKeywords) => {
+  router.replace({
+    query: {
+      ...route.query,
+      keywords: newKeywords.length ? newKeywords.join(",") : undefined,
+    },
+  });
 });
 </script>

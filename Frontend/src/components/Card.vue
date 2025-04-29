@@ -14,15 +14,16 @@
       class="card-body p-0 gap-[var(--spacing-in-sections)]"
       :class="{ 'pr-[var(--spacing-in-sections)]': vertical }"
     >
-      <Heading heading="h2" class="card-title" :class="{ 'pl-4': !vertical }">{{
+      <Heading heading="h3" class="card-title" :class="{ 'pl-4': !vertical }">{{
         cardTitle
       }}</Heading>
       <div
         v-if="cardDate"
-        class="flex gap-[var(--spacing-in-sections)] items-center justify-center whitespace-nowrap"
+        class="flex gap-[var(--spacing-in-sections)] justify-center"
       >
-        <Text :class="{ 'pl-4': !vertical }">
-          🗓️ {{ formattedDate }}, {{ formattedTime }}</Text
+        <Text>🗓️</Text>
+        <Text :class="{ 'pl-4 whitespace-nowrap': !vertical }">
+          {{ formattedDate }}, {{ formattedTime }}</Text
         >
       </div>
       <Text
@@ -33,7 +34,8 @@
       >
       <div class="card-actions">
         <button
-          class="btn btn-primary w-full whitespace-nowrap"
+          v-if="link"
+          class="btn btn-secondary w-full whitespace-nowrap"
           :class="buttonClass"
           @click="router.push(link)"
         >
@@ -56,8 +58,8 @@ const props = defineProps<{
   cardImageAlt: string;
   cardTitle: string;
   cardText?: string;
-  cardDate?: string;
-  buttonTitle: string;
+  cardDate?: Date | string;
+  buttonTitle?: string;
   buttonClass?: string;
   link?: string;
   tooltipText?: string;
