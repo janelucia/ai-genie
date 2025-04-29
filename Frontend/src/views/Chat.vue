@@ -3,12 +3,14 @@
   <div
     class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
-    <video
-      id="blinkingPepper"
-      autoplay
-      loop
-      src="../assets/video/blinking-pepper.mp4"
-    />
+    <div class="w-full flex justify-center">
+      <video
+        autoplay
+        loop
+        src="../assets/video/blinking-pepper.mp4"
+        class="w-full xs:w-1/2"
+      />
+    </div>
     <div
       v-for="(msg, i) in messages"
       :key="i"
@@ -27,8 +29,12 @@
         </Text>
       </div>
       <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
-        {{ msg.ai_response ? "AI" : "You" }} - {{ formatDate(msg.created) }}
-        {{ formatTime(msg.created) }}
+        {{ msg.ai_response ? "AI" : "You" }} -
+        {{
+          msg.created
+            ? `${formatDate(msg.created)} ${formatTime(msg.created)}`
+            : "Unknown time"
+        }}
       </Text>
     </div>
     <div v-if="isLoading" class="self-start text-sm text-gray-500">

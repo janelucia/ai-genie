@@ -42,6 +42,7 @@
   --font-roboto: "Roboto", sans-serif;
   --spacing-in-sections: 16px;
   --spacing-between-sections: 28px;
+  --breakpoint-xs: 25rem;
 }
 
 body {
