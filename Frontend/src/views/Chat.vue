@@ -12,8 +12,8 @@
         :class="[
           'p-2 rounded w-fit',
           msg.ai_response
-            ? 'bg-base-300 self-start'
-            : 'bg-primary text-primary-content self-end',
+            ? 'bg-neutral text-neutral-content self-start'
+            : 'bg-secondary text-base-100 self-end',
         ]"
       >
         <Text>

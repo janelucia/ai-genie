@@ -18,8 +18,8 @@
   --color-secondary-content: #fed501;
   --color-accent: #99002c;
   --color-accent-content: oklch(100% 0 0);
-  --color-neutral: #000064;
-  --color-neutral-content: #fed501;
+  --color-neutral: #EBEBFF;
+  --color-neutral-content: #000064;
   --color-info: #0000A3;
   --color-info-content: oklch(100% 0 0);
   --color-success: #429E5E;
