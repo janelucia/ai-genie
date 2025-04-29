@@ -1,7 +1,7 @@
 <template>
   <Header chat />
   <div
-    class="overflow-y-auto max-h-[90vh] pt-14 flex flex-col gap-[var(--spacing-in-sections)]"
+    class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
     <div
       v-for="(msg, i) in messages"
@@ -79,12 +79,16 @@ const sendMessage = async () => {
 
   messages.value.push(userMessage);
   input.value = "";
-  isLoading.value = true;
 
   await nextTick();
   scrollToBottom("smooth");
 
+  await useChatAPi(chatId, userMessage);
+};
+
+async function useChatAPi(chatId: string, userMessage: Message) {
   try {
+    isLoading.value = true;
     await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
       method: "POST",
       headers: {
@@ -119,7 +123,7 @@ const sendMessage = async () => {
     isLoading.value = false;
     scrollToBottom("smooth");
   }
-};
+}
 
 onMounted(async () => {
   const id = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -143,6 +147,19 @@ onMounted(async () => {
     if (data.value) {
       result.value = data.value;
       messages.value = data.value.messages;
+    }
+
+    if (localStorage.getItem("chat-message-research")) {
+      const message = localStorage.getItem("chat-message-research");
+      if (message) {
+        messages.value.push({
+          content: message,
+          ai_response: false,
+          created: new Date(),
+        });
+        localStorage.removeItem("chat-message-research");
+      }
+      await useChatAPi(id, messages.value[messages.value.length - 1]);
     }
 
     await nextTick();

@@ -31,6 +31,9 @@
       v-if="data?.keywords"
       :keywords="keywordsStringToArray(data.keywords)"
     />
+    <button class="btn btn-primary w-full" @click="openChat">
+      <Text button>ELIF</Text>
+    </button>
     <a
       :href="'http://localhost:8000' + data?.source_file"
       download
@@ -59,4 +62,10 @@ const route = useRoute();
 const id = route.params.id;
 
 const { data } = useApiFetch<Research>("research/" + id);
+
+function openChat() {
+  const message = `Hello, I am interested in the research paper titled "${data?.value?.name}". Can you provide me with more information?`;
+  localStorage.setItem("chat-message-research", message);
+  router.push("/chat");
+}
 </script>
