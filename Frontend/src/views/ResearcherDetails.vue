@@ -87,7 +87,7 @@ watch(researchData, () => {
   if (researchData.value) {
     relatedResearch.value = researchData.value.filter(
       (research) =>
-        Array.isArray(data.value.related_research) &&
+        Array.isArray(data?.value?.related_research) &&
         research.id === Number(id),
     );
   }
