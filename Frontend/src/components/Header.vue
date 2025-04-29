@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex w-full justify-between gap-[var(--spacing-in-sections)] items-center fixed bg-base-100 top-0 left-0 z-10 p-4"
+    class="flex w-full justify-between gap-[var(--spacing-in-sections)] items-center fixed bg-primary top-0 left-0 z-10 px-4 pt-4 pb-1 rounded-b-lg"
   >
     <template v-if="noBack">
       <div class="w-8"></div>
