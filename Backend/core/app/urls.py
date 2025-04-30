@@ -20,6 +20,8 @@ urlpatterns = [
     # messages endpoints
     path('message-ai/<int:chat_id>/', view = AddMessageWithAIResponse.as_view()),
     path('clear/<int:chat_id>/', view = ClearMessagesByChatID.as_view()),
+    # email endpoints
+    path('email/', view = EmailView.as_view()),
     # vector db endpoints
     path('vector-db/', view = VectorDB.as_view()),
     # testing files endpoints
