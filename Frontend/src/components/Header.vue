@@ -23,7 +23,9 @@
     </div>
 
     <template v-if="chat">
-      <button class="btn btn-primary" @click="openModal">Delete Chat</button>
+      <button @click="openModal">
+        <img src="../assets/icons/trash-can.svg" alt="Delete icon" />
+      </button>
     </template>
     <template v-else>
       <div class="w-8"></div>
