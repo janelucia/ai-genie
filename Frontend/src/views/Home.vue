@@ -1,6 +1,13 @@
 <template>
   <PageStructure no-back>
-    <img src="../assets/img/logo.png" alt="logo" />
+    <div class="w-full flex justify-center">
+      <video
+        autoplay
+        loop
+        src="../assets/video/waving-pepper.mp4"
+        class="w-full xs:w-1/2"
+      />
+    </div>
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <Heading heading="h2"> Whats new? </Heading>
