@@ -4,12 +4,22 @@
     class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
     <div class="w-full flex justify-center">
-      <video
-        autoplay
-        loop
-        src="../assets/video/blinking-pepper.mp4"
-        class="w-full xs:w-1/2"
-      />
+      <template v-if="isLoading">
+        <video
+          autoplay
+          loop
+          src="../assets/video/talking-pepper.mp4"
+          class="w-full xs:w-1/2"
+        />
+      </template>
+      <template v-else>
+        <video
+          autoplay
+          loop
+          src="../assets/video/blinking-pepper.mp4"
+          class="w-full xs:w-1/2"
+        />
+      </template>
     </div>
     <div
       v-for="(msg, i) in messages"
@@ -29,7 +39,7 @@
         </Text>
       </div>
       <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
-        {{ msg.ai_response ? "AI" : "You" }} -
+        {{ msg.ai_response ? "AIGenie" : "You" }} -
         {{
           msg.created
             ? `${formatDate(msg.created)} ${formatTime(msg.created)}`
@@ -38,7 +48,7 @@
       </Text>
     </div>
     <div v-if="isLoading" class="self-start text-sm text-gray-500">
-      AI is typing…
+      AIGenie is typing…
     </div>
     <div id="bottomRef" class="h-14"></div>
   </div>
