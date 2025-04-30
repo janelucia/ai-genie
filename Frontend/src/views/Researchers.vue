@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import { computed, onMounted, ref, watch } from "vue";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import type { Researchers } from "../types/types.ts";
 import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
@@ -63,7 +63,7 @@ const router = useRouter();
 
 const keywordModal = ref();
 
-const { data } = useApiFetch<Researchers[]>("researchers");
+const { data } = useApiRequest<Researchers[]>("researchers");
 
 const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
   useSearchAndFilter(

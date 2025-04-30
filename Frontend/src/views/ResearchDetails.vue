@@ -34,7 +34,7 @@
       <Text button>Ask AIGenie</Text>
     </button>
     <a
-      :href="'http://localhost:8000' + data?.source_file"
+      :href="baseUrl + data?.source_file"
       download
       target="_blank"
       class="btn btn-secondary text-base-100 w-full"
@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import Text from "../components/Text.vue";
 import type { Research } from "../types/types.ts";
 import router from "../router";
@@ -59,8 +59,10 @@ import PageStructure from "../components/PageStructure.vue";
 
 const route = useRoute();
 const id = route.params.id;
+const baseUrl =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/";
 
-const { data } = useApiFetch<Research>("research/" + id);
+const { data } = useApiRequest<Research>("research/" + id);
 
 function openChat() {
   const message = `Hello, I am interested in the research paper titled "${data?.value?.name}". Can you provide me with more information?`;

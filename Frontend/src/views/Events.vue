@@ -36,7 +36,7 @@
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import { ref, watch } from "vue";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import type { Events } from "../types/types.ts";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
@@ -49,7 +49,7 @@ const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);
 const selectedDate = ref<string | null>(null);
 
-const { data } = useApiFetch<Events[]>("events");
+const { data } = useApiRequest<Events[]>("events");
 
 watch(data, () => {
   if (data.value) {
