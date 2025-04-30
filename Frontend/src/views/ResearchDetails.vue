@@ -10,21 +10,20 @@
       v-if="data?.researchers_related?.length"
       class="carousel overflow-x-auto max-w-full px-4 space-x-4"
     >
-      <div
+      <button
         v-for="researcher in data.researchers_related"
         :key="researcher.id"
         class="carousel-item w-24 shrink-0 flex flex-col items-center relative"
+        @click="router.push(`/researchers/${researcher.id}`)"
       >
-        <button @click="router.push(`/researchers/${researcher.id}`)">
-          <Avatar class="w-24" />
-        </button>
+        <Avatar class="w-24" />
         <Text
           small
           class="text-center badge badge-secondary h-fit absolute bottom-0 w-full"
         >
-          {{ researcher.firstname }} {{ researcher.surname }}
+          {{ researcher.firstname }}
         </Text>
-      </div>
+      </button>
     </div>
     <Text class="w-full">{{ data?.summary }}</Text>
     <Keywords
@@ -32,7 +31,7 @@
       :keywords="keywordsStringToArray(data.keywords)"
     />
     <button class="btn btn-primary w-full" @click="openChat">
-      <Text button>ELIF</Text>
+      <Text button>Ask AIGenie</Text>
     </button>
     <a
       :href="'http://localhost:8000' + data?.source_file"
