@@ -36,3 +36,9 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = "__all__"
 
+# Non Model Serializers
+
+class EmailSerializer(serializers.Serializer):
+    address = serializers.EmailField(required=True)
+    subject = serializers.CharField(max_length=255, required=True)
+    message = serializers.CharField(required=True)

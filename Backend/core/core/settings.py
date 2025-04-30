@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -164,5 +167,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'core', 'media')  # Root directory for media
 RESEARCH_FILES_DIR = os.path.join(MEDIA_ROOT, 'research_files')
 
 # Ai models (llama for prod, gemma for testing without string gpu)
-# AI_MODEL_NAME = "llama3.1"
-AI_MODEL_NAME = "gemma3:1b"
+AI_MODEL_NAME = "llama3.1"
+# AI_MODEL_NAME = "gemma3:1b"
+
+# Email functionalisty
+# https://www.geeksforgeeks.org/setup-sending-email-in-django-project/
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER') #sender's email-id
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') #password associated with above email-id (not the regular password)

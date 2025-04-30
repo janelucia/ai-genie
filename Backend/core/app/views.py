@@ -6,8 +6,10 @@ from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 from .ai_engine.memory import create_memory
-from .ai_engine.tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool
 from .ai_engine.ai_genie import AIGenie
 from .ai_engine.vector_db_service import VectorDatabaseService
 
@@ -398,6 +400,26 @@ class AddMessageWithAIResponse(APIView):
 
         return Response(user_message_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+#______________EMAIL ENDPOINTS______________
+
+class EmailView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = EmailSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            address = serializer.validated_data['address']
+            subject = serializer.validated_data['subject']
+            message = serializer.validated_data['message']
+
+            try:
+                send_mail(subject, message, settings.EMAIL_HOST_USER, [address])
+                return Response({'result': 'Email sent successfully'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'result': f'Error sending email: {e}'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({'result': 'All fields are required', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
 #______________FILES RETRIVAL______________
 class VectorDB(APIView):
     def get(self, request):
