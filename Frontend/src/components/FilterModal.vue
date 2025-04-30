@@ -10,6 +10,15 @@
 
       <div class="flex-1 overflow-y-auto mb-4">
         <div class="flex flex-col gap-2">
+          <label class="flex items-center justify-between gap-2 cursor-pointer">
+            <Text class="text-wrap">Select all keywords</Text>
+            <input
+              type="checkbox"
+              :checked="allSelected"
+              @change="toggleSelectAll"
+              class="checkbox checkbox-secondary"
+            />
+          </label>
           <label
             v-for="keyword in uniqueKeywords"
             :key="keyword"
@@ -50,6 +59,20 @@ const emit = defineEmits<{
 
 const modalRef = ref<HTMLDialogElement | null>(null);
 const localSelectedKeywords = ref<string[]>([]);
+
+const allSelected = computed(
+  () =>
+    uniqueKeywords.value.length > 0 &&
+    uniqueKeywords.value.every((k) => localSelectedKeywords.value.includes(k)),
+);
+
+function toggleSelectAll() {
+  if (allSelected.value) {
+    localSelectedKeywords.value = [];
+  } else {
+    localSelectedKeywords.value = [...uniqueKeywords.value];
+  }
+}
 
 const uniqueKeywords = computed(() => {
   const keywords = props.keywords
