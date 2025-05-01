@@ -4,12 +4,22 @@
     class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
     <div class="w-full flex justify-center">
-      <video
-        autoplay
-        loop
-        src="../assets/video/blinking-pepper.mp4"
-        class="w-full xs:w-1/2"
-      />
+      <template v-if="isLoading">
+        <video
+          autoplay
+          loop
+          src="../assets/video/talking-pepper.mp4"
+          class="w-full xs:w-1/2"
+        />
+      </template>
+      <template v-else>
+        <video
+          autoplay
+          loop
+          src="../assets/video/blinking-pepper.mp4"
+          class="w-full xs:w-1/2"
+        />
+      </template>
     </div>
     <div
       v-for="(msg, i) in messages"
@@ -29,7 +39,7 @@
         </Text>
       </div>
       <Text :class="msg.ai_response ? 'self-start' : 'self-end'" small>
-        {{ msg.ai_response ? "AI" : "You" }} -
+        {{ msg.ai_response ? "AIGenie" : "You" }} -
         {{
           msg.created
             ? `${formatDate(msg.created)} ${formatTime(msg.created)}`
@@ -38,7 +48,7 @@
       </Text>
     </div>
     <div v-if="isLoading" class="self-start text-sm text-gray-500">
-      AI is typing…
+      AIGenie is typing…
     </div>
     <div id="bottomRef" class="h-14"></div>
   </div>
@@ -55,14 +65,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick } from "vue";
-import type { Chat, Message } from "../types/types.ts";
+import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 
 const input = ref("");
-const result = ref<Chat | null>(null);
+const result = ref<ChatWithMessages | null>(null);
 const messages = ref<Message[]>([]);
 
 const LOCAL_STORAGE_KEY = "chat-id";
@@ -101,18 +111,18 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
   try {
     isLoading.value = true;
 
-    await fetch(`http://localhost:8000/api/message-ai/${chatId}/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userMessage),
-    });
+    useApiRequest<ChatWithMessages>(
+      `message-ai/${chatId}/`,
+      "POST",
+      userMessage,
+    );
 
     const MAX_TRIES = 30;
     const DELAY_MS = 1000;
     let tries = 0;
 
     while (tries < MAX_TRIES) {
-      const { data } = await useApiFetch<Chat>("chats/" + chatId);
+      const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
       await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
       tries++;
 
@@ -137,8 +147,8 @@ onMounted(async () => {
   const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
   messages.value = [];
 
-  if (chatId) {
-    const { data } = useApiFetch<Chat>("chats/" + chatId);
+  if (chatId && chatId !== "null") {
+    const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
 
     const waitForData = () =>
       new Promise<void>((resolve) => {
@@ -172,15 +182,11 @@ onMounted(async () => {
     await nextTick();
     scrollToBottom("instant");
   } else {
-    const res = await fetch("http://localhost:8000/api/chats/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-    const newChat = await res.json();
-    result.value = newChat;
+    const { data, execute } = useApiRequest<Chat>("chats/", "POST");
+    await execute();
 
-    if (newChat?.id) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, newChat.id);
+    if (data.value?.id) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, data.value?.id.toString());
     }
   }
 });

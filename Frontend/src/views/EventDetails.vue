@@ -49,7 +49,7 @@
         type="text"
         class="input"
         placeholder="Name"
-        @blur="nameTouched = true"
+        @blur="updateSignature('name')"
         :class="{
           'input-error': nameTouched && !name,
           'input-success': nameTouched && name,
@@ -68,7 +68,7 @@
           'input-success': emailTouched && email && isValidEmail,
         }"
         placeholder="Email"
-        @blur="emailTouched = true"
+        @blur="updateSignature('email')"
       />
 
       <Text
@@ -136,9 +136,9 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import { computed, onMounted, ref, watch } from "vue";
-import type { Events } from "../types/types.ts";
+import type { Email, Events } from "../types/types.ts";
 import Heading from "../components/Heading.vue";
 import Text from "../components/Text.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -165,12 +165,13 @@ const result = ref<Events>({
 const name = ref("");
 const email = ref("");
 const message = ref("Hi, I'd like to sign up for this event.");
+const messageWithSignature = ref("Hi, I'd like to sign up for this event.");
 const submitted = ref(false);
 const emailTouched = ref(false);
 const nameTouched = ref(false);
 const showConfirmation = ref(false);
 
-const { data } = useApiFetch<Events>("events/" + id);
+const { data } = useApiRequest<Events>("events/" + id);
 
 const formattedDate = computed(() => {
   if (result.value.date) {
@@ -191,6 +192,25 @@ watch(data, () => {
   }
 });
 
+function updateSignature(kind: "email" | "name") {
+  if (kind === "email") {
+    emailTouched.value = true;
+  } else if (kind === "name") {
+    nameTouched.value = true;
+  }
+  messageWithSignature.value = messageWithSignature.value.replace(
+    /\n\nName: .+\nEmail: .+/,
+    "",
+  );
+
+  if (name.value && isValidEmail.value) {
+    messageWithSignature.value =
+      messageWithSignature.value.trim() +
+      `\n\nName: ${name.value}\nEmail: ${email.value}`;
+  }
+  console.log(messageWithSignature.value);
+}
+
 const isValidEmail = computed(() =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value),
 );
@@ -204,6 +224,12 @@ function handleSubmit() {
   console.log("Sending email to organizer...");
   console.log("From:", email.value);
   console.log("Message:", message.value);
+
+  useApiRequest("email", "POST", <Email>{
+    address: "janeluciaschoenfeld@gmail.com",
+    message: messageWithSignature.value,
+    subject: `Sign up for event "${result.value.name}"`,
+  });
 
   signUpForEvent(id);
   submitted.value = true;

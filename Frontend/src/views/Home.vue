@@ -1,6 +1,13 @@
 <template>
   <PageStructure no-back>
-    <img src="../assets/img/logo.png" alt="logo" />
+    <div class="w-full flex justify-center">
+      <video
+        autoplay
+        loop
+        src="../assets/video/waving-pepper.mp4"
+        class="w-full xs:w-1/2"
+      />
+    </div>
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <Heading heading="h2"> Whats new? </Heading>
@@ -46,7 +53,7 @@
 import Heading from "../components/Heading.vue";
 import { ref, watch } from "vue";
 import type { Research, Events } from "../types/types.ts";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import EventBanner from "../assets/img/event-banner-ai.png";
 import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
 import Alert from "../components/Alert.vue";
@@ -57,8 +64,8 @@ import PageStructure from "../components/PageStructure.vue";
 const researchResult = ref<Research[]>([]);
 const eventsResult = ref<Events[]>([]);
 
-const { data: researchData } = useApiFetch<Research[]>("research");
-const { data: eventsData } = useApiFetch<Events[]>("events");
+const { data: researchData } = useApiRequest<Research[]>("research");
+const { data: eventsData } = useApiRequest<Events[]>("events");
 
 watch(researchData, () => {
   if (researchData.value) {

@@ -23,7 +23,9 @@
     </div>
 
     <template v-if="chat">
-      <button class="btn btn-primary" @click="openModal">Delete Chat</button>
+      <button @click="openModal">
+        <img src="../assets/icons/trash-can.svg" alt="Delete icon" />
+      </button>
     </template>
     <template v-else>
       <div class="w-8"></div>
@@ -57,8 +59,8 @@
 <script setup lang="ts">
 import router from "../router";
 import { onMounted, ref } from "vue";
-import { useApiFetch } from "../api/useApiFetch.ts";
-import type { Chat } from "../types/types.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
+import type { ChatWithMessages } from "../types/types.ts";
 
 defineProps<{
   chat?: boolean;
@@ -83,7 +85,7 @@ const deleteChat = async () => {
     }
 
     // Check if chatId has messages
-    const { data } = useApiFetch<Chat>("chats/" + chatId);
+    const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
 
     const waitForData = () =>
       new Promise<void>((resolve) => {
@@ -105,12 +107,7 @@ const deleteChat = async () => {
       return;
     }
 
-    await fetch(`http://localhost:8000/api/clear/${chatId}/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    useApiRequest("chats/" + chatId, "DELETE");
 
     localStorage.setItem("toast-message", "Chat deleted successfully!");
     localStorage.setItem("toast-class", "alert-success");

@@ -169,8 +169,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'core', 'media')  # Root directory for media
 RESEARCH_FILES_DIR = os.path.join(MEDIA_ROOT, 'research_files')
 
 # Ai models (llama for prod, gemma for testing without string gpu)
-AI_MODEL_NAME = "llama3.1"
-# AI_MODEL_NAME = "gemma3:1b"
+# AI_MODEL_NAME = "llama3.1"
+AI_MODEL_NAME = "gemma3:1b"
 
 # Email functionalisty
 # https://www.geeksforgeeks.org/setup-sending-email-in-django-project/

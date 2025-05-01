@@ -35,12 +35,14 @@ export type Research = {
   }[];
 };
 
-export type Chat = {
-  chat: {
-    id?: number;
-    created?: Date;
-  };
+export type ChatWithMessages = {
+  chat: Chat;
   messages: Message[];
+};
+
+export type Chat = {
+  id?: number;
+  created?: Date;
 };
 
 export type Message = {
@@ -49,4 +51,10 @@ export type Message = {
   ai_response: boolean;
   created?: Date;
   chat?: number;
+};
+
+export type Email = {
+  address: string;
+  subject: string;
+  message: string;
 };

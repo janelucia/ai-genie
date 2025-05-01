@@ -64,7 +64,7 @@
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import type { Research, Researchers } from "../types/types.ts";
-import { useApiFetch } from "../api/useApiFetch.ts";
+import { useApiRequest } from "../api/useApiRequest.ts";
 import Avatar from "../components/Avatar.vue";
 import Heading from "../components/Heading.vue";
 import Keywords from "../components/Keywords.vue";
@@ -80,8 +80,8 @@ const id = route.params.id;
 
 const relatedResearch = ref<Research[]>([]);
 
-const { data } = useApiFetch<Researchers>("researchers/" + id);
-const { data: researchData } = useApiFetch<Research[]>("research");
+const { data } = useApiRequest<Researchers>("researchers/" + id);
+const { data: researchData } = useApiRequest<Research[]>("research");
 
 watch(researchData, () => {
   if (researchData.value) {
