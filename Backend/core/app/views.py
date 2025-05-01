@@ -403,6 +403,13 @@ class AddMessageWithAIResponse(APIView):
 #______________EMAIL ENDPOINTS______________
 
 class EmailView(APIView):
+    @swagger_auto_schema(
+        request_body=EmailSerializer,
+        operation_description="Send and email through backend",
+        responses={200: "{'result': 'Email sent successfully'}", 
+                   400: "{'result': 'All fields are required', 'errors': 'errors'}", 
+                   503: "{'result': 'Error sending', 'email: error_message'}"}
+    )
     def post(self, request, *args, **kwargs):
         serializer = EmailSerializer(data=request.data)
         
@@ -415,12 +422,13 @@ class EmailView(APIView):
                 send_mail(subject, message, settings.EMAIL_HOST_USER, [address])
                 return Response({'result': 'Email sent successfully'}, status=status.HTTP_200_OK)
             except Exception as e:
-                return Response({'result': f'Error sending email: {e}'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'result': f'Error sending email: {e}'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
         return Response({'result': 'All fields are required', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #______________FILES RETRIVAL______________
+
 class VectorDB(APIView):
     def get(self, request):
         vectorstore = VectorDatabaseService()
@@ -428,25 +436,25 @@ class VectorDB(APIView):
         files = vectorstore.list_files(limit=limit)
         return Response(files, status=status.HTTP_200_OK)
 
-class TestFileRetrivalOfDocuments(APIView):
-    def get_object(self, id):
-        try:
-            return Research.objects.get(id=id)
-        except Research.DoesNotExist:
-            return None
+# class TestFileRetrivalOfDocuments(APIView):
+#     def get_object(self, id):
+#         try:
+#             return Research.objects.get(id=id)
+#         except Research.DoesNotExist:
+#             return None
     
-    def get(self, request, file):
-        vectorstore = VectorDatabaseService()
-        # vectorstore.drop_collection()
-        # vectorstore.add_file("rector.pdf")
-        # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")
-        print("ID IN VIEW: " + str(id(vectorstore)))
-        print("________________________________")
-        results = vectorstore.file_exists(file_path=file)
-        # results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
-        # for i, res in enumerate(results):
-        #     print(f"\nResult {i + 1}:")
-        #     print(f"Score: {res['score']}")
-        #     print(f"Title: {res['research_title']}")
-        #     print(f"Text: {res['text']}...")
-        return Response(results, status=status.HTTP_200_OK)
+#     def get(self, request, file):
+#         vectorstore = VectorDatabaseService()
+#         # vectorstore.drop_collection()
+#         # vectorstore.add_file("rector.pdf")
+#         # vectorstore.add_file("NumericalMethodsResearchPaper.pdf")
+#         print("ID IN VIEW: " + str(id(vectorstore)))
+#         print("________________________________")
+#         results = vectorstore.file_exists(file_path=file)
+#         # results = vectorstore.find_similar("What it cubic spline?", source=file, top_k=2)
+#         # for i, res in enumerate(results):
+#         #     print(f"\nResult {i + 1}:")
+#         #     print(f"Score: {res['score']}")
+#         #     print(f"Title: {res['research_title']}")
+#         #     print(f"Text: {res['text']}...")
+#         return Response(results, status=status.HTTP_200_OK)

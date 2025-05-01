@@ -225,17 +225,14 @@
   "fields": {
     "firstname": "Alice",
     "surname": "Johnson",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Senior AI Researcher",
+    "short_about": "Expert in machine learning and natural language processing.",
+    "about": "Alice Johnson focuses on deep learning, natural language understanding, and AI ethics, leading various interdisciplinary projects.",
+    "email": "alice.johnson@example.com",
+    "linkedin": "https://linkedin.com/in/alice-johnson",
+    "keywords": "AI, Machine Learning, NLP, Deep Learning, Ethics",
     "img": "",
-    "related_research": [
-      2,
-      5
-    ]
+    "related_research": [2, 5]
   }
 },
 {
@@ -244,18 +241,14 @@
   "fields": {
     "firstname": "Robert",
     "surname": "Smith",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Lead Data Scientist",
+    "short_about": "Specialist in data analysis and predictive modeling.",
+    "about": "Robert Smith drives research on predictive analytics, statistical modeling, and large-scale data systems for healthcare and finance.",
+    "email": "robert.smith@example.com",
+    "linkedin": "https://linkedin.com/in/robert-smith",
+    "keywords": "Data Science, Predictive Modeling, Big Data, Analytics",
     "img": "",
-    "related_research": [
-      3,
-      7,
-      10
-    ]
+    "related_research": [3, 7, 10]
   }
 },
 {
@@ -264,16 +257,14 @@
   "fields": {
     "firstname": "Emily",
     "surname": "Davis",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Cognitive Systems Researcher",
+    "short_about": "Researcher in cognitive computing and AI-human interaction.",
+    "about": "Emily Davis investigates cognitive architectures and human-centered AI design, focusing on improving collaboration between humans and machines.",
+    "email": "emily.davis@example.com",
+    "linkedin": "https://linkedin.com/in/emily-davis",
+    "keywords": "Cognitive Computing, Human-AI Interaction, Machine Learning",
     "img": "",
-    "related_research": [
-      6
-    ]
+    "related_research": [6]
   }
 },
 {
@@ -282,17 +273,14 @@
   "fields": {
     "firstname": "Michael",
     "surname": "Brown",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Robotics Engineer",
+    "short_about": "Innovator in autonomous systems and robotics.",
+    "about": "Michael Brown researches autonomous vehicles, robotic perception systems, and control algorithms, bridging theory and real-world applications.",
+    "email": "michael.brown@example.com",
+    "linkedin": "https://linkedin.com/in/michael-brown",
+    "keywords": "Robotics, Autonomous Systems, Control Theory, Perception",
     "img": "",
-    "related_research": [
-      2,
-      9
-    ]
+    "related_research": [2, 9]
   }
 },
 {
@@ -301,17 +289,14 @@
   "fields": {
     "firstname": "Jessica",
     "surname": "Williams",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Bioinformatics Specialist",
+    "short_about": "Advancing computational biology through data-driven research.",
+    "about": "Jessica Williams focuses on genomics, biomedical informatics, and the application of AI to personalized medicine and healthcare innovation.",
+    "email": "jessica.williams@example.com",
+    "linkedin": "https://linkedin.com/in/jessica-williams",
+    "keywords": "Bioinformatics, Genomics, Personalized Medicine, AI in Healthcare",
     "img": "",
-    "related_research": [
-      5,
-      8
-    ]
+    "related_research": [5, 8]
   }
 },
 {
@@ -320,17 +305,14 @@
   "fields": {
     "firstname": "David",
     "surname": "Martinez",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Computer Vision Scientist",
+    "short_about": "Expert in image processing and pattern recognition.",
+    "about": "David Martinez leads projects in object detection, 3D reconstruction, and real-time image analysis for autonomous and security systems.",
+    "email": "david.martinez@example.com",
+    "linkedin": "https://linkedin.com/in/david-martinez",
+    "keywords": "Computer Vision, Image Processing, Object Detection",
     "img": "",
-    "related_research": [
-      7,
-      10
-    ]
+    "related_research": [7, 10]
   }
 },
 {
@@ -339,18 +321,14 @@
   "fields": {
     "firstname": "Laura",
     "surname": "Garcia",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "AI Policy Analyst",
+    "short_about": "Researches ethical frameworks and AI regulations.",
+    "about": "Laura Garcia develops models for ethical AI deployment, focusing on fairness, transparency, accountability, and regulatory compliance globally.",
+    "email": "laura.garcia@example.com",
+    "linkedin": "https://linkedin.com/in/laura-garcia",
+    "keywords": "AI Ethics, Governance, Policy, Regulation",
     "img": "",
-    "related_research": [
-      3,
-      6,
-      11
-    ]
+    "related_research": [3, 6, 11]
   }
 },
 {
@@ -359,17 +337,14 @@
   "fields": {
     "firstname": "James",
     "surname": "Miller",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Cybersecurity Researcher",
+    "short_about": "Specializes in AI-driven security and privacy solutions.",
+    "about": "James Miller focuses on AI applications in cybersecurity, threat detection, and securing machine learning pipelines from adversarial attacks.",
+    "email": "james.miller@example.com",
+    "linkedin": "https://linkedin.com/in/james-miller",
+    "keywords": "Cybersecurity, AI Security, Privacy, Adversarial Learning",
     "img": "",
-    "related_research": [
-      2,
-      8
-    ]
+    "related_research": [2, 8]
   }
 },
 {
@@ -378,17 +353,14 @@
   "fields": {
     "firstname": "Sophia",
     "surname": "Rodriguez",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Machine Learning Engineer",
+    "short_about": "Builder of scalable ML pipelines and solutions.",
+    "about": "Sophia Rodriguez specializes in deploying machine learning models at scale, improving MLOps practices and monitoring systems for reliability.",
+    "email": "sophia.rodriguez@example.com",
+    "linkedin": "https://linkedin.com/in/sophia-rodriguez",
+    "keywords": "MLOps, Machine Learning Engineering, Scalable Systems",
     "img": "",
-    "related_research": [
-      5,
-      9
-    ]
+    "related_research": [5, 9]
   }
 },
 {
@@ -397,18 +369,14 @@
   "fields": {
     "firstname": "Daniel",
     "surname": "Hernandez",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Deep Learning Researcher",
+    "short_about": "Pushing boundaries in generative and adversarial networks.",
+    "about": "Daniel Hernandez works on cutting-edge deep learning models, including GANs, transformers, and large multimodal systems.",
+    "email": "daniel.hernandez@example.com",
+    "linkedin": "https://linkedin.com/in/daniel-hernandez",
+    "keywords": "Deep Learning, GANs, Transformers, Multimodal AI",
     "img": "",
-    "related_research": [
-      3,
-      7,
-      11
-    ]
+    "related_research": [3, 7, 11]
   }
 },
 {
@@ -417,17 +385,14 @@
   "fields": {
     "firstname": "Olivia",
     "surname": "Lopez",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Natural Language Processing Scientist",
+    "short_about": "Exploring semantics, language models, and conversation AI.",
+    "about": "Olivia Lopez designs advanced NLP systems, working on semantic understanding, dialogue generation, and multilingual models.",
+    "email": "olivia.lopez@example.com",
+    "linkedin": "https://linkedin.com/in/olivia-lopez",
+    "keywords": "NLP, Language Models, Multilingual AI, Conversational AI",
     "img": "",
-    "related_research": [
-      6,
-      10
-    ]
+    "related_research": [6, 10]
   }
 },
 {
@@ -436,17 +401,14 @@
   "fields": {
     "firstname": "Matthew",
     "surname": "Gonzalez",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Software Architect",
+    "short_about": "Architects AI-driven applications and platforms.",
+    "about": "Matthew Gonzalez specializes in scalable backend systems and AI integration, focusing on cloud-native and distributed AI infrastructures.",
+    "email": "matthew.gonzalez@example.com",
+    "linkedin": "https://linkedin.com/in/matthew-gonzalez",
+    "keywords": "Software Architecture, Cloud AI, Distributed Systems",
     "img": "",
-    "related_research": [
-      2,
-      9
-    ]
+    "related_research": [2, 9]
   }
 },
 {
@@ -455,17 +417,14 @@
   "fields": {
     "firstname": "Isabella",
     "surname": "Wilson",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Human-Computer Interaction Researcher",
+    "short_about": "Focuses on user-centric AI systems and UX design.",
+    "about": "Isabella Wilson researches how AI systems can be designed for maximum usability, accessibility, and positive human experiences.",
+    "email": "isabella.wilson@example.com",
+    "linkedin": "https://linkedin.com/in/isabella-wilson",
+    "keywords": "HCI, UX Research, AI Accessibility",
     "img": "",
-    "related_research": [
-      5,
-      8
-    ]
+    "related_research": [5, 8]
   }
 },
 {
@@ -474,18 +433,14 @@
   "fields": {
     "firstname": "Ethan",
     "surname": "Anderson",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "AI Systems Engineer",
+    "short_about": "Engineer of robust AI platforms and pipelines.",
+    "about": "Ethan Anderson builds scalable, resilient systems for machine learning deployment, emphasizing automation, monitoring, and reliability.",
+    "email": "ethan.anderson@example.com",
+    "linkedin": "https://linkedin.com/in/ethan-anderson",
+    "keywords": "AI Engineering, Systems Reliability, Scalability",
     "img": "",
-    "related_research": [
-      3,
-      6,
-      11
-    ]
+    "related_research": [3, 6, 11]
   }
 },
 {
@@ -494,17 +449,14 @@
   "fields": {
     "firstname": "Ava",
     "surname": "Thomas",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Data Ethics Researcher",
+    "short_about": "Studies AI impact on society and ethics in data.",
+    "about": "Ava Thomas leads investigations into responsible data use, privacy-preserving technologies, and fairness in machine learning models.",
+    "email": "ava.thomas@example.com",
+    "linkedin": "https://linkedin.com/in/ava-thomas",
+    "keywords": "Data Ethics, Fairness, Privacy, Responsible AI",
     "img": "",
-    "related_research": [
-      7,
-      10
-    ]
+    "related_research": [7, 10]
   }
 },
 {
@@ -513,16 +465,14 @@
   "fields": {
     "firstname": "William",
     "surname": "Taylor",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Optimization Researcher",
+    "short_about": "Expert in algorithms and optimization for AI systems.",
+    "about": "William Taylor works on optimization techniques in AI, from reinforcement learning strategies to operational research models.",
+    "email": "william.taylor@example.com",
+    "linkedin": "https://linkedin.com/in/william-taylor",
+    "keywords": "Optimization, Algorithms, Reinforcement Learning",
     "img": "",
-    "related_research": [
-      9
-    ]
+    "related_research": [9]
   }
 },
 {
@@ -531,18 +481,14 @@
   "fields": {
     "firstname": "Charlotte",
     "surname": "Moore",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Computational Linguist",
+    "short_about": "Applies linguistics expertise to AI and NLP models.",
+    "about": "Charlotte Moore bridges linguistics and AI, researching syntactic parsing, machine translation, and context-aware systems.",
+    "email": "charlotte.moore@example.com",
+    "linkedin": "https://linkedin.com/in/charlotte-moore",
+    "keywords": "Computational Linguistics, NLP, Syntax Parsing",
     "img": "",
-    "related_research": [
-      2,
-      5,
-      8
-    ]
+    "related_research": [2, 5, 8]
   }
 },
 {
@@ -551,18 +497,14 @@
   "fields": {
     "firstname": "Benjamin",
     "surname": "Jackson",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Neural Networks Researcher",
+    "short_about": "Researches new architectures for neural networks.",
+    "about": "Benjamin Jackson explores innovative deep learning architectures, focusing on novel training methods and efficiency improvements.",
+    "email": "benjamin.jackson@example.com",
+    "linkedin": "https://linkedin.com/in/benjamin-jackson",
+    "keywords": "Neural Networks, Deep Learning, Model Optimization",
     "img": "",
-    "related_research": [
-      3,
-      6,
-      10
-    ]
+    "related_research": [3, 6, 10]
   }
 },
 {
@@ -571,17 +513,14 @@
   "fields": {
     "firstname": "Mia",
     "surname": "Martin",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "AI Sociologist",
+    "short_about": "Studies social implications of AI technologies.",
+    "about": "Mia Martin researches how AI shapes human behavior, social structures, and ethics at the intersection of technology and society.",
+    "email": "mia.martin@example.com",
+    "linkedin": "https://linkedin.com/in/mia-martin",
+    "keywords": "AI and Society, Ethics, Technology Impact",
     "img": "",
-    "related_research": [
-      7,
-      11
-    ]
+    "related_research": [7, 11]
   }
 },
 {
@@ -590,16 +529,14 @@
   "fields": {
     "firstname": "Alexander",
     "surname": "Lee",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Quantum Computing Researcher",
+    "short_about": "Researches quantum algorithms and applications for AI.",
+    "about": "Alexander Lee works on the intersection of quantum computing and AI, exploring quantum machine learning and computational advantages.",
+    "email": "alexander.lee@example.com",
+    "linkedin": "https://linkedin.com/in/alexander-lee",
+    "keywords": "Quantum Computing, Quantum AI, Quantum Algorithms",
     "img": "",
-    "related_research": [
-      9
-    ]
+    "related_research": [9]
   }
 },
 {
@@ -608,16 +545,14 @@
   "fields": {
     "firstname": "mock",
     "surname": "mock",
-    "position": "this is position",
-    "short_about": "short about",
-    "about": "this is description",
-    "email": "",
-    "linkedin": "",
-    "keywords": "",
+    "position": "Mock Researcher",
+    "short_about": "Placeholder researcher for testing purposes.",
+    "about": "This is a mock researcher used for internal testing and placeholder content.",
+    "email": "mock.mock@example.com",
+    "linkedin": "https://linkedin.com/in/mock-mock",
+    "keywords": "Mock, Testing, Placeholder",
     "img": "",
-    "related_research": [
-      2
-    ]
+    "related_research": [2]
   }
 }
 ]
