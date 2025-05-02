@@ -23,7 +23,7 @@ urlpatterns = [
     # email endpoints
     path('email/', view = EmailView.as_view()),
     # vector db endpoints
-    # path('vector-db/', view = VectorDB.as_view()),
+    path('vector-db/', view = VectorDB.as_view()),
     # testing files endpoints
     # path('test/<str:file>/', view = TestFileRetrivalOfDocuments.as_view()),
 ]

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 
 load_dotenv()
 
@@ -29,10 +30,24 @@ SECRET_KEY = 'django-insecure-@&^mtteijse^@_8b*2@m@iyu*jd%0p&ewtb5&u78l!gz^ao&-c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = [
+    os.getenv('BACKEND_NGROK_URL'),  # Backend ngrok URL
+    os.getenv('FRONTEND_NGROK_URL'),  # Frontend ngrok URL
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "ngrok-skip-browser-warning",
+]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    os.getenv('BACKEND_NGROK_URL')[8:], # Backend ngrok URL without https:// part
+]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    os.getenv('FRONTEND_NGROK_URL'), # Frontend ngrok URL
 ]
 # Application definition
 
@@ -169,8 +184,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'core', 'media')  # Root directory for media
 RESEARCH_FILES_DIR = os.path.join(MEDIA_ROOT, 'research_files')
 
 # Ai models (llama for prod, gemma for testing without string gpu)
-# AI_MODEL_NAME = "llama3.1"
-AI_MODEL_NAME = "gemma3:1b"
+AI_MODEL_NAME = "llama3.1"
+# AI_MODEL_NAME = "gemma3:1b"
 
 # Email functionalisty
 # https://www.geeksforgeeks.org/setup-sending-email-in-django-project/

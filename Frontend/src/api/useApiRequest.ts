@@ -19,6 +19,7 @@ export function useApiRequest<T = unknown>(
         method,
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
         },
       };
 

@@ -111,18 +111,20 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
   try {
     isLoading.value = true;
 
-    useApiRequest<ChatWithMessages>(
+    const { execute: postMessage } = useApiRequest<ChatWithMessages>(
       `message-ai/${chatId}/`,
       "POST",
       userMessage,
     );
+    await postMessage(); // 🚀 <-- Actually send the POST request
 
     const MAX_TRIES = 30;
     const DELAY_MS = 1000;
     let tries = 0;
 
     while (tries < MAX_TRIES) {
-      const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
+      const { data, execute: fetchChat } = useApiRequest<ChatWithMessages>("chats/" + chatId);
+      await fetchChat(); // 🚀 <-- Actually perform the GET request
       await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
       tries++;
 
@@ -142,6 +144,7 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
     isLoading.value = false;
   }
 };
+
 
 onMounted(async () => {
   const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
