@@ -42,8 +42,10 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    os.getenv('BACKEND_NGROK_URL')[8:], # Backend ngrok URL without https:// part
 ]
+
+if os.getenv('BACKEND_NGROK_URL')[8:]: # Backend ngrok URL without https:// part
+    ALLOWED_HOSTS += os.getenv('BACKEND_NGROK_URL')[8:]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
