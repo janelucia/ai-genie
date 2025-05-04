@@ -30,10 +30,12 @@ SECRET_KEY = 'django-insecure-@&^mtteijse^@_8b*2@m@iyu*jd%0p&ewtb5&u78l!gz^ao&-c
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CSRF_TRUSTED_ORIGINS = [
-    os.getenv('BACKEND_NGROK_URL'),  # Backend ngrok URL
-    os.getenv('FRONTEND_NGROK_URL'),  # Frontend ngrok URL
-]
+CSRF_TRUSTED_ORIGINS = []
+if os.getenv('BACKEND_NGROK_URL') and os.getenv('FRONTEND_NGROK_URL'):
+    CSRF_TRUSTED_ORIGINS = [
+        os.getenv('BACKEND_NGROK_URL'),  # Backend ngrok URL
+        os.getenv('FRONTEND_NGROK_URL'),  # Frontend ngrok URL
+    ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
     "ngrok-skip-browser-warning",
@@ -44,13 +46,16 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
-if os.getenv('BACKEND_NGROK_URL')[8:]: # Backend ngrok URL without https:// part
-    ALLOWED_HOSTS += os.getenv('BACKEND_NGROK_URL')[8:]
+if os.getenv('BACKEND_NGROK_URL'): # Backend ngrok URL without https:// part
+    ALLOWED_HOSTS += [os.getenv('BACKEND_NGROK_URL')[8:]]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    os.getenv('FRONTEND_NGROK_URL'), # Frontend ngrok URL
 ]
+
+if os.getenv('FRONTEND_NGROK_URL'): # Frontend ngrok URL
+    CORS_ALLOWED_ORIGINS += [os.getenv('FRONTEND_NGROK_URL')]
+
 # Application definition
 
 INSTALLED_APPS = [
