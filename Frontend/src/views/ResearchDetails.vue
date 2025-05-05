@@ -20,7 +20,7 @@
         @click="router.push(`/researchers/${researcher.id}`)"
       >
         <Avatar
-          class="w-24"
+          class="w-24 h-24"
           :img="
             researcher.img ? baseUrl + researcher.img : ResearcherPlaceholder
           "
