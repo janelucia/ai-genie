@@ -23,6 +23,7 @@
     <Keywords
       v-if="data?.keywords"
       :keywords="keywordsStringToArray(data?.keywords)"
+      link="/researchers?keywords="
     />
     <CollapseSection collapse-title="About">
       <Text class="break-words break-all whitespace-pre-wrap">

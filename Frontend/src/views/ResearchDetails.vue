@@ -29,6 +29,7 @@
     <Keywords
       v-if="data?.keywords"
       :keywords="keywordsStringToArray(data.keywords)"
+      link="/research?keywords="
     />
     <button class="btn btn-primary w-full" @click="openChat">
       <Text button>Ask AIGenie</Text>
