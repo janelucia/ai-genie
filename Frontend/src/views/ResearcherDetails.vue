@@ -3,7 +3,14 @@
     <div
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
-      <Avatar class="w-32" :img="data?.img" />
+      <Avatar
+        class="w-32"
+        :img="
+          data?.img
+            ? baseUrl + data.img
+            : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+        "
+      />
       <div>
         <Heading heading="h1">
           {{ data?.firstname }} {{ data?.surname }}
@@ -77,6 +84,7 @@ import PageStructure from "../components/PageStructure.vue";
 
 const route = useRoute();
 const id = route.params.id;
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const relatedResearch = ref<Research[]>([]);
 
