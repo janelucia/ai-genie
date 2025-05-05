@@ -22,7 +22,7 @@
       link="/researchers?keywords="
     />
     <CollapseSection v-if="data?.about" collapse-title="About">
-      <Text class="break-words break-all whitespace-pre-wrap">
+      <Text>
         {{ data?.about }}
       </Text>
     </CollapseSection>
