@@ -84,10 +84,10 @@ class Researcher(models.Model):
     firstname = models.CharField(max_length=60)
     surname = models.CharField(max_length=60)
     position = models.CharField(max_length=25)
-    short_about = models.CharField(max_length=30)
+    short_about = models.CharField(max_length=100)
     about = models.CharField(max_length=500)
     email = models.EmailField(blank=True)
-    linkedin = models.CharField(max_length=25, blank=True)
+    linkedin = models.CharField(max_length=100, blank=True)
     keywords = models.CharField(max_length=500, blank=True) # coma separated tags
     related_research = models.ManyToManyField(
         Research,
