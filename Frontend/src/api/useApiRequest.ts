@@ -11,7 +11,6 @@ export function useApiRequest<T = unknown>(
   const data: Ref<T | null> = ref(null);
   const error: Ref<string | null> = ref(null);
   const loading = ref(false);
-  console.log(baseUrl);
 
   const execute = async () => {
     loading.value = true;
@@ -39,8 +38,6 @@ export function useApiRequest<T = unknown>(
       loading.value = false;
     }
   };
-
-  console.log(endpoint, method, bodyData);
 
   if (method === "GET") execute();
 

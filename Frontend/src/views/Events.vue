@@ -53,7 +53,6 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 const { data } = useApiRequest<Events[]>("events");
 
 watch(data, () => {
-  console.log(data.value);
   if (data.value) {
     result.value = data.value;
   }
