@@ -7,7 +7,7 @@
         class="w-32 h-32"
         :img="data?.img ? baseUrl + data.img : ResearcherPlaceholder"
       />
-      <div>
+      <div class="w-1/2">
         <Heading heading="h1">
           {{ data?.firstname }} {{ data?.surname }}
         </Heading>
