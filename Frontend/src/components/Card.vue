@@ -14,7 +14,7 @@
       class="card-body p-0 gap-[var(--spacing-in-sections)]"
       :class="{ 'pr-[var(--spacing-in-sections)]': vertical }"
     >
-      <Heading heading="h3" class="card-title" :class="{ 'pl-4': !vertical }">{{
+      <Heading heading="h3" class="card-title" :class="{ 'px-4': !vertical }">{{
         cardTitle
       }}</Heading>
       <div
@@ -29,7 +29,7 @@
       <Text
         v-if="cardText"
         class="line-clamp-3"
-        :class="{ 'pl-4': !vertical }"
+        :class="{ 'px-4': !vertical }"
         >{{ cardText }}</Text
       >
       <div class="card-actions">
