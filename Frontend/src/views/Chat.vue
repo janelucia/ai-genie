@@ -9,7 +9,7 @@
           autoplay
           loop
           src="../assets/video/talking-pepper.mp4"
-          class="w-full xs:w-1/2"
+          class="w-1/2"
         />
       </template>
       <template v-else>
@@ -17,7 +17,7 @@
           autoplay
           loop
           src="../assets/video/blinking-pepper.mp4"
-          class="w-full xs:w-1/2"
+          class="w-1/2"
         />
       </template>
     </div>
@@ -123,7 +123,9 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
     let tries = 0;
 
     while (tries < MAX_TRIES) {
-      const { data, execute: fetchChat } = useApiRequest<ChatWithMessages>("chats/" + chatId);
+      const { data, execute: fetchChat } = useApiRequest<ChatWithMessages>(
+        "chats/" + chatId,
+      );
       await fetchChat(); // 🚀 <-- Actually perform the GET request
       await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
       tries++;
@@ -144,7 +146,6 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
     isLoading.value = false;
   }
 };
-
 
 onMounted(async () => {
   const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);

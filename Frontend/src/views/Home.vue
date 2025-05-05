@@ -5,7 +5,7 @@
         autoplay
         loop
         src="../assets/video/waving-pepper.mp4"
-        class="w-full xs:w-1/2"
+        class="w-1/2"
       />
     </div>
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>

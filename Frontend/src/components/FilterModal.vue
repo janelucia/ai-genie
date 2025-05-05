@@ -10,7 +10,9 @@
 
       <div class="flex-1 overflow-y-auto mb-4">
         <div class="flex flex-col gap-2">
-          <label class="flex items-center justify-between gap-2 cursor-pointer">
+          <label
+            class="flex items-center justify-between gap-2 cursor-pointer mb-[var(--spacing-in-sections)]"
+          >
             <Text class="text-wrap">Select all keywords</Text>
             <input
               type="checkbox"
