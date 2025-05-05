@@ -6,7 +6,7 @@ export function useApiRequest<T = unknown>(
   bodyData?: unknown,
 ) {
   const baseUrl =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/";
+    import.meta.env.VITE_API_BASE_URL + "/api/" || "http://localhost:8000/api/";
   const data: Ref<T | null> = ref(null);
   const error: Ref<string | null> = ref(null);
   const loading = ref(false);
