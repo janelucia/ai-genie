@@ -1,5 +1,8 @@
 <template>
   <PageStructure>
+    <Heading heading="h1" class="text-center">
+      {{ data?.name }}
+    </Heading>
     <Picture
       :image="ResearchBanner"
       image-alt="ResearchBanner"
@@ -64,6 +67,7 @@ import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
 import ResearcherPlaceholder from "/img/placeholder-researcher.png";
+import Heading from "../components/Heading.vue";
 
 const route = useRoute();
 const id = route.params.id;
