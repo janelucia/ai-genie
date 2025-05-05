@@ -5,8 +5,9 @@ export type Researchers = {
   img?: string;
   position: string;
   about: string;
+  office?: string;
   email?: string;
-  linkedIn?: string;
+  linkedin?: string;
   keywords?: string;
   related_research?: string;
 };

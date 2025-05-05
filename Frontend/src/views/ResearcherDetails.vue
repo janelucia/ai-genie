@@ -41,11 +41,15 @@
         :link="'/research/' + research.id?.toString()"
       />
     </CollapseSection>
-    <div class="flex flex-col gap-[var(--spacing-in-sections)]">
+    <div
+      v-if="data?.office || data?.email || data?.linkedin"
+      class="flex flex-col gap-[var(--spacing-in-sections)]"
+    >
       <Heading heading="h3"> Let's connect! </Heading>
-      <div class="flex flex-col">
-        <Text>AI Lab</Text>
-        <Text>Office 2.01</Text>
+      <div v-if="data?.office" class="flex flex-col">
+        <Text v-for="addressLine of addressSplit(data.office)">{{
+          addressLine
+        }}</Text>
       </div>
       <div class="w-full flex gap-[var(--spacing-in-sections)]">
         <a
@@ -56,9 +60,9 @@
           <Text button>Contact via E-Mail</Text>
         </a>
         <a
-          v-if="data?.linkedIn"
+          v-if="data?.linkedin"
           class="btn btn-outline btn-secondary"
-          :href="data?.linkedIn"
+          :href="data?.linkedin"
           target="_blank"
         >
           LinkedIn
@@ -91,6 +95,10 @@ const relatedResearch = ref<Research[]>([]);
 
 const { data } = useApiRequest<Researchers>("researchers/" + id);
 const { data: researchData } = useApiRequest<Research[]>("research");
+
+function addressSplit(address: string) {
+  return address.split(",").map((a) => a.trim());
+}
 
 watch(researchData, () => {
   if (researchData.value) {
