@@ -1,7 +1,5 @@
-export const keywordsStringToArray = (
-  keywords: string | undefined,
-): string[] =>
-  keywords ? keywords.split(",").map((keyword) => keyword.trim()) : [];
+export const stringToArray = (input: string | undefined): string[] =>
+  input ? input.split(",").map((i) => i.trim()) : [];
 
 export function isUserSignedUp(eventId: string): boolean {
   const signedUpEvents = JSON.parse(

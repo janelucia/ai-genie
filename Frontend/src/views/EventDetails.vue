@@ -13,7 +13,7 @@
     </div>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <div class="flex gap-[var(--spacing-in-sections)] justify-between w-full">
-        <div class="flex gap-[var(--spacing-in-sections)] w-1/3">
+        <div class="flex gap-[var(--spacing-in-sections)] w-1/2">
           <Text>🗓️</Text>
           <div>
             <Text class="whitespace-nowrap"> {{ formattedDate.date }}, </Text>
@@ -24,10 +24,14 @@
         </div>
         <div
           v-if="result.location"
-          class="flex gap-[var(--spacing-in-sections)] w-1/3"
+          class="flex gap-[var(--spacing-in-sections)] w-1/2"
         >
           <Text>📍</Text>
-          <Text> {{ result.location }} </Text>
+          <div class="flex flex-col">
+            <Text v-for="addressLine in stringToArray(result.location)">
+              {{ addressLine }}
+            </Text>
+          </div>
         </div>
       </div>
       <Text>
@@ -129,7 +133,9 @@
     </Alert>
     <div class="flex flex-col gap-[var(--spacing-in-sections)] w-full">
       <Heading heading="h2"> Event Organizer </Heading>
-      <Text> Organizer: {{ result.contact_email }} </Text>
+      <Text class="whitespace-break-spaces overflow-hidden">
+        Organizer: {{ result.contact_email }}
+      </Text>
     </div>
   </PageStructure>
 </template>
@@ -147,7 +153,11 @@ import Picture from "../components/Picture.vue";
 import EventBanner from "/img/event-banner-ai.png";
 import { format } from "date-fns";
 import PageStructure from "../components/PageStructure.vue";
-import { isUserSignedUp, signUpForEvent } from "../utils/helpers.ts";
+import {
+  isUserSignedUp,
+  signUpForEvent,
+  stringToArray,
+} from "../utils/helpers.ts";
 
 const route = useRoute();
 const id = Array.isArray(route.params.id)

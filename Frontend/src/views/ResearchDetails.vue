@@ -36,7 +36,7 @@
     <Text v-if="data?.summary" class="w-full">{{ data?.summary }}</Text>
     <Keywords
       v-if="data?.keywords"
-      :keywords="keywordsStringToArray(data.keywords)"
+      :keywords="stringToArray(data.keywords)"
       link="/research?keywords="
     />
     <button class="btn btn-primary w-full" @click="openChat">
@@ -64,10 +64,10 @@ import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
 import Picture from "../components/Picture.vue";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
-import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
 import ResearcherPlaceholder from "/img/placeholder-researcher.png";
 import Heading from "../components/Heading.vue";
+import { stringToArray } from "../utils/helpers.ts";
 
 const route = useRoute();
 const id = route.params.id;
