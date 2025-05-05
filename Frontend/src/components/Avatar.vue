@@ -1,11 +1,7 @@
 <template>
   <div class="avatar">
     <img
-      :src="
-        img
-          ? img
-          : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
-      "
+      :src="img"
       class="w-full object-cover rounded-full"
       alt="Some avatar"
     />
