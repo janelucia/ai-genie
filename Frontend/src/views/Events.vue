@@ -14,7 +14,7 @@
     <Card
       v-for="event in selectedDate ? filtered : result"
       :key="event.id"
-      :card-image="EventBanner"
+      :card-image="event.img ? baseUrl + event.img : EventBanner"
       card-image-alt="Event Banner"
       :card-title="event.name"
       :card-date="event.date"
@@ -48,10 +48,12 @@ import { isUserSignedUp } from "../utils/helpers.ts";
 const result = ref<Events[]>([]);
 const filtered = ref<Events[]>([]);
 const selectedDate = ref<string | null>(null);
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const { data } = useApiRequest<Events[]>("events");
 
 watch(data, () => {
+  console.log(data.value);
   if (data.value) {
     result.value = data.value;
   }

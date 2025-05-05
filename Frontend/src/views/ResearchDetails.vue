@@ -1,6 +1,6 @@
 <template>
   <PageStructure>
-    <PictureWithToolTip
+    <Picture
       :image="ResearchBanner"
       image-alt="ResearchBanner"
       tooltip-text="This image was created using AI and has no relation to the research."
@@ -52,7 +52,7 @@ import type { Research } from "../types/types.ts";
 import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
-import PictureWithToolTip from "../components/PictureWithToolTip.vue";
+import Picture from "../components/Picture.vue";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";

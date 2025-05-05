@@ -3,7 +3,7 @@
     <div
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
-      <Avatar class="w-32" />
+      <Avatar class="w-32" :img="data?.img" />
       <div>
         <Heading heading="h1">
           {{ data?.firstname }} {{ data?.surname }}

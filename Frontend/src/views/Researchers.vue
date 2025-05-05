@@ -38,7 +38,11 @@
     <Card
       v-for="researcher in filteredResults"
       :key="researcher.id ?? ''"
-      card-image="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+      :card-image="
+        researcher.img
+          ? baseUrl + researcher.img
+          : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+      "
       card-image-alt="Some Profile Picture"
       :card-title="`${researcher.firstname} ${researcher.surname}`"
       button-title="Learn more"
@@ -60,6 +64,7 @@ import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const keywordModal = ref();
 

@@ -3,7 +3,7 @@
     class="card bg-base-100 w-full gap-[var(--spacing-in-sections)]"
     :class="{ 'card-side': vertical }"
   >
-    <PictureWithToolTip
+    <Picture
       :image="cardImage"
       :image-alt="cardImageAlt"
       :tooltip-text="tooltipText"
@@ -51,7 +51,7 @@ import Heading from "./Heading.vue";
 import { computed } from "vue";
 import router from "../router";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
-import PictureWithToolTip from "./PictureWithToolTip.vue";
+import Picture from "./Picture.vue";
 
 const props = defineProps<{
   cardImage: string;
