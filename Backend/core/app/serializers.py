@@ -11,7 +11,7 @@ class ResearcherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Researcher
-        fields = ["id", "firstname", "surname", "img", "position", "about", "email", "linkedin", "keywords", "related_research"]
+        fields = ["id", "firstname", "surname", "img", "position", "about", "office", "email", "linkedin", "keywords", "related_research"]
     
     def get_related_research(self, obj):
         return list(obj.related_research.values("id", "name", "summary", "source_file"))

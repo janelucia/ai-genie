@@ -89,6 +89,7 @@ class Researcher(models.Model):
     email = models.EmailField(blank=True)
     linkedin = models.CharField(max_length=100, blank=True)
     keywords = models.CharField(max_length=500, blank=True) # coma separated tags
+    office = models.CharField(max_length=100, blank=True)
     related_research = models.ManyToManyField(
         Research,
         related_name="researchers_related",
