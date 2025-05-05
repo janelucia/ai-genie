@@ -38,7 +38,7 @@ import Card from "../components/Card.vue";
 import { ref, watch } from "vue";
 import { useApiRequest } from "../api/useApiRequest.ts";
 import type { Events } from "../types/types.ts";
-import EventBanner from "../assets/img/event-banner-ai.png";
+import EventBanner from "/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
 import Text from "../components/Text.vue";
 import CollapseSection from "../components/CollapseSection.vue";

@@ -1,12 +1,7 @@
 <template>
   <PageStructure no-back>
     <div class="w-full flex justify-center">
-      <video
-        autoplay
-        loop
-        src="../assets/video/waving-pepper.mp4"
-        class="w-1/2"
-      />
+      <video autoplay loop src="/video/waving-pepper.mp4" class="w-1/2" />
     </div>
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -54,8 +49,8 @@ import Heading from "../components/Heading.vue";
 import { ref, watch } from "vue";
 import type { Research, Events } from "../types/types.ts";
 import { useApiRequest } from "../api/useApiRequest.ts";
-import EventBanner from "../assets/img/event-banner-ai.png";
-import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import EventBanner from "/img/event-banner-ai.png";
+import ResearchBanner from "/img/research-paper-banner-ai.png";
 import Alert from "../components/Alert.vue";
 import Text from "../components/Text.vue";
 import CardCarousel from "../components/CardCarousel.vue";

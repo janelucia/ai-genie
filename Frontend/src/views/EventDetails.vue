@@ -144,7 +144,7 @@ import Text from "../components/Text.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
 import Alert from "../components/Alert.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
-import EventBanner from "../assets/img/event-banner-ai.png";
+import EventBanner from "/img/event-banner-ai.png";
 import { format } from "date-fns";
 import PageStructure from "../components/PageStructure.vue";
 import { isUserSignedUp, signUpForEvent } from "../utils/helpers.ts";

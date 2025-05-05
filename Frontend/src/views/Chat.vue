@@ -5,20 +5,10 @@
   >
     <div class="w-full flex justify-center">
       <template v-if="isLoading">
-        <video
-          autoplay
-          loop
-          src="../assets/video/talking-pepper.mp4"
-          class="w-1/2"
-        />
+        <video autoplay loop src="/video/talking-pepper.mp4" class="w-1/2" />
       </template>
       <template v-else>
-        <video
-          autoplay
-          loop
-          src="../assets/video/blinking-pepper.mp4"
-          class="w-1/2"
-        />
+        <video autoplay loop src="/video/blinking-pepper.mp4" class="w-1/2" />
       </template>
     </div>
     <div

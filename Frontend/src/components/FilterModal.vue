@@ -1,6 +1,6 @@
 <template>
   <button v-if="uniqueKeywords.length > 0" class="cursor-pointer" @click="open">
-    <img src="../assets/icons/filter.svg" alt="Filter Icon" class="w-7 h-7" />
+    <img src="/icons/filter.svg" alt="Filter Icon" class="w-7 h-7" />
   </button>
   <dialog ref="modalRef" class="modal">
     <div

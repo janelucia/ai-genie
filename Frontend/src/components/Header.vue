@@ -7,7 +7,7 @@
     </template>
     <template v-else>
       <img
-        src="../assets/icons/arrow-back.svg"
+        src="/icons/arrow-back.svg"
         alt="Back"
         class="w-8 h-8 cursor-pointer"
         @click="router.go(-1)"
@@ -15,16 +15,12 @@
     </template>
 
     <div class="flex-grow flex items-center justify-center">
-      <img
-        src="../assets/icons/logo.svg"
-        alt="Logo"
-        class="cursor-pointer h-10"
-      />
+      <img src="/icons/logo.svg" alt="Logo" class="cursor-pointer h-10" />
     </div>
 
     <template v-if="chat">
       <button @click="openModal">
-        <img src="../assets/icons/trash-can.svg" alt="Delete icon" />
+        <img src="/icons/trash-can.svg" alt="Delete icon" />
       </button>
     </template>
     <template v-else>

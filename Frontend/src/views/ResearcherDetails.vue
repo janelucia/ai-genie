@@ -71,7 +71,7 @@ import Keywords from "../components/Keywords.vue";
 import CollapseSection from "../components/CollapseSection.vue";
 import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
-import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
 

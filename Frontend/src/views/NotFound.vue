@@ -17,5 +17,5 @@
 import Heading from "../components/Heading.vue";
 import Text from "../components/Text.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
-import NotFoundPicture from "../assets/img/not-found-portrait-ai.png";
+import NotFoundPicture from "/img/not-found-portrait-ai.png";
 </script>

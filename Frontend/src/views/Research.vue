@@ -53,7 +53,7 @@ import Card from "../components/Card.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { useApiRequest } from "../api/useApiRequest.ts";
 import type { Research } from "../types/types.ts";
-import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import ResearchBanner from "/img/research-paper-banner-ai.png";
 import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
 import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";

@@ -53,7 +53,7 @@ import router from "../router";
 import Avatar from "../components/Avatar.vue";
 import Keywords from "../components/Keywords.vue";
 import PictureWithToolTip from "../components/PictureWithToolTip.vue";
-import ResearchBanner from "../assets/img/research-paper-banner-ai.png";
+import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
 
