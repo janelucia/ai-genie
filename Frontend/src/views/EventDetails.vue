@@ -225,11 +225,13 @@ function handleSubmit() {
   console.log("From:", email.value);
   console.log("Message:", message.value);
 
-  useApiRequest("email", "POST", <Email>{
+  const { execute } = useApiRequest("email", "POST", <Email>{
     address: "janeluciaschoenfeld@gmail.com",
     message: messageWithSignature.value,
     subject: `Sign up for event "${result.value.name}"`,
   });
+
+  execute();
 
   signUpForEvent(id);
   submitted.value = true;
