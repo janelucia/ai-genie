@@ -225,7 +225,7 @@ function handleSubmit() {
   console.log("From:", email.value);
   console.log("Message:", message.value);
 
-  const { execute } = useApiRequest("email", "POST", <Email>{
+  const { execute } = useApiRequest("email/", "POST", <Email>{
     address: data.value?.contact_email || "ai.genie.signup.system@gmail.com",
     message: messageWithSignature.value,
     subject: `Sign up for event "${result.value.name}"`,
