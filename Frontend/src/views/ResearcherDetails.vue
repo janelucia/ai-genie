@@ -5,11 +5,7 @@
     >
       <Avatar
         class="w-32"
-        :img="
-          data?.img
-            ? baseUrl + data.img
-            : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
-        "
+        :img="data?.img ? baseUrl + data.img : ResearcherPlaceholder"
       />
       <div>
         <Heading heading="h1">
@@ -25,12 +21,15 @@
       :keywords="keywordsStringToArray(data?.keywords)"
       link="/researchers?keywords="
     />
-    <CollapseSection collapse-title="About">
+    <CollapseSection v-if="data?.about" collapse-title="About">
       <Text class="break-words break-all whitespace-pre-wrap">
         {{ data?.about }}
       </Text>
     </CollapseSection>
-    <CollapseSection collapse-title="Publications & Research">
+    <CollapseSection
+      v-if="relatedResearch.length > 0"
+      collapse-title="Publications & Research"
+    >
       <Card
         v-for="research in relatedResearch"
         :key="research.id"
@@ -39,7 +38,7 @@
         card-image-alt="Research Paper Banner"
         :card-title="research.name"
         :card-text="research.summary"
-        :link="'/research/' + research.id.toString()"
+        :link="'/research/' + research.id?.toString()"
       />
     </CollapseSection>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
@@ -82,6 +81,7 @@ import Text from "../components/Text.vue";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
+import ResearcherPlaceholder from "/img/placeholder-researcher.png";
 
 const route = useRoute();
 const id = route.params.id;

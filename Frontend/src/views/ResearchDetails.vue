@@ -16,7 +16,12 @@
         class="carousel-item w-24 shrink-0 flex flex-col items-center relative"
         @click="router.push(`/researchers/${researcher.id}`)"
       >
-        <Avatar class="w-24" />
+        <Avatar
+          class="w-24"
+          :img="
+            researcher.img ? baseUrl + researcher.img : ResearcherPlaceholder
+          "
+        />
         <Text
           small
           class="text-center badge badge-secondary h-fit absolute bottom-0 w-full"
@@ -25,7 +30,7 @@
         </Text>
       </button>
     </div>
-    <Text class="w-full">{{ data?.summary }}</Text>
+    <Text v-if="data?.summary" class="w-full">{{ data?.summary }}</Text>
     <Keywords
       v-if="data?.keywords"
       :keywords="keywordsStringToArray(data.keywords)"
@@ -35,6 +40,7 @@
       <Text button>Ask AIGenie</Text>
     </button>
     <a
+      v-if="data?.source_file"
       :href="baseUrl + data?.source_file"
       download
       target="_blank"
@@ -57,11 +63,11 @@ import Picture from "../components/Picture.vue";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
 import { keywordsStringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
+import ResearcherPlaceholder from "/img/placeholder-researcher.png";
 
 const route = useRoute();
 const id = route.params.id;
-const baseUrl =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/";
+const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const { data } = useApiRequest<Research>("research/" + id);
 

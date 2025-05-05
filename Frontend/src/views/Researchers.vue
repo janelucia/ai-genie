@@ -39,9 +39,7 @@
       v-for="researcher in filteredResults"
       :key="researcher.id ?? ''"
       :card-image="
-        researcher.img
-          ? baseUrl + researcher.img
-          : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+        researcher.img ? baseUrl + researcher.img : ResearcherPlaceholder
       "
       card-image-alt="Some Profile Picture"
       :card-title="`${researcher.firstname} ${researcher.surname}`"
@@ -61,6 +59,7 @@ import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
 import useSearchAndFilter from "../../composables/useSearchAndFilter.ts";
 import { useRoute, useRouter } from "vue-router";
+import ResearcherPlaceholder from "/img/placeholder-researcher.png";
 
 const route = useRoute();
 const router = useRouter();
