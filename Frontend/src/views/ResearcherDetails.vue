@@ -4,10 +4,10 @@
       class="flex items-center justify-evenly w-full gap-[var(--spacing-in-sections)]"
     >
       <Avatar
-        class="w-32"
+        class="w-32 h-32"
         :img="data?.img ? baseUrl + data.img : ResearcherPlaceholder"
       />
-      <div>
+      <div class="w-1/2">
         <Heading heading="h1">
           {{ data?.firstname }} {{ data?.surname }}
         </Heading>
@@ -18,7 +18,7 @@
     </div>
     <Keywords
       v-if="data?.keywords"
-      :keywords="keywordsStringToArray(data?.keywords)"
+      :keywords="stringToArray(data?.keywords)"
       link="/researchers?keywords="
     />
     <CollapseSection v-if="data?.about" collapse-title="About">
@@ -47,7 +47,7 @@
     >
       <Heading heading="h3"> Let's connect! </Heading>
       <div v-if="data?.office" class="flex flex-col">
-        <Text v-for="addressLine of addressSplit(data.office)">{{
+        <Text v-for="addressLine of stringToArray(data.office)">{{
           addressLine
         }}</Text>
       </div>
@@ -83,7 +83,7 @@ import CollapseSection from "../components/CollapseSection.vue";
 import Card from "../components/Card.vue";
 import Text from "../components/Text.vue";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
-import { keywordsStringToArray } from "../utils/helpers.ts";
+import { stringToArray } from "../utils/helpers.ts";
 import PageStructure from "../components/PageStructure.vue";
 import ResearcherPlaceholder from "/img/placeholder-researcher.png";
 
@@ -95,10 +95,6 @@ const relatedResearch = ref<Research[]>([]);
 
 const { data } = useApiRequest<Researchers>("researchers/" + id);
 const { data: researchData } = useApiRequest<Research[]>("research");
-
-function addressSplit(address: string) {
-  return address.split(",").map((a) => a.trim());
-}
 
 watch(researchData, () => {
   if (researchData.value) {
