@@ -15,16 +15,18 @@ class ResearcherSerializer(serializers.ModelSerializer):
     
     def get_related_research(self, obj):
         return list(obj.related_research.values("id", "name", "summary", "source_file"))
+    
+class ResearcherShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Researcher
+        fields = ["id", "firstname", "surname", "img"]
 
 class ResearchSerializer(serializers.ModelSerializer):
-    researchers_related = serializers.SerializerMethodField()
+    researchers_related = ResearcherShortSerializer(many=True, read_only=True)
     
     class Meta:
         model = Research
         fields = ["id", "name", "summary", "source_file", "keywords", "researchers_related"]
-    
-    def get_researchers_related(self, obj):
-        return list(obj.researchers_related.values("id", "firstname", "surname", "img"))
 
 class ChatSerializer(serializers.ModelSerializer):
     class Meta:

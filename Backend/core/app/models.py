@@ -83,7 +83,7 @@ class Research(models.Model):
 class Researcher(models.Model):
     firstname = models.CharField(max_length=60)
     surname = models.CharField(max_length=60)
-    position = models.CharField(max_length=25)
+    position = models.CharField(max_length=50)
     short_about = models.CharField(max_length=100)
     about = models.CharField(max_length=500)
     email = models.EmailField(blank=True)
