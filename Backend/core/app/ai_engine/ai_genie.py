@@ -3,7 +3,7 @@ from langchain.agents import initialize_agent, AgentType
 from langchain.memory import ConversationBufferMemory
 from langchain_ollama import OllamaLLM
 
-from .tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool, ResearchDetailsTool
+from .tools import FindEventTool, FindResearcherTool, FindResearchTool, ListEventsTool, ListResearchersTool, ListResearchTool, ResearchDetailsTool, GetCurrentDateTool
 from app.ai_engine import consts
 
 
@@ -13,7 +13,7 @@ class AIGenie():
 
         self.tools = [FindResearcherTool(), FindEventTool(), FindResearchTool(), 
                       ListEventsTool(), ListResearchersTool(), ListResearchTool(),
-                      ResearchDetailsTool()]
+                      ResearchDetailsTool(), GetCurrentDateTool()]
 
         self.memory = memory
         

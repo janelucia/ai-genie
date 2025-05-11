@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
-    filename=datetime.now().strftime("chatbot_test_%Y-%m-%d_%H:%M:%S.log"),
+    filename=datetime.now().strftime("chatbot_test_%Y_%m-%d_%H-%M-%S.log"),
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class ChatbotIntegrationTest(TestCase):
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         """Create a db for testing"""
         call_command('loaddata', 'mock_db.json') 
 
@@ -30,7 +30,7 @@ class ChatbotIntegrationTest(TestCase):
         logger.info(f"--TEST {test_name.upper()} STARTED--")
 
     def tearDown(self):
-        logger.info("--TEST ENDEND--\n")
+        logger.info("--TEST ENDED--\n")
 
     def clear_chat_history(self):
         """Clears the chat history for the test chat session"""
@@ -43,6 +43,15 @@ class ChatbotIntegrationTest(TestCase):
             content_type="application/json"
         )
 
+    def send_and_validate(self, user_message, conversation):
+        response = self.message_ai(user_message)
+        ai_response = MessageSerializer(data=response.data)
+        if ai_response.is_valid():
+            ai_response_content = ai_response.validated_data.get("content")
+            conversation.append({"user_input": user_message, "ai_response": ai_response_content})
+            return ai_response_content, "PASS"
+        return None, "FAIL"
+
     def log_conversation(self, test_name, status, conversation):
         """Logs test conversations using the logging module"""
         logger.info(f"_________ conversation for: {test_name} _________")
@@ -52,105 +61,43 @@ class ChatbotIntegrationTest(TestCase):
         logger.info(f"Test Result: {status}")
         logger.info("_________ end of conversation _________")
 
+    # ---------------- BASIC FUNCTIONALITY TESTS ----------------
+
     def test_chatbot_responds(self):
-        """Test if chatbot responds to user input"""
         conversation = []
         status = "PASS"
         self.clear_chat_history()
 
         user_message = "Hello, what research is available?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-        
-        self.log_conversation("Chatbot Responds", status, conversation)
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Basic] Chatbot Responds", status, conversation)
 
     def test_chat_memory(self):
-        """Ensure chatbot remembers previous messages"""
         conversation = []
         status = "PASS"
         self.clear_chat_history()
-        
-        user_message = "What is AI Lab?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
 
-        user_message = "Can you tell me more?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-        
-        self.log_conversation("Chat Memory", status, conversation)
+        messages = [
+            "What is AI Lab?",
+            "Can you tell me more?"
+        ]
+        for user_message in messages:
+            _, status = self.send_and_validate(user_message, conversation)
+            if status == "FAIL":
+                break
 
-    def test_ask_about_researcher(self):
-        """Tests if chatbot can find researcher based on the exact name"""
+        self.log_conversation("[Basic] Chat Memory", status, conversation)
+
+    def test_empty_message(self):
         conversation = []
         status = "PASS"
-        self.clear_chat_history()
-        
-        user_message = "Who is Mia Martin?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
+        user_message = ""
+        _, status = self.send_and_validate(user_message, conversation)
 
-        self.log_conversation("Ask Abt Researcher", status, conversation)
-
-    def test_ask_about_researcher_wrong_name(self):
-        """Tests if chatbot can find researcher based on the misspealed name"""
-        conversation = []
-        status = "PASS"
-        self.clear_chat_history()
-        
-        user_message = "Who is Mio Marton?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-
-        self.log_conversation("Misspealled Researcher", status, conversation)
-
-    def test_ask_about_researcher_from_memory(self):
-        """Tests if chatbot can find information about researcher from memory context"""
-        conversation = []
-        status = "PASS"
-        self.clear_chat_history()
-        
-        user_message = "Could you tell me what researchers there are at OsloMet?"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-
-        user_message = "I want to know more about Emily"
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        if ai_response.is_valid():
-            conversation.append({"user_input": user_message, "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-
-        self.log_conversation("Ask Abt Researcher Memory", status, conversation)
+        self.log_conversation("[Basic] Empty Message", status, conversation)
 
     def test_invalid_chat_id(self):
-        """Test error handling for non-existent chat"""
         status = "PASS"
         user_message = "Hello!"
         response = self.client.post(
@@ -158,20 +105,143 @@ class ChatbotIntegrationTest(TestCase):
             json.dumps({"chat": -1, "content": user_message}),
             content_type="application/json"
         )
-        self.log_conversation("Invalid Chat ID", status, [])
+        self.log_conversation("[Basic] Invalid Chat ID", status, [])
 
-    def test_empty_message(self):
-        """Ensure chatbot rejects empty messages"""
+    # ---------------- RESEARCHER-RELATED TESTS ----------------
+
+    def test_ask_about_researcher(self):
         conversation = []
         status = "PASS"
-        
-        user_message = ""
-        response = self.message_ai(user_message)
-        ai_response = MessageSerializer(data=response.data)
-        
-        if ai_response.is_valid():
-            conversation.append({"user_input": "(empty)", "ai_response": ai_response.validated_data.get("content")})
-        else:
-            status = "FAIL"
-        
-        self.log_conversation("Empty Message", status, conversation)
+        self.clear_chat_history()
+
+        user_message = "Who is Mia Martin?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Researcher] Ask About Researcher", status, conversation)
+
+    def test_ask_about_researcher_wrong_name(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "Who is Mia Marton?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Researcher] Misspelled Researcher", status, conversation)
+
+    def test_ask_about_researcher_from_memory(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        messages = [
+            "Could you tell me what researchers there are at OsloMet?",
+            "I want to know more about Emily"
+        ]
+        for user_message in messages:
+            _, status = self.send_and_validate(user_message, conversation)
+            if status == "FAIL":
+                break
+
+        self.log_conversation("[Researcher] Researcher from Memory", status, conversation)
+
+    def test_list_researchers(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "Can you tell me what researchers work here?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Researcher] List Researchers", status, conversation)
+
+    # ---------------- EVENT-RELATED TESTS ----------------
+
+    def test_find_event(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "I am looking for AI Conference"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Event] Find Event", status, conversation)
+
+    def test_event_on_specific_day(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "Which event was happening last Tuesday?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("Event on Specific Day", status, conversation)
+
+    def test_event_link_and_organizer_contact(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        messages = [
+            "Which event was happening last Tuesday?",
+            "How can I contact organiser?"
+        ]
+        for user_message in messages:
+            _, status = self.send_and_validate(user_message, conversation)
+            if status == "FAIL":
+                break
+
+        self.log_conversation("Event Link and Organizer Contact", status, conversation)
+
+
+    def test_list_events(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "What events are happening?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Event] List Events", status, conversation)
+
+    # ---------------- RESEARCH-RELATED TESTS ----------------
+
+    def test_find_research(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "Is there research about work ethics?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Research] Find Research", status, conversation)
+
+    def test_find_non_existent_research(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "Is there research about ai in turtle protection?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Research] Find Research", status, conversation)
+
+    def test_list_research(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "What kind of research is being performed?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Research] List Research", status, conversation)
+
+    def test_research_details(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_message = "What are the conclusions of Quantum Computing research paper?"
+        _, status = self.send_and_validate(user_message, conversation)
+
+        self.log_conversation("[Research] Research Details", status, conversation)

@@ -5,6 +5,7 @@ from ..models import Researcher, Event, Research
 from rapidfuzz import process
 from app.ai_engine import consts
 from app.ai_engine.vector_db_service import VectorDatabaseService
+from datetime import datetime
 
 
 class EmptyInput(BaseModel):
@@ -18,7 +19,10 @@ class FindResearcherInput(BaseModel):
 
 class FindResearcherTool(BaseTool):
     name : str = "FindResearcher"
-    description : str  = "Finds a researcher by firstname, surname or both in the database. Also used when user asks about research that the person performs or when user wants to know more about researcher"
+    description : str  = '''Finds a researcher by firstname, surname or both in the database. 
+    Also used when user asks about research that the person performs or when user wants to know more about researcher
+    such as email or office wher the person can be met.
+    Returns closest matching researcher.'''
     args_schema : Type[BaseModel] = FindResearcherInput
 
     def _run(self, name: str): # could be changed to include rapidfuzz
@@ -30,16 +34,41 @@ class FindResearcherTool(BaseTool):
         else:
             researchers = Researcher.objects.filter(firstname__icontains=name) | Researcher.objects.filter(surname__icontains=name)
 
-        if not researchers.exists():
+        if researchers.exists():
+            result = []
+            for r in researchers:
+                researcher_data = {
+                    "name": f"{r.firstname} {r.surname}",
+                    "research": [research.name for research in r.related_research.all()],
+                    "email": r.email,
+                }
+                if r.office:  # Only add office if it's not empty or None
+                    researcher_data["office"] = r.office
+            
+                result.append(researcher_data)
+            return result
+
+        # SECOND: Fuzzy search (only if no exact match)
+        all_researchers = Researcher.objects.all()
+        researcher_names = [f"{r.firstname} {r.surname}" for r in all_researchers]
+
+        fuzzy_result = process.extractOne(name, researcher_names, score_cutoff=10)
+
+        if fuzzy_result is None:
             return "No researcher found."
-        
-        result = []
-        for r in researchers:
-            research_names = [research.name for research in r.related_research.all()]
-            result.append({"name": f"{r.firstname} {r.surname}", "research": research_names})
-        
-        
-        return result
+
+        matched_name, _, index = fuzzy_result
+        matched_researcher = all_researchers[index]
+
+        researcher_data = {
+            "name": f"{matched_researcher.firstname} {matched_researcher.surname}",
+            "research": [research.name for research in matched_researcher.related_research.all()],
+            "email": matched_researcher.email,
+        }
+        if matched_researcher.office:
+            researcher_data["office"] = matched_researcher.office
+
+        return researcher_data
     
 class ListResearchersTool(BaseTool):
     name : str = "ListResearchers"
@@ -49,9 +78,9 @@ class ListResearchersTool(BaseTool):
     def _run(self, arg):
         researchers = Researcher.objects.all()
         if not researchers.exists():
-            return "No events are happening in the future."
+            return "No researchers found."
         
-        researchers_to_return = [f"{res.firstname} {res.surname}" for res in researchers]
+        researchers_to_return = [f"name: {res.firstname} surname: {res.surname} position: {res.position}" for res in researchers]
         return researchers_to_return
     
 #_________________EVENTS TOOLS_________________
@@ -77,7 +106,7 @@ class FindEventTool(BaseTool):
         _, _, index = result
         best_event = events_list[index]
 
-        return [{"name": best_event.name, "date": best_event.date}]
+        return best_event
     
 class ListEventsTool(BaseTool):
     name : str = "ListEvents"
@@ -88,8 +117,16 @@ class ListEventsTool(BaseTool):
         events = Event.objects.all().values("name", "date")
         if not events.exists():
             return "No events found."
-        
         return events
+
+class GetCurrentDateTool(BaseTool):
+    name: str = "GetCurrentDate"
+    description: str = "Returns the current date. Useful if the user asks what day it is or what events are happening today."
+    args_schema: Type[BaseModel] = EmptyInput
+
+    def _run(self, arg):
+        today = datetime.now().strftime("%Y-%m-%d")
+        return today
     
 #_________________RESEARCH TOOLS_________________
 
@@ -136,9 +173,10 @@ class ResearchDetailsInput(BaseModel):
 class ResearchDetailsTool(BaseTool):
     name: str = "GetDetails"
     description: str = (
-        "Use this tool to answer questions about details (such as results, conclusion, metholodogies) of research papers"
-        "You must provide a question and the paper's title, separated by '|'."
-        "If output is empty it means that research paper doesnt have an answer to the question"
+        "Use this tool to answer questions about details (such as results, conclusion, metholodogies) of research papers."
+        "You must provide a question and the paper's title in this order, separated by '|'."
+        "It is mandatory that you put two sentences."
+        "If output is empty it means that research paper doesnt have an answer to the question."
     )
     args_schema: Type[BaseModel] = ResearchDetailsInput
 
@@ -148,7 +186,7 @@ class ResearchDetailsTool(BaseTool):
     def _run(self, context: str):
         parts = [p.strip() for p in context.split('|', maxsplit=1)]  # clean whitespace
         if len(parts) == 2:
-            research_title, user_question = parts
+            user_question, research_title = parts
             research_list = Research.objects.all()
             research_titles = [research.name for research in research_list]
 
@@ -160,7 +198,7 @@ class ResearchDetailsTool(BaseTool):
             research_title = None
 
         vector_service = VectorDatabaseService()  # Singleton or injected service
-        print(f"USER QUESTION: {user_question}")
-        print(f"RESEARCH PAPER: {research_title}")
+        # print(f"USER QUESTION: {user_question}")
+        # print(f"RESEARCH PAPER: {research_title}")
         results = vector_service.find_similar(query=user_question, source=research_title, top_k=2)
         return results
