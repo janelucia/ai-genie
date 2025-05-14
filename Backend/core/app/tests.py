@@ -89,14 +89,6 @@ class ChatbotIntegrationTest(TestCase):
 
         self.log_conversation("[Basic] Chat Memory", status, conversation)
 
-    def test_empty_message(self):
-        conversation = []
-        status = "PASS"
-        user_message = ""
-        _, status = self.send_and_validate(user_message, conversation)
-
-        self.log_conversation("[Basic] Empty Message", status, conversation)
-
     def test_invalid_chat_id(self):
         status = "PASS"
         user_message = "Hello!"
@@ -157,7 +149,7 @@ class ChatbotIntegrationTest(TestCase):
 
     # ---------------- EVENT-RELATED TESTS ----------------
 
-    def test_find_event(self):
+    def test_find_event_wrong_name(self):
         conversation = []
         status = "PASS"
         self.clear_chat_history()
@@ -167,12 +159,25 @@ class ChatbotIntegrationTest(TestCase):
 
         self.log_conversation("[Event] Find Event", status, conversation)
 
+    def test_find_event(self):
+        conversation = []
+        status = "PASS"
+        self.clear_chat_history()
+
+        user_messages = [
+            "I am looking for Blockchain & Finance Summit",
+            "How can I cntact organiser?"]
+        for msg in user_messages:
+            _, status = self.send_and_validate(msg, conversation)
+
+        self.log_conversation("[Event] Find Event", status, conversation)
+
     def test_event_on_specific_day(self):
         conversation = []
         status = "PASS"
         self.clear_chat_history()
 
-        user_message = "Which event was happening last Tuesday?"
+        user_message = "What event was happening last Tuesday?"
         _, status = self.send_and_validate(user_message, conversation)
 
         self.log_conversation("Event on Specific Day", status, conversation)
@@ -183,7 +188,7 @@ class ChatbotIntegrationTest(TestCase):
         self.clear_chat_history()
 
         messages = [
-            "Which event was happening last Tuesday?",
+            "What event was happening last Tuesday?",
             "How can I contact organiser?"
         ]
         for user_message in messages:

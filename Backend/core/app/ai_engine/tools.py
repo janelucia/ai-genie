@@ -90,7 +90,7 @@ class FindEventInput(BaseModel):
 
 class FindEventTool(BaseTool):
     name : str = "FindEvent"
-    description : str  = "Finds an event by name in the database."
+    description : str  = "Finds an event by name in the database. Used when user asks about organiser of an event."
     args_schema : Type[BaseModel] = FindEventInput
 
     def _run(self, name: str):
@@ -105,12 +105,19 @@ class FindEventTool(BaseTool):
 
         _, _, index = result
         best_event = events_list[index]
+        return {
+            "name": best_event.name,
+            "date": best_event.date.strftime("%d-%m-%Y %H:%M"),
+            "description": best_event.description,
+            "contact_email": best_event.contact_email,
+            "location": best_event.location,
+        }
 
-        return best_event
     
 class ListEventsTool(BaseTool):
     name : str = "ListEvents"
-    description : str = "Lists all events. Use if user wants to know what events are happening at AI Lab."
+    description : str = '''Lists all events. Use if user wants to know what events are happening at AI Lab.
+      Can be used if user ask for event on certain date'''
     args_schema: Type[BaseModel] = EmptyInput
 
     def _run(self, arg):
@@ -121,12 +128,15 @@ class ListEventsTool(BaseTool):
 
 class GetCurrentDateTool(BaseTool):
     name: str = "GetCurrentDate"
-    description: str = "Returns the current date. Useful if the user asks what day it is or what events are happening today."
+    description: str = "Returns today's date and weekday name. Useful if the user asks what day it is."
     args_schema: Type[BaseModel] = EmptyInput
 
     def _run(self, arg):
-        today = datetime.now().strftime("%Y-%m-%d")
-        return today
+        now = datetime.now()
+        weekday = now.strftime("%A")           # e.g., 'Tuesday'
+        date_str = now.strftime("%d-%m-%Y")     # e.g., '13-05-2025'
+        return f"Today is {weekday}, {date_str}"
+
     
 #_________________RESEARCH TOOLS_________________
 
