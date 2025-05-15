@@ -1,5 +1,14 @@
 import { ref, type Ref } from "vue";
 
+/**
+ * A composable function to make API requests using the FETCH API from JavaScript.
+ * Supports GET, POST, PUT, and DELETE methods.
+ *
+ * @param endpoint - The API endpoint to call (e.g., "chats/", "research/", "events/", "researchers/", "email/")
+ * @param method - HTTP method to use for the request (default is GET)
+ * @param bodyData - optional data to be sent in the request body
+ * @returns An object containing the response data, error message, loading state, and a function to execute the request
+ */
 export function useApiRequest<T = unknown>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
