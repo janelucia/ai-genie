@@ -22,7 +22,7 @@
       <Heading heading="h2"> Upcoming Events </Heading>
 
       <CardCarousel
-        :items="eventsResult as CardType"
+        :items="eventsResult"
         :banner-image="EventBanner"
         banner-image-alt="Event Banner"
         placeholder-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
@@ -34,7 +34,7 @@
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <Heading heading="h2"> Research Highlights </Heading>
       <CardCarousel
-        :items="researchResult as CardType"
+        :items="researchResult"
         :banner-image="ResearchBanner"
         banner-image-alt="Research Banner"
         link="/research/"
@@ -55,21 +55,42 @@ import Text from "../components/Text.vue";
 import CardCarousel from "../components/CardCarousel.vue";
 import PageStructure from "../components/PageStructure.vue";
 
-const researchResult = ref<Research[]>([]);
-const eventsResult = ref<Events[]>([]);
+const researchResult = ref<CardType[]>([]);
+const eventsResult = ref<CardType[]>([]);
 
 const { data: researchData } = useApiRequest<Research[]>("research");
 const { data: eventsData } = useApiRequest<Events[]>("events");
 
 watch(researchData, () => {
   if (researchData.value) {
-    researchResult.value = researchData.value.slice(0, 3);
+    researchResult.value = researchData.value
+      .filter(
+        (item): item is Research & { id: number } => item.id !== undefined,
+      )
+      .slice(0, 3)
+      .map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          description: item.summary ?? "",
+        };
+      });
   }
 });
 
 watch(eventsData, () => {
   if (eventsData.value) {
-    eventsResult.value = eventsData.value.slice(0, 3);
+    eventsResult.value = eventsData.value
+      .filter((item): item is Events & { id: number } => item.id !== undefined)
+      .slice(0, 3)
+      .map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          date: item.date,
+          description: item.description,
+        };
+      });
   }
 });
 </script>
