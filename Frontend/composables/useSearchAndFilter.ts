@@ -1,5 +1,11 @@
 import { ref, computed, type Ref } from "vue";
 
+/**
+ * A composable function to filter and search through a list of items based on a search query and selected keywords.
+ * @param input - A ref containing an array of items to be filtered.
+ * @param getTextFields - A function that takes an item and returns an array of strings to be searched. Used to generalize the function for different types of items.
+ * @returns An object containing the search query, filtered results, a function to apply keyword filters, and the selected keywords.
+ */
 export default function useSearchAndFilter<T extends { keywords?: string }>(
   input: Ref<T[]>,
   getTextFields: (item: T) => string[],
