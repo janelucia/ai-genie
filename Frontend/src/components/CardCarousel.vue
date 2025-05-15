@@ -56,14 +56,10 @@
 import { ref, watch } from "vue";
 import Card from "./Card.vue";
 import { isUserSignedUp } from "../utils/helpers.ts";
+import type { CardType } from "../types/types.ts";
 
 const props = defineProps<{
-  items: Array<{
-    id: number;
-    name: string;
-    date?: string;
-    description?: string;
-  }>;
+  items: CardType[];
   bannerImage: string;
   bannerImageAlt: string;
   placeholderText?: string;

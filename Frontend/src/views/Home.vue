@@ -22,7 +22,7 @@
       <Heading heading="h2"> Upcoming Events </Heading>
 
       <CardCarousel
-        :items="eventsResult"
+        :items="eventsResult as CardType"
         :banner-image="EventBanner"
         banner-image-alt="Event Banner"
         placeholder-text="This is a placeholder text for the event description. It should be replaced with the actual event description."
@@ -34,7 +34,7 @@
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <Heading heading="h2"> Research Highlights </Heading>
       <CardCarousel
-        :items="researchResult"
+        :items="researchResult as CardType"
         :banner-image="ResearchBanner"
         banner-image-alt="Research Banner"
         link="/research/"
@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import Heading from "../components/Heading.vue";
 import { ref, watch } from "vue";
-import type { Research, Events } from "../types/types.ts";
+import type { Research, Events, CardType } from "../types/types.ts";
 import { useApiRequest } from "../api/useApiRequest.ts";
 import EventBanner from "/img/event-banner-ai.png";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
