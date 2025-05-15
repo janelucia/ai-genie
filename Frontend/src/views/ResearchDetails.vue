@@ -6,7 +6,6 @@
     <Picture
       :image="ResearchBanner"
       image-alt="ResearchBanner"
-      tooltip-text="This image was created using AI and has no relation to the research."
       picture-class="rounded"
     />
     <div
@@ -24,10 +23,11 @@
           :img="
             researcher.img ? baseUrl + researcher.img : ResearcherPlaceholder
           "
+          :name="researcher.firstname + ' ' + researcher.surname"
         />
         <Text
           small
-          class="text-center badge badge-secondary h-fit absolute bottom-0 w-full"
+          class="text-center badge badge-secondary h-fit absolute bottom-0 w-full line-clamp-2"
         >
           {{ researcher.firstname }}
         </Text>

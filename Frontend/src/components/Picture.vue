@@ -14,7 +14,6 @@
 defineProps<{
   image: string;
   imageAlt: string;
-  tooltipText?: string;
   pictureClass?: string;
 }>();
 </script>

@@ -6,7 +6,6 @@
     <Picture
       :image="cardImage"
       :image-alt="cardImageAlt"
-      :tooltip-text="tooltipText"
       :class="vertical ? 'w-28 flex-shrink-0' : 'h-40 w-full'"
     />
 
@@ -62,7 +61,6 @@ const props = defineProps<{
   buttonTitle?: string;
   buttonClass?: string;
   link?: string;
-  tooltipText?: string;
   vertical?: boolean;
 }>();
 
