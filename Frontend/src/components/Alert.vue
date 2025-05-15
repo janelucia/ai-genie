@@ -73,14 +73,6 @@
   </div>
 </template>
 <script setup lang="ts">
-/**
- * Alert component to display different types of alerts.
- * Alert types:
- * - success
- * - info
- * - warning
- * - error
- */
 import type { AlertType } from "../types/types.ts";
 
 defineProps<{
