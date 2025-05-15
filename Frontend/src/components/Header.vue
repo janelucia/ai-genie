@@ -43,13 +43,18 @@
       </div>
     </dialog>
 
-    <div v-if="showToast" class="toast toast-top toast-end">
-      <div class="alert" :class="toastClass">
-        <span>
-          {{ toastMessage }}
-        </span>
-      </div>
-    </div>
+    <Alert
+      v-if="showToast"
+      class="toast toast-top toast-end"
+      :success="success"
+      :error="error"
+      :info="info"
+      :warning="warning"
+    >
+      <Text>
+        {{ toastMessage }}
+      </Text>
+    </Alert>
   </div>
 </template>
 <script setup lang="ts">
@@ -57,6 +62,8 @@ import router from "../router";
 import { onMounted, ref } from "vue";
 import { useApiRequest } from "../api/useApiRequest.ts";
 import type { ChatWithMessages } from "../types/types.ts";
+import Alert from "./Alert.vue";
+import Text from "./Text.vue";
 
 defineProps<{
   chat?: boolean;
@@ -67,6 +74,10 @@ const modal = ref<HTMLDialogElement | null>(null);
 const toastMessage = ref("");
 const toastClass = ref("");
 const showToast = ref(false);
+const success = ref(false);
+const error = ref(false);
+const info = ref(false);
+const warning = ref(false);
 
 const deleteChat = async () => {
   const chatId = localStorage.getItem("chat-id");
@@ -74,7 +85,7 @@ const deleteChat = async () => {
   try {
     if (!chatId) {
       toastMessage.value = "No chat ID found.";
-      toastClass.value = "alert-error";
+      error.value = true;
       modal.value?.close();
       toastTimeout();
       return;
@@ -97,7 +108,7 @@ const deleteChat = async () => {
 
     if (!data.value?.messages || data.value.messages.length === 0) {
       toastMessage.value = "No messages to delete.";
-      toastClass.value = "alert-error";
+      error.value = true;
       modal.value?.close();
       toastTimeout();
       return;
@@ -117,7 +128,7 @@ const deleteChat = async () => {
   } catch (e) {
     console.error("Error deleting chat:", e);
     toastMessage.value = "Error deleting chat. Please try again.";
-    toastClass.value = "alert-error";
+    error.value = true;
     toastTimeout();
   }
 };
@@ -133,6 +144,28 @@ const toastTimeout = () => {
   }, 4000);
 };
 
+const setToastType = (type: string) => {
+  success.value = false;
+  error.value = false;
+  info.value = false;
+  warning.value = false;
+
+  switch (type) {
+    case "alert-success":
+      success.value = true;
+      break;
+    case "alert-error":
+      error.value = true;
+      break;
+    case "alert-info":
+      info.value = true;
+      break;
+    case "alert-warning":
+      warning.value = true;
+      break;
+  }
+};
+
 onMounted(() => {
   const shouldShowToast = localStorage.getItem("toast-should-show");
 
@@ -140,6 +173,8 @@ onMounted(() => {
     toastMessage.value = localStorage.getItem("toast-message") || "";
     toastClass.value = localStorage.getItem("toast-class") || "alert-success";
     toastTimeout();
+
+    setToastType(toastClass.value);
 
     // cleanup after showing
     localStorage.removeItem("toast-message");
