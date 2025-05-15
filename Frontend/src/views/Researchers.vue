@@ -41,7 +41,9 @@
       :card-image="
         researcher.img ? baseUrl + researcher.img : ResearcherPlaceholder
       "
-      card-image-alt="Some Profile Picture"
+      :card-image-alt="
+        'Picture of ' + researcher.firstname + ' ' + researcher.surname
+      "
       :card-title="`${researcher.firstname} ${researcher.surname}`"
       button-title="Learn more"
       :link="'/researchers/' + (researcher.id?.toString() ?? '')"

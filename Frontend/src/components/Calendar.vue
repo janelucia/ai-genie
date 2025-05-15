@@ -43,6 +43,9 @@ const emit = defineEmits<{
   (e: "date-selected", date: string): void;
 }>();
 
+/**
+ * Emits the selected date when the calendar date changes to filter the events for the selected date.
+ */
 function onDateChange() {
   const selectedDate = calendarRef.value?.value;
   if (selectedDate) {

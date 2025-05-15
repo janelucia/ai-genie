@@ -6,6 +6,7 @@
       <Avatar
         class="w-32 h-32"
         :img="data?.img ? baseUrl + data.img : ResearcherPlaceholder"
+        :name="data?.firstname + ' ' + data?.surname"
       />
       <div class="w-1/2">
         <Heading heading="h1">
