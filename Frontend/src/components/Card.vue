@@ -61,6 +61,7 @@ const props = defineProps<{
   buttonTitle?: string;
   buttonClass?: string;
   link?: string;
+  // This prop is used to determine the layout of the card, if the picture is being displayed horizontally or vertically
   vertical?: boolean;
 }>();
 
