@@ -59,3 +59,5 @@ export type Email = {
   subject: string;
   message: string;
 };
+
+export type AlertType = "success" | "error" | "info" | "warning";
