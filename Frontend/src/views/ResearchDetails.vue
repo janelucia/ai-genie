@@ -75,6 +75,9 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const { data } = useApiRequest<Research>("research/" + id);
 
+/**
+ * Function which opens the chat with a prompt to simplify the way to get more information about the research paper.
+ */
 function openChat() {
   const message = `Hello, I am interested in the research paper titled "${data?.value?.name}". Can you provide me with more information?`;
   localStorage.setItem("chat-message-research", message);

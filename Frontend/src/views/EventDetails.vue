@@ -121,7 +121,7 @@
           class="btn btn-secondary"
           @click="exportToICS(result.name, result.date)"
         >
-          Export ICS
+          <Text button>Export ICS</Text>
         </button>
       </div>
     </fieldset>
@@ -205,6 +205,10 @@ watch(data, () => {
   }
 });
 
+/**
+ * Adds additional information to the email for the organizer, without displaying it to the user.
+ * @param kind
+ */
 function updateSignature(kind: "email" | "name") {
   if (kind === "email") {
     emailTouched.value = true;
@@ -253,6 +257,14 @@ function handleSubmit() {
   setTimeout(() => (showConfirmation.value = false), 4000);
 }
 
+/**
+ * Creates a .ics file and triggers a download. It does not take the timezone into account, as the
+ * user is most likely in the same timezone as the event (Norway). However, this has to be adjusted
+ * if this should change.
+ * @param eventTitle
+ * @param eventStart
+ * @param eventEnd
+ */
 function exportToICS(
   eventTitle: string,
   eventStart: string,
@@ -273,6 +285,7 @@ function exportToICS(
 }
 
 onMounted(() => {
+  // used as the page focussed on the input fields and should start at the top of the page
   window.scrollTo(0, 0);
   isUserSignedUp(id);
 });

@@ -77,6 +77,10 @@ const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
     (researcher: Researchers) => [researcher.firstname, researcher.surname],
   );
 
+/**
+ * On load the search query and selected keywords are set from the URL.
+ * This allows to redirect to the page from another page and execute a search or share a link with the search and filter applied.
+ */
 onMounted(() => {
   searchQuery.value = route.query.search?.toString() || "";
   selectedKeywords.value = route.query.keywords
