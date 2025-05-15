@@ -1,3 +1,7 @@
+/**
+ * Formats a date into a human-readable string according to the user's locale.
+ * @param date
+ */
 export function formatDate(date: Date | string): string {
   const d = new Date(date);
   if (isNaN(d.getTime())) {
@@ -5,13 +9,17 @@ export function formatDate(date: Date | string): string {
     return "Invalid date";
   }
 
-  return new Intl.DateTimeFormat("en-US", {
+  return d.toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(d);
+  });
 }
 
+/**
+ * Formats a date into a human-readable time string according to the user's locale.
+ * @param date
+ */
 export function formatTime(date: Date | string): string {
   const d = new Date(date);
   if (isNaN(d.getTime())) {
@@ -19,8 +27,8 @@ export function formatTime(date: Date | string): string {
     return "Invalid time";
   }
 
-  return new Intl.DateTimeFormat("en-US", {
+  return d.toLocaleTimeString(undefined, {
     hour: "numeric",
     minute: "numeric",
-  }).format(d);
+  });
 }
