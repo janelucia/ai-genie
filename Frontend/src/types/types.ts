@@ -61,3 +61,5 @@ export type Email = {
 };
 
 export type AlertType = "success" | "error" | "info" | "warning";
+
+export type HeadingType = "h1" | "h2" | "h3";

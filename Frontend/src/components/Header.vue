@@ -73,6 +73,12 @@ const toastClass = ref("");
 const showToast = ref(false);
 const alertType = ref<AlertType>("info");
 
+/**
+ * Deletes the chat by sending a DELETE request to the API.
+ * - If the chat ID is not found, it shows an error message and reloads the page, to fetch a new chat id.
+ * - If the chat has no messages, it shows a error message, that there are no messages to delete. There is no reload and the chat id is not replaced to prevent an increase in distributing unnecessary chat ids.
+ * - If the chat is deleted successfully, it shows a success message and reloads the page.
+ */
 const deleteChat = async () => {
   const chatId = localStorage.getItem("chat-id");
 
@@ -132,6 +138,9 @@ const openModal = () => {
   modal.value?.showModal();
 };
 
+/**
+ * Shows the toast message for 4 seconds.
+ */
 const toastTimeout = () => {
   showToast.value = true;
   setTimeout(() => {
@@ -156,6 +165,13 @@ const setToastType = (type: string) => {
   }
 };
 
+/**
+ * Sets the toast message and class from local storage if it exists.
+ * Needed as the window reloads after deleting a chat and for the right order of reload and displaying
+ * the toast message, there is a need to set the toast message and class from local storage.
+ * - The toast message is shown for 4 seconds.
+ * - The toast class is used to set the alert type.
+ */
 onMounted(() => {
   const shouldShowToast = localStorage.getItem("toast-should-show");
 

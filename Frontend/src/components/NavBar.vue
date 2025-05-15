@@ -23,14 +23,14 @@
 
 <script setup lang="ts">
 const links = [
-  { to: "/", icon: "/icons/home.svg", alt: "Home" },
-  { to: "/events", icon: "/icons/events.svg", alt: "Events" },
-  { to: "/chat", icon: "/icons/chat.svg", alt: "Chat" },
-  { to: "/research", icon: "/icons/research.svg", alt: "Research" },
+  { to: "/", icon: "/icons/home.svg", alt: "Home Icon" },
+  { to: "/events", icon: "/icons/events.svg", alt: "Events Icon" },
+  { to: "/chat", icon: "/icons/chat.svg", alt: "Chat Icon" },
+  { to: "/research", icon: "/icons/research.svg", alt: "Research Icon" },
   {
     to: "/researchers",
     icon: "/icons/researcher.svg",
-    alt: "Researchers",
+    alt: "Researchers Icon",
   },
 ];
 </script>

@@ -55,6 +55,9 @@ const props = defineProps<{
   selectedKeywords: string[];
 }>();
 
+/**
+ * Emits a filter event with the selected keywords.
+ */
 const emit = defineEmits<{
   (e: "filter", keywords: string[]): void;
 }>();
@@ -62,6 +65,9 @@ const emit = defineEmits<{
 const modalRef = ref<HTMLDialogElement | null>(null);
 const localSelectedKeywords = ref<string[]>([]);
 
+/**
+ * Checks if all keywords are selected.
+ */
 const allSelected = computed(
   () =>
     uniqueKeywords.value.length > 0 &&
@@ -76,6 +82,9 @@ function toggleSelectAll() {
   }
 }
 
+/**
+ * Returns a unique list of keywords from the props.
+ */
 const uniqueKeywords = computed(() => {
   const keywords = props.keywords
     .flatMap((k) => k.split(","))
@@ -94,6 +103,9 @@ function toggleKeyword(keyword: string) {
   }
 }
 
+/**
+ * Emits the selected keywords and closes the modal.
+ */
 function applyFilter() {
   emit("filter", localSelectedKeywords.value);
   close();

@@ -6,13 +6,17 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import type { HeadingType } from "../types/types";
 
 const props = defineProps<{
-  heading: "h1" | "h2" | "h3";
+  heading: HeadingType;
 }>();
 
 const headingTag = computed(() => props.heading);
 
+/**
+ * Returns the class for the heading based on the heading type. Enables a standardised design across the entire application.
+ */
 const headingClass = computed(() => {
   switch (props.heading) {
     case "h1":
