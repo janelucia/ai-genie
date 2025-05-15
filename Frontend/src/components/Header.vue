@@ -46,10 +46,7 @@
     <Alert
       v-if="showToast"
       class="toast toast-top toast-end"
-      :success="success"
-      :error="error"
-      :info="info"
-      :warning="warning"
+      :alert-type="alertType"
     >
       <Text>
         {{ toastMessage }}
@@ -61,7 +58,7 @@
 import router from "../router";
 import { onMounted, ref } from "vue";
 import { useApiRequest } from "../api/useApiRequest.ts";
-import type { ChatWithMessages } from "../types/types.ts";
+import type { AlertType, ChatWithMessages } from "../types/types.ts";
 import Alert from "./Alert.vue";
 import Text from "./Text.vue";
 
@@ -74,20 +71,18 @@ const modal = ref<HTMLDialogElement | null>(null);
 const toastMessage = ref("");
 const toastClass = ref("");
 const showToast = ref(false);
-const success = ref(false);
-const error = ref(false);
-const info = ref(false);
-const warning = ref(false);
+const alertType = ref<AlertType>("info");
 
 const deleteChat = async () => {
   const chatId = localStorage.getItem("chat-id");
 
   try {
     if (!chatId) {
-      toastMessage.value = "No chat ID found.";
-      error.value = true;
       modal.value?.close();
-      toastTimeout();
+      localStorage.setItem("toast-message", "No chat ID found.");
+      localStorage.setItem("toast-class", "alert-error");
+      localStorage.setItem("toast-should-show", "true");
+      window.location.reload();
       return;
     }
 
@@ -108,7 +103,7 @@ const deleteChat = async () => {
 
     if (!data.value?.messages || data.value.messages.length === 0) {
       toastMessage.value = "No messages to delete.";
-      error.value = true;
+      alertType.value = "error";
       modal.value?.close();
       toastTimeout();
       return;
@@ -128,7 +123,7 @@ const deleteChat = async () => {
   } catch (e) {
     console.error("Error deleting chat:", e);
     toastMessage.value = "Error deleting chat. Please try again.";
-    error.value = true;
+    alertType.value = "error";
     toastTimeout();
   }
 };
@@ -145,23 +140,18 @@ const toastTimeout = () => {
 };
 
 const setToastType = (type: string) => {
-  success.value = false;
-  error.value = false;
-  info.value = false;
-  warning.value = false;
-
   switch (type) {
     case "alert-success":
-      success.value = true;
+      alertType.value = "success";
       break;
     case "alert-error":
-      error.value = true;
+      alertType.value = "error";
       break;
     case "alert-info":
-      info.value = true;
+      alertType.value = "info";
       break;
     case "alert-warning":
-      warning.value = true;
+      alertType.value = "warning";
       break;
   }
 };

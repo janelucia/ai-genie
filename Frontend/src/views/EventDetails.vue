@@ -126,7 +126,11 @@
         </button>
       </div>
     </fieldset>
-    <Alert v-if="showConfirmation" class="toast toast-top z-10" success>
+    <Alert
+      v-if="showConfirmation"
+      class="toast toast-top z-10"
+      alert-type="success"
+    >
       <Text class="text-wrap">
         You have successfully signed up for the event!
       </Text>

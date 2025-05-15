@@ -6,7 +6,7 @@
     <Heading heading="h1" class="">Welcome @ AI Lab</Heading>
     <div class="flex flex-col gap-[var(--spacing-in-sections)]">
       <Heading heading="h2"> Whats new? </Heading>
-      <Alert class="alert-dash" info>
+      <Alert class="alert-dash" alert-type="info">
         <div class="flex flex-col gap-[var(--spacing-in-sections)]">
           <Text>
             We have our own chat bot for all your questions regarding the AI
