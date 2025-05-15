@@ -68,6 +68,10 @@ const messages = ref<Message[]>([]);
 const LOCAL_STORAGE_KEY = "chat-id";
 const isLoading = ref(false);
 
+/**
+ * Scrolls to the bottom of the chat window. This ensures that the user always sees the latest message.
+ * @param behavior - The scroll behavior (default is "smooth").
+ */
 const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
   const bottomRef = document.getElementById("bottomRef");
   if (bottomRef) {
@@ -75,6 +79,10 @@ const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
   }
 };
 
+/**
+ * Sends a message and updates the chat window.
+ * This function is called when the user presses Enter or clicks the Send button.
+ */
 const sendMessage = async () => {
   const content = input.value.trim();
   if (!content) return;
@@ -97,6 +105,11 @@ const sendMessage = async () => {
   await useChatAPI(chatId, userMessage);
 };
 
+/**
+ * Sends a message to the chat API and waits for the AI response.
+ * @param chatId
+ * @param userMessage
+ */
 const useChatAPI = async (chatId: string, userMessage: Message) => {
   try {
     isLoading.value = true;
@@ -137,6 +150,9 @@ const useChatAPI = async (chatId: string, userMessage: Message) => {
   }
 };
 
+/**
+ * Fetches the chat ID from local storage and retrieves the chat messages, to display the messages on load.
+ */
 onMounted(async () => {
   const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
   messages.value = [];
