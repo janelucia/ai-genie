@@ -6,6 +6,9 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
+  test: {
+    environment: "jsdom",
+  },
   server: {
     port: 3000,
     host: true, // <--- Allow all hosts (necessary for ngrok to tunnel into dev server)

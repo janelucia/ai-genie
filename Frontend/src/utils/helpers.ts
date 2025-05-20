@@ -26,6 +26,12 @@ export function signUpForEvent(eventId: string): void {
   const signedUpEvents = JSON.parse(
     localStorage.getItem("signed-up-events") || "[]",
   ) as { [key: string]: boolean }[];
+
+  // Check if the user is already signed up for the event
+  if (signedUpEvents.some((event) => Object.keys(event)[0] === eventId)) {
+    return;
+  }
+
   signedUpEvents.push({ [eventId]: true });
   localStorage.setItem("signed-up-events", JSON.stringify(signedUpEvents));
 }
