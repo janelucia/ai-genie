@@ -51,12 +51,6 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const { data } = useApiData<Events[]>("events");
 
-watch(data, () => {
-  if (data.value) {
-    result.value = data.value;
-  }
-});
-
 function filterByDate(date: string) {
   selectedDate.value = date;
   filtered.value = result.value.filter((event) => event.date.startsWith(date));
@@ -66,4 +60,10 @@ function clearSelectedDate() {
   selectedDate.value = null;
   filtered.value = [];
 }
+
+watch(data, () => {
+  if (data.value) {
+    result.value = data.value;
+  }
+});
 </script>
