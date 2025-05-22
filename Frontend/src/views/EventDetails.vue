@@ -198,13 +198,6 @@ const formattedDate = computed(() => {
   return { date: "", time: "" };
 });
 
-watch(data, () => {
-  if (data.value) {
-    result.value = data.value;
-    message.value = `Hi, I\'d like to sign up for the event "${result.value.name}" on ${formattedDate.value.date} at ${formattedDate.value.time}.`;
-  }
-});
-
 /**
  * Adds additional information to the email for the organizer, without displaying it to the user.
  * @param kind
@@ -241,6 +234,7 @@ async function handleSubmit() {
   console.log("Sending email to organizer...");
   console.log("From:", email.value);
   console.log("Message:", message.value);
+  console.log("messageWithSignature:", messageWithSignature.value);
 
   await $fetch("email/", "POST", <Email>{
     address: data.value?.contact_email || "ai.genie.signup.system@gmail.com",
@@ -286,5 +280,13 @@ onMounted(() => {
   // used as the page focussed on the input fields and should start at the top of the page
   window.scrollTo(0, 0);
   isUserSignedUp(id);
+});
+
+watch(data, () => {
+  if (data.value) {
+    result.value = data.value;
+    message.value = `Hi, I\'d like to sign up for the event "${result.value.name}" on ${formattedDate.value.date} at ${formattedDate.value.time}.`;
+    messageWithSignature.value = message.value;
+  }
 });
 </script>
