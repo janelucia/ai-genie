@@ -76,7 +76,7 @@
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import type { Research, Researchers } from "../types/types.ts";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { useApiData } from "../api/useApiRequest.ts";
 import Avatar from "../components/Avatar.vue";
 import Heading from "../components/Heading.vue";
 import Keywords from "../components/Keywords.vue";
@@ -94,8 +94,8 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const relatedResearch = ref<Research[]>([]);
 
-const { data } = useApiRequest<Researchers>("researchers/" + id);
-const { data: researchData } = useApiRequest<Research[]>("research");
+const { data } = useApiData<Researchers>("researchers/" + id);
+const { data: researchData } = useApiData<Research[]>("research");
 
 watch(researchData, () => {
   if (researchData.value) {

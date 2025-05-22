@@ -47,7 +47,7 @@
 import Heading from "../components/Heading.vue";
 import { ref, watch } from "vue";
 import type { Research, Events, CardType } from "../types/types.ts";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { useApiData } from "../api/useApiRequest.ts";
 import EventBanner from "/img/event-banner-ai.png";
 import ResearchBanner from "/img/research-paper-banner-ai.png";
 import Alert from "../components/Alert.vue";
@@ -58,8 +58,8 @@ import PageStructure from "../components/PageStructure.vue";
 const researchResult = ref<CardType[]>([]);
 const eventsResult = ref<CardType[]>([]);
 
-const { data: researchData } = useApiRequest<Research[]>("research");
-const { data: eventsData } = useApiRequest<Events[]>("events");
+const { data: researchData } = useApiData<Research[]>("research");
+const { data: eventsData } = useApiData<Events[]>("events");
 
 watch(researchData, () => {
   if (researchData.value) {

@@ -1,22 +1,43 @@
 import { ref, type Ref } from "vue";
 
 /**
- * A composable function to make API requests using the FETCH API from JavaScript.
- * Supports GET, POST, PUT, and DELETE methods.
- *
- * @param endpoint - The API endpoint to call (e.g., "chats/", "research/", "events/", "researchers/", "email/")
- * @param method - HTTP method to use for the request (default is GET)
- * @param bodyData - optional data to be sent in the request body
- * @returns An object containing the response data, error message, loading state, and a function to execute the request
+ * Fetches data from the API.
+ * @param endpoint
+ * @param method
+ * @param bodyData
  */
-export function useApiRequest<T = unknown>(
+export async function $fetch<T>(
   endpoint: string,
-  method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+  method: "GET" | "POST" | "PUT" | "DELETE",
   bodyData?: unknown,
-) {
+): Promise<T> {
   const baseUrl = import.meta.env.VITE_API_BASE_URL
     ? import.meta.env.VITE_API_BASE_URL + "/api/"
     : "http://localhost:8000/api/";
+
+  const options: RequestInit = {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (bodyData) {
+    options.body = JSON.stringify(bodyData);
+  }
+
+  const response = await fetch(baseUrl + endpoint, options);
+
+  if (!response.ok)
+    throw new Error(`Error ${response.status}: ${response.statusText}`);
+  return response.json();
+}
+
+/**
+ * Fetches data (only GET) from the API and returns it reactively.
+ * @param endpoint
+ */
+export function useApiData<T = unknown>(endpoint: string) {
   const data: Ref<T | null> = ref(null);
   const error: Ref<string | null> = ref(null);
   const loading = ref(false);
@@ -24,23 +45,7 @@ export function useApiRequest<T = unknown>(
   const execute = async () => {
     loading.value = true;
     try {
-      const options: RequestInit = {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-      };
-
-      if (bodyData) {
-        options.body = JSON.stringify(bodyData);
-      }
-
-      const response = await fetch(baseUrl + endpoint, options);
-
-      if (!response.ok)
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      data.value = await response.json();
+      data.value = await $fetch<T>(endpoint, "GET");
     } catch (err: any) {
       error.value = err.message || "Unknown error";
     } finally {
@@ -48,7 +53,7 @@ export function useApiRequest<T = unknown>(
     }
   };
 
-  if (method === "GET") execute();
+  void execute();
 
   return { data, error, loading, execute };
 }

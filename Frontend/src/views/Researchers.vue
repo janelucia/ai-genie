@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import { computed, onMounted, ref, watch } from "vue";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { useApiData } from "../api/useApiRequest.ts";
 import type { Researchers } from "../types/types.ts";
 import PageStructure from "../components/PageStructure.vue";
 import FilterModal from "../components/FilterModal.vue";
@@ -69,7 +69,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const keywordModal = ref();
 
-const { data } = useApiRequest<Researchers[]>("researchers");
+const { data } = useApiData<Researchers[]>("researchers");
 
 const { searchQuery, filteredResults, applyKeywordFilter, selectedKeywords } =
   useSearchAndFilter(

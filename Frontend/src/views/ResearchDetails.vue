@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { useApiData } from "../api/useApiRequest.ts";
 import Text from "../components/Text.vue";
 import type { Research } from "../types/types.ts";
 import router from "../router";
@@ -73,7 +73,7 @@ const route = useRoute();
 const id = route.params.id;
 const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
-const { data } = useApiRequest<Research>("research/" + id);
+const { data } = useApiData<Research>("research/" + id);
 
 /**
  * Function which opens the chat with a prompt to simplify the way to get more information about the research paper.

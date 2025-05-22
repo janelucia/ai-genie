@@ -54,25 +54,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from "vue";
+import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
 import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
-import { useApiRequest } from "../api/useApiRequest.ts";
-
-const input = ref("");
-const result = ref<ChatWithMessages | null>(null);
-const messages = ref<Message[]>([]);
+import { $fetch } from "../api/useApiRequest.ts";
+import { useChatAPI } from "../api/useChatApi.ts";
 
 const LOCAL_STORAGE_KEY = "chat-id";
-const isLoading = ref(false);
+const chatId = ref(localStorage.getItem(LOCAL_STORAGE_KEY));
+const { stop, messages, isLoading } = useChatAPI(chatId);
+
+const input = ref("");
 
 /**
  * Scrolls to the bottom of the chat window. This ensures that the user always sees the latest message.
  * @param behavior - The scroll behavior (default is "smooth").
  */
-const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+const scrollToBottom = async (behavior: ScrollBehavior = "smooth") => {
+  await nextTick();
   const bottomRef = document.getElementById("bottomRef");
   if (bottomRef) {
     bottomRef.scrollIntoView({ behavior });
@@ -87,125 +88,55 @@ const sendMessage = async () => {
   const content = input.value.trim();
   if (!content) return;
 
-  const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
-  if (!chatId) return;
-
   const userMessage: Message = {
     content,
     ai_response: false,
     created: new Date(),
   };
 
+  isLoading.value = true;
+
   messages.value.push(userMessage);
   input.value = "";
 
-  await nextTick();
-  scrollToBottom();
-
-  await useChatAPI(chatId, userMessage);
-};
-
-/**
- * Sends a message to the chat API and waits for the AI response.
- * @param chatId
- * @param userMessage
- */
-const useChatAPI = async (chatId: string, userMessage: Message) => {
-  try {
-    isLoading.value = true;
-
-    const { execute: postMessage } = useApiRequest<ChatWithMessages>(
-      `message-ai/${chatId}/`,
-      "POST",
-      userMessage,
-    );
-    await postMessage(); // 🚀 <-- Actually send the POST request
-
-    const MAX_TRIES = 30;
-    const DELAY_MS = 1000;
-    let tries = 0;
-
-    while (tries < MAX_TRIES) {
-      const { data, execute: fetchChat } = useApiRequest<ChatWithMessages>(
-        "chats/" + chatId,
-      );
-      await fetchChat(); // 🚀 <-- Actually perform the GET request
-      await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
-      tries++;
-
-      if (
-        data.value?.messages?.length &&
-        data.value.messages.length > messages.value.length
-      ) {
-        messages.value = data.value.messages;
-        return;
-      }
-    }
-
-    console.warn("AI response timeout");
-  } catch (err) {
-    console.error("Chat API error:", err);
-  } finally {
-    isLoading.value = false;
-  }
+  await $fetch<ChatWithMessages>(
+    `message-ai/${chatId.value}/`,
+    "POST",
+    userMessage,
+  );
 };
 
 /**
  * Fetches the chat ID from local storage and retrieves the chat messages, to display the messages on load.
  */
 onMounted(async () => {
-  const chatId = localStorage.getItem(LOCAL_STORAGE_KEY);
-  messages.value = [];
-
-  if (chatId && chatId !== "null") {
-    const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
-
-    const waitForData = () =>
-      new Promise<void>((resolve) => {
-        const interval = setInterval(() => {
-          if (data.value) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 50);
-      });
-
-    await waitForData();
-
-    if (data.value) {
-      result.value = data.value;
-      messages.value = data.value.messages;
+  if (!chatId.value) {
+    const data = await $fetch<Chat>("chats/", "POST");
+    if (data.id) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, data.id.toString());
+      chatId.value = data.id.toString();
     }
+  }
 
-    const queuedMsg = localStorage.getItem("chat-message-research");
-    if (queuedMsg) {
-      const msg: Message = {
-        content: queuedMsg,
-        ai_response: false,
-        created: new Date(),
-      };
-      messages.value.push(msg);
-      localStorage.removeItem("chat-message-research");
-      await useChatAPI(chatId, msg);
-    }
-
-    await nextTick();
-    scrollToBottom("instant");
-  } else {
-    const { data, execute } = useApiRequest<Chat>("chats/", "POST");
-    await execute();
-
-    if (data.value?.id) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, data.value?.id.toString());
-    }
+  const queuedMsg = localStorage.getItem("chat-message-research");
+  if (queuedMsg) {
+    input.value = queuedMsg;
+    localStorage.removeItem("chat-message-research");
+    await sendMessage();
   }
 });
 
+onUnmounted(() => {
+  stop();
+});
+
+const isFirstLoad = ref(true);
 watch(
-  [messages, isLoading],
+  [messages],
   async () => {
-    await nextTick();
-    scrollToBottom();
+    console.log({ messages });
+    await scrollToBottom(isFirstLoad.value ? "instant" : "smooth");
+    isFirstLoad.value = false;
   },
   { deep: true },
 );

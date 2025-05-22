@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import Card from "../components/Card.vue";
 import { ref, watch } from "vue";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { useApiData } from "../api/useApiRequest.ts";
 import type { Events } from "../types/types.ts";
 import EventBanner from "/img/event-banner-ai.png";
 import Calendar from "../components/Calendar.vue";
@@ -49,7 +49,7 @@ const filtered = ref<Events[]>([]);
 const selectedDate = ref<string | null>(null);
 const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
-const { data } = useApiRequest<Events[]>("events");
+const { data } = useApiData<Events[]>("events");
 
 watch(data, () => {
   if (data.value) {

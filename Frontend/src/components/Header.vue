@@ -57,7 +57,7 @@
 <script setup lang="ts">
 import router from "../router";
 import { onMounted, ref } from "vue";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { $fetch } from "../api/useApiRequest.ts";
 import type { AlertType, ChatWithMessages } from "../types/types.ts";
 import Alert from "./Alert.vue";
 import Text from "./Text.vue";
@@ -93,21 +93,8 @@ const deleteChat = async () => {
     }
 
     // Check if chatId has messages
-    const { data } = useApiRequest<ChatWithMessages>("chats/" + chatId);
-
-    const waitForData = () =>
-      new Promise<void>((resolve) => {
-        const interval = setInterval(() => {
-          if (data.value) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, 50);
-      });
-
-    await waitForData();
-
-    if (!data.value?.messages || data.value.messages.length === 0) {
+    const data = await $fetch<ChatWithMessages>("chats/" + chatId, "GET");
+    if (!data.messages || data.messages.length === 0) {
       toastMessage.value = "No messages to delete.";
       alertType.value = "error";
       modal.value?.close();
@@ -115,7 +102,7 @@ const deleteChat = async () => {
       return;
     }
 
-    useApiRequest("chats/" + chatId, "DELETE");
+    await $fetch("chats/" + chatId, "DELETE");
 
     localStorage.setItem("toast-message", "Chat deleted successfully!");
     localStorage.setItem("toast-class", "alert-success");

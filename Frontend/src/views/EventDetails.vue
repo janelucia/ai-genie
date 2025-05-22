@@ -50,7 +50,7 @@
       <input
         v-model="name"
         type="text"
-        class="input"
+        class="input w-full"
         placeholder="Name"
         @blur="updateSignature('name')"
         :class="{
@@ -65,7 +65,7 @@
       <input
         v-model="email"
         type="email"
-        class="input"
+        class="input w-full"
         :class="{
           'input-error': emailTouched && email && !isValidEmail,
           'input-success': emailTouched && email && isValidEmail,
@@ -87,7 +87,7 @@
       </label>
       <textarea
         v-model="message"
-        class="textarea"
+        class="textarea w-full"
         placeholder="Message"
       ></textarea>
 
@@ -145,7 +145,7 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApiRequest } from "../api/useApiRequest.ts";
+import { $fetch, useApiData } from "../api/useApiRequest.ts";
 import { computed, onMounted, ref, watch } from "vue";
 import type { Email, Events } from "../types/types.ts";
 import Heading from "../components/Heading.vue";
@@ -184,7 +184,7 @@ const emailTouched = ref(false);
 const nameTouched = ref(false);
 const showConfirmation = ref(false);
 
-const { data } = useApiRequest<Events>("events/" + id);
+const { data } = useApiData<Events>("events/" + id);
 
 const formattedDate = computed(() => {
   if (result.value.date) {
@@ -232,7 +232,7 @@ const isValidEmail = computed(() =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value),
 );
 
-function handleSubmit() {
+async function handleSubmit() {
   if (!name.value || !email.value || !message.value) {
     alert("Please fill out all fields.");
     return;
@@ -242,13 +242,11 @@ function handleSubmit() {
   console.log("From:", email.value);
   console.log("Message:", message.value);
 
-  const { execute } = useApiRequest("email/", "POST", <Email>{
+  await $fetch("email/", "POST", <Email>{
     address: data.value?.contact_email || "ai.genie.signup.system@gmail.com",
     message: messageWithSignature.value,
     subject: `Sign up for event "${result.value.name}"`,
   });
-
-  execute();
 
   signUpForEvent(id);
   submitted.value = true;
