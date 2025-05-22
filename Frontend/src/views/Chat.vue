@@ -106,9 +106,6 @@ const sendMessage = async () => {
   );
 };
 
-/**
- * Fetches the chat ID from local storage and retrieves the chat messages, to display the messages on load.
- */
 onMounted(async () => {
   if (!chatId.value) {
     const data = await $fetch<Chat>("chats/", "POST");
@@ -134,7 +131,6 @@ const isFirstLoad = ref(true);
 watch(
   [messages],
   async () => {
-    console.log({ messages });
     await scrollToBottom(isFirstLoad.value ? "instant" : "smooth");
     isFirstLoad.value = false;
   },

@@ -76,7 +76,7 @@ const alertType = ref<AlertType>("info");
 /**
  * Deletes the chat by sending a DELETE request to the API.
  * - If the chat ID is not found, it shows an error message and reloads the page, to fetch a new chat id.
- * - If the chat has no messages, it shows a error message, that there are no messages to delete. There is no reload and the chat id is not replaced to prevent an increase in distributing unnecessary chat ids.
+ * - If the chat has no messages, it shows an error message that there are no messages to delete. There is no reload and the chat id is not replaced to prevent an increase in distributing unnecessary chat ids.
  * - If the chat is deleted successfully, it shows a success message and reloads the page.
  */
 const deleteChat = async () => {
@@ -102,7 +102,7 @@ const deleteChat = async () => {
       return;
     }
 
-    await $fetch("chats/" + chatId, "DELETE");
+    await $fetch("clear/" + chatId + "/", "DELETE");
 
     localStorage.setItem("toast-message", "Chat deleted successfully!");
     localStorage.setItem("toast-class", "alert-success");

@@ -30,7 +30,12 @@ export async function $fetch<T>(
 
   if (!response.ok)
     throw new Error(`Error ${response.status}: ${response.statusText}`);
-  return response.json();
+
+  if (response.headers.get("Content-Type")?.includes("application/json")) {
+    return response.json();
+  }
+
+  return response.text() as unknown as T;
 }
 
 /**

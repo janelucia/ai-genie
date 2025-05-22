@@ -8,7 +8,7 @@ import { type Ref, ref } from "vue";
  */
 export const useChatAPI = (chatId: Ref<string | null>) => {
   const messages = ref<ChatWithMessages["messages"]>([]);
-  const isLoading = ref(true);
+  const isLoading = ref(false);
 
   const updateChat = async () => {
     if (!chatId.value) return;
@@ -17,9 +17,9 @@ export const useChatAPI = (chatId: Ref<string | null>) => {
         "chats/" + chatId.value,
         "GET",
       );
-      console.log("data", data.messages);
-      console.log("messages", messages.value);
-      isLoading.value = data.messages.length <= messages.value.length;
+      if (isLoading.value) {
+        isLoading.value = data.messages.length <= messages.value.length;
+      }
       messages.value = data.messages;
     } catch (err) {
       console.error("Chat API error:", err);
