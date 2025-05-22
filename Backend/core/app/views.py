@@ -371,9 +371,10 @@ class AddMessageWithAIResponse(APIView):
 
         if user_message_serializer.is_valid():
             user_message = user_message_serializer.validated_data
-            user_message_serializer.save()
+            
             # AI stuff
             memory = create_memory(chat_id)
+            user_message_serializer.save()
             ai_genie_agent = AIGenie(memory)
             ai_response_content = ai_genie_agent.run(user_message['content']) # agent being called
             ai_message_data = {
