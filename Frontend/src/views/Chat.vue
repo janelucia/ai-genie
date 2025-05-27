@@ -1,7 +1,7 @@
 <template>
   <Header chat />
   <div
-    class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
+    class="overflow-y-auto py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
     <div class="w-full flex justify-center">
       <template v-if="isLoading">
@@ -110,6 +110,8 @@ const sendMessage = async () => {
 
   messages.value.push(userMessage);
   input.value = "";
+
+  await scrollToBottom();
 
   const data = await $fetch<Message>(
     `message-ai/${chatId.value}/`,
