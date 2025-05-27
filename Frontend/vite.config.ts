@@ -23,7 +23,7 @@ export default defineConfig({
     host: true, // <--- Allow all hosts (necessary for ngrok to tunnel into dev server)
     strictPort: true, // Don't switch port if 3000 is busy (optional but nice for consistency)
     allowedHosts: [
-      "participants-analysis-interval-developments.trycloudflare.com",  // Allow ngrok frontend URL
+      "fu-sake-bacon-neck.trycloudflare.com",  // Allow ngrok frontend URL
     ],
   },
 });
