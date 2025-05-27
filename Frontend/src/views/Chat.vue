@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
-import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
+import type { Chat, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -66,7 +66,7 @@ import { $fetch } from "../api/useApiRequest.ts";
 const LOCAL_STORAGE_KEY = "chat-id";
 const chatId = ref(localStorage.getItem(LOCAL_STORAGE_KEY));
 
-const messages = ref<ChatWithMessages["messages"]>([]);
+const messages = ref<Message[]>([]);
 const isLoading = ref(false);
 const input = ref("");
 const inputField = ref<HTMLInputElement | null>(null);
@@ -111,15 +111,17 @@ const sendMessage = async () => {
   messages.value.push(userMessage);
   input.value = "";
 
-  const data = await $fetch<ChatWithMessages>(
+  const data = await $fetch<Message>(
     `message-ai/${chatId.value}/`,
     "POST",
     userMessage,
   );
 
-  if (data.messages) {
+  console.log(data.content);
+
+  if (data.content) {
     isLoading.value = false;
-    messages.value = data.messages;
+    messages.value.push(data);
   } else {
     isLoading.value = false;
     messages.value.push({
