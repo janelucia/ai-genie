@@ -62,12 +62,12 @@ import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
 import { $fetch } from "../api/useApiRequest.ts";
-import { useChatAPI } from "../api/useChatApi.ts";
 
 const LOCAL_STORAGE_KEY = "chat-id";
 const chatId = ref(localStorage.getItem(LOCAL_STORAGE_KEY));
-const { stop, messages, isLoading } = useChatAPI(chatId);
 
+const messages = ref<ChatWithMessages["messages"]>([]);
+const isLoading = ref(false);
 const input = ref("");
 const inputField = ref<HTMLInputElement | null>(null);
 
@@ -111,11 +111,23 @@ const sendMessage = async () => {
   messages.value.push(userMessage);
   input.value = "";
 
-  await $fetch<ChatWithMessages>(
+  const data = await $fetch<ChatWithMessages>(
     `message-ai/${chatId.value}/`,
     "POST",
     userMessage,
   );
+
+  if (data.messages) {
+    isLoading.value = false;
+    messages.value = data.messages;
+  } else {
+    messages.value.push({
+      content: "Error sending message. Please try again.",
+      ai_response: true,
+      created: new Date(),
+    });
+    isLoading.value = false;
+  }
 };
 
 onMounted(async () => {
