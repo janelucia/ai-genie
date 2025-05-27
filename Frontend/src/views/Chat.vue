@@ -121,12 +121,12 @@ const sendMessage = async () => {
     isLoading.value = false;
     messages.value = data.messages;
   } else {
+    isLoading.value = false;
     messages.value.push({
       content: "Error sending message. Please try again.",
       ai_response: true,
       created: new Date(),
     });
-    isLoading.value = false;
   }
 };
 
