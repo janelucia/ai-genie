@@ -21,6 +21,11 @@ start dev env:
     bun dev
 ```
 
+Start tests:
+```
+    bun run test
+```
+
 Happy Coding🌻
 
 ## Attribution

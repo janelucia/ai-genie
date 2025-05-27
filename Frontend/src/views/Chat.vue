@@ -45,9 +45,11 @@
   <div class="flex w-full gap-2 fixed bottom-14 left-0 p-4 bg-base-100">
     <input
       v-model="input"
+      ref="inputField"
       class="input input-bordered w-full"
       placeholder="Type your message..."
       @keyup.enter="sendMessage"
+      @input="focusInput"
     />
     <button class="btn btn-secondary" @click="sendMessage">Send</button>
   </div>
@@ -67,6 +69,16 @@ const chatId = ref(localStorage.getItem(LOCAL_STORAGE_KEY));
 const { stop, messages, isLoading } = useChatAPI(chatId);
 
 const input = ref("");
+const inputField = ref<HTMLInputElement | null>(null);
+
+/**
+ * Focuses the input field when the user starts typing.
+ */
+const focusInput = () => {
+  if (inputField.value && document.activeElement !== inputField.value) {
+    inputField.value.focus();
+  }
+};
 
 /**
  * Scrolls to the bottom of the chat window. This ensures that the user always sees the latest message.
