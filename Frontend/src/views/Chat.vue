@@ -1,7 +1,7 @@
 <template>
   <Header chat />
   <div
-    class="overflow-y-auto max-h-[90vh] py-14 flex flex-col gap-[var(--spacing-in-sections)]"
+    class="overflow-y-auto py-14 flex flex-col gap-[var(--spacing-in-sections)]"
   >
     <div class="w-full flex justify-center">
       <template v-if="isLoading">
@@ -49,7 +49,7 @@
       class="input input-bordered w-full"
       placeholder="Type your message..."
       @keyup.enter="sendMessage"
-      @input="focusInput"
+      @focus="scrollToInput"
     />
     <button class="btn btn-secondary" @click="sendMessage">Send</button>
   </div>
@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
-import type { Chat, Message } from "../types/types.ts";
+import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -72,13 +72,13 @@ const input = ref("");
 const inputField = ref<HTMLInputElement | null>(null);
 
 /**
- * Focuses the input field when the user starts typing.
+ * Scrolls the input field into view when it is focused.
+ * This ensures that the input field is visible to the user when they start typing.
  */
-const focusInput = () => {
-  if (inputField.value && document.activeElement !== inputField.value) {
-    inputField.value.focus();
-  }
-};
+function scrollToInput() {
+  console.log("scrolling to input");
+  inputField.value?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
 
 /**
  * Scrolls to the bottom of the chat window. This ensures that the user always sees the latest message.
@@ -111,6 +111,8 @@ const sendMessage = async () => {
   messages.value.push(userMessage);
   input.value = "";
 
+  await scrollToBottom();
+
   const data = await $fetch<Message>(
     `message-ai/${chatId.value}/`,
     "POST",
@@ -141,24 +143,32 @@ onMounted(async () => {
     }
   }
 
+  const data = await $fetch<ChatWithMessages>(`chats/${chatId.value}/`, "GET");
+  if (data.messages.length === 0) {
+    messages.value = [];
+  } else {
+    messages.value = data.messages;
+  }
+
   const queuedMsg = localStorage.getItem("chat-message-research");
   if (queuedMsg) {
     input.value = queuedMsg;
     localStorage.removeItem("chat-message-research");
     await sendMessage();
   }
+
+  await scrollToBottom("instant");
 });
 
 onUnmounted(() => {
   stop();
 });
 
-const isFirstLoad = ref(true);
 watch(
   [messages],
   async () => {
-    await scrollToBottom(isFirstLoad.value ? "instant" : "smooth");
-    isFirstLoad.value = false;
+    await scrollToBottom();
+    console.log("Scrolled to bottom of chat messages.");
   },
   { deep: true },
 );
