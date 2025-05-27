@@ -49,7 +49,7 @@
       class="input input-bordered w-full"
       placeholder="Type your message..."
       @keyup.enter="sendMessage"
-      @input="focusInput"
+      @focus="scrollToInput"
     />
     <button class="btn btn-secondary" @click="sendMessage">Send</button>
   </div>
@@ -72,13 +72,13 @@ const input = ref("");
 const inputField = ref<HTMLInputElement | null>(null);
 
 /**
- * Focuses the input field when the user starts typing.
+ * Scrolls the input field into view when it is focused.
+ * This ensures that the input field is visible to the user when they start typing.
  */
-const focusInput = () => {
-  if (inputField.value && document.activeElement !== inputField.value) {
-    inputField.value.focus();
-  }
-};
+function scrollToInput() {
+  console.log("scrolling to input");
+  inputField.value?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
 
 /**
  * Scrolls to the bottom of the chat window. This ensures that the user always sees the latest message.
