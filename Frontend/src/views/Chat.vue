@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
-import type { Chat, Message } from "../types/types.ts";
+import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
 import { formatDate, formatTime } from "../utils/dateUtils.ts";
@@ -141,24 +141,32 @@ onMounted(async () => {
     }
   }
 
+  const data = await $fetch<ChatWithMessages>(`chats/${chatId.value}/`, "GET");
+  if (data.messages.length === 0) {
+    messages.value = [];
+  } else {
+    messages.value = data.messages;
+  }
+
   const queuedMsg = localStorage.getItem("chat-message-research");
   if (queuedMsg) {
     input.value = queuedMsg;
     localStorage.removeItem("chat-message-research");
     await sendMessage();
   }
+
+  await scrollToBottom("instant");
 });
 
 onUnmounted(() => {
   stop();
 });
 
-const isFirstLoad = ref(true);
 watch(
   [messages],
   async () => {
-    await scrollToBottom(isFirstLoad.value ? "instant" : "smooth");
-    isFirstLoad.value = false;
+    await scrollToBottom();
+    console.log("Scrolled to bottom of chat messages.");
   },
   { deep: true },
 );
