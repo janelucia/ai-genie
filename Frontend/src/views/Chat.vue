@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
+import { ref, onMounted, nextTick, onUnmounted, watch } from "vue";
 import type { Chat, ChatWithMessages, Message } from "../types/types.ts";
 import Text from "../components/Text.vue";
 import Header from "../components/Header.vue";
@@ -76,8 +76,11 @@ const inputField = ref<HTMLInputElement | null>(null);
  * This ensures that the input field is visible to the user when they start typing.
  */
 function scrollToInput() {
-  console.log("scrolling to input");
-  inputField.value?.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(
+    () =>
+      inputField.value?.scrollIntoView({ behavior: "smooth", block: "center" }),
+    100,
+  );
 }
 
 /**
@@ -88,7 +91,9 @@ const scrollToBottom = async (behavior: ScrollBehavior = "smooth") => {
   await nextTick();
   const bottomRef = document.getElementById("bottomRef");
   if (bottomRef) {
-    bottomRef.scrollIntoView({ behavior });
+    setTimeout(() => {
+      bottomRef.scrollIntoView({ behavior });
+    }, 100); // Delay to ensure DOM update has taken place
   }
 };
 
@@ -107,19 +112,14 @@ const sendMessage = async () => {
   };
 
   isLoading.value = true;
-
   messages.value.push(userMessage);
   input.value = "";
-
-  await scrollToBottom();
 
   const data = await $fetch<Message>(
     `message-ai/${chatId.value}/`,
     "POST",
     userMessage,
   );
-
-  console.log(data.content);
 
   if (data.content) {
     isLoading.value = false;
@@ -167,8 +167,8 @@ onUnmounted(() => {
 watch(
   [messages],
   async () => {
+    await nextTick();
     await scrollToBottom();
-    console.log("Scrolled to bottom of chat messages.");
   },
   { deep: true },
 );
