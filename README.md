@@ -4,7 +4,14 @@
 
 # AIGenie
 
-Our AI host for the AI Lab at Oslo Met receives YOU, answers  YOUR questions and informs YOU about the AI Lab.
+## Description
+This is AIGenie, a host for the AI Lab of OsloMet University. 
+It is a web application that allows users to explore the AI Lab online and get help understanding the various AI topics using an AI Model.
+The application features a chat interface with an AI assistant, information about researchers, research projects, and upcoming events.
+
+## Important
+Currently the application is only developed for mobile devices, therefore the viewport has to be set to a mobile device width in order to see the application correctly.
+In future a desktop version should be developed to make it fully responsive.
 
 ## Getting started
 
